@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  name          String
+  role          String   @default("ADMIN")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Event {
+  id                 String               @id @default(uuid())
+  slug               String               @unique
+  title              String
+  type               String
+  edition            String?
+  shortDescription   String?
+  fullDescription    String?
+  city               String
+  state              String?
+  country            String               @default("India")
+  venue              String?
+  venueAddress       String?
+  googleMapsUrl      String?
+  startDate          DateTime
+  endDate            DateTime
+  startTime          String?
+  endTime            String?
+  registrationOpen   DateTime?
+  registrationClose  DateTime?
+  maxCapacity        Int                  @default(0)
+  waitingListCapacity Int                 @default(0)
+  status             String               @default("DRAFT") // DRAFT, OPENING_SOON, OPEN, LIMITED_SEATS, CLOSED, COMPLETED, CANCELLED
+  bannerUrl          String?
+  mobileBannerUrl    String?
+  thumbnailUrl       String?
+  seoTitle           String?
+  seoDescription     String?
+  featured           Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  registrations      EventRegistration[]
+  groupRegistrations GroupRegistration[]
+  partners           EventPartner[]
+  faqs               Faq[]
+  agenda             EventAgenda[]
+  speakers           EventSpeaker[]
+}
+
+model Participant {
+  id               String               @id @default(uuid())
+  mobile           String
+  email            String?
+  fullName         String
+  category         String
+  designation      String?
+  yearsOfExperience String?
+  gender           String?
+  city             String?
+  state            String?
+  country          String               @default("India")
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  organizationId   String?
+  organization     Organization?        @relation(fields: [organizationId], references: [id])
+
+  registrations    EventRegistration[]
+  coordinatedGroups GroupRegistration[] @relation("GroupCoordinator")
+
+  @@unique([mobile]) // Assuming mobile is the primary contact identifier
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  orgType     String
+  board       String?
+  city        String?
+  state       String?
+  email       String?
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  participants Participant[]
+}
+
+model EventRegistration {
+  id               String   @id @default(uuid())
+  registrationId   String   @unique
+  eventId          String
+  participantId    String
+  status           String   @default("CONFIRMED") // PENDING, CONFIRMED, WAITING_LIST, CANCELLED, REJECTED, CHECKED_IN, NO_SHOW
+  secureToken      String   @unique @default(uuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Event preferences
+  foodPreference   String?
+  areasOfInterest  String? // Stored as comma-separated or JSON
+  accommodationReq Boolean  @default(false)
+  invitationReq    Boolean  @default(false)
+  accessibilityReq String?
+  heardAbout       String?
+  consentUpdates   Boolean  @default(true)
+  consentMedia     Boolean  @default(true)
+
+  event            Event    @relation(fields: [eventId], references: [id])
+  participant      Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([eventId, participantId]) // One registration per event per participant
+}
+
+model GroupRegistration {
+  id                String   @id @default(uuid())
+  referenceNumber   String   @unique
+  eventId           String
+  coordinatorId     String
+  numberOfDelegates Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  event             Event       @relation(fields: [eventId], references: [id])
+  coordinator       Participant @relation("GroupCoordinator", fields: [coordinatorId], references: [id])
+}
+
+model Partner {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  logoUrl     String?
+  description String?
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events      EventPartner[]
+}
+
+model EventPartner {
+  id               String   @id @default(uuid())
+  eventId          String
+  partnerId        String
+  partnershipLevel String // e.g., Platinum, Strategic, Exhibition, Future Readiness
+  createdAt        DateTime @default(now())
+
+  event            Event   @relation(fields: [eventId], references: [id])
+  partner          Partner @relation(fields: [partnerId], references: [id])
+
+  @@unique([eventId, partnerId])
+}
+
+model Faq {
+  id        String   @id @default(uuid())
+  eventId   String
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event     Event    @relation(fields: [eventId], references: [id])
+}
+
+model EventAgenda {
+  id          String   @id @default(uuid())
+  eventId     String
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event       Event    @relation(fields: [eventId], references: [id])
+}
+
+model EventSpeaker {
+  id          String   @id @default(uuid())
+  eventId     String
+  name        String
+  designation String
+  company     String?
+  bio         String?
+  photoUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event       Event    @relation(fields: [eventId], references: [id])
+}
+
+model PartnerEnquiry {
+  id                String   @id @default(uuid())
+  contactName       String
+  organizationName  String
+  organizationType  String
+  designation       String?
+  mobile            String
+  email             String
+  website           String?
+  city              String?
+  state             String?
+  interestedEvent   String?
+  partnershipCategory String
+  message           String?
+  callbackTime      String?
+  status            String   @default("PENDING")
+  createdAt         DateTime @default(now())
+}
