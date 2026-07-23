@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Logo } from './Logo';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -31,15 +32,22 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href}
-              className="text-sm font-medium text-brand-muted hover:text-brand-navy transition-colors"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+            return (
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  isActive 
+                    ? 'text-brand-primary font-bold' 
+                    : 'text-brand-muted hover:text-brand-navy'
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Desktop CTA */}
@@ -51,7 +59,7 @@ export function Header() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden p-2 text-brand-navy"
+          className="md:hidden p-2 text-brand-navy cursor-pointer"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle Menu"
         >
@@ -62,16 +70,21 @@ export function Header() {
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-brand-border py-4 px-4 flex flex-col gap-4 shadow-lg">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href}
-              className="text-base font-medium text-brand-navy py-2 border-b border-brand-light last:border-0"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+            return (
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className={`text-base font-medium py-2 border-b border-brand-light last:border-0 ${
+                  isActive ? 'text-brand-primary font-bold' : 'text-brand-navy'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
           <Link href="/events" onClick={() => setIsMobileMenuOpen(false)}>
             <Button variant="gradient" className="w-full mt-2">Register Now</Button>
           </Link>

@@ -9,21 +9,28 @@ const prisma = new PrismaClient();
 
 const registrationSchema = z.object({
   eventId: z.string(),
-  firstName: z.string().min(2, "First name is required"),
-  lastName: z.string().min(2, "Last name is required"),
+  studentName: z.string().min(2, "Student name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Valid phone number is required"),
-  jobTitle: z.string().min(2, "Job title is required"),
-  organizationName: z.string().min(2, "Organization name is required"),
-  organizationType: z.string().min(2, "Organization type is required"),
+  gender: z.string().min(2, "Gender is required"),
+  
+  // Student details
+  board: z.string().min(2, "Board is required"),
+  schoolLevel: z.string().min(2, "School level is required"),
+  stream: z.string().optional(),
+  currentStandard: z.string().optional(),
+
+  // School / Org details
+  organizationName: z.string().min(2, "School name is required"),
   city: z.string().min(2, "City is required"),
+  address: z.string().min(5, "Address is required"),
 });
 
 export async function registerForEvent(formData: z.infer<typeof registrationSchema>) {
   try {
     const validatedData = registrationSchema.parse(formData);
 
-    // 1. Find or create organization
+    // 1. Find or create organization (School)
     let organization = await prisma.organization.findFirst({
       where: { name: validatedData.organizationName }
     });
@@ -32,13 +39,14 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
       organization = await prisma.organization.create({
         data: {
           name: validatedData.organizationName,
-          type: validatedData.organizationType,
+          orgType: "School",
           city: validatedData.city,
+          address: validatedData.address,
         }
       });
     }
 
-    // 2. Find or create participant
+    // 2. Find or create participant (Student)
     let participant = await prisma.participant.findFirst({
       where: { email: validatedData.email }
     });
@@ -46,23 +54,29 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
     if (!participant) {
       participant = await prisma.participant.create({
         data: {
-          firstName: validatedData.firstName,
-          lastName: validatedData.lastName,
+          fullName: validatedData.studentName,
           email: validatedData.email,
-          phone: validatedData.phone,
-          jobTitle: validatedData.jobTitle,
+          mobile: validatedData.phone,
+          gender: validatedData.gender,
+          category: "Student",
+          board: validatedData.board,
+          schoolLevel: validatedData.schoolLevel,
+          stream: validatedData.stream,
+          currentStandard: validatedData.currentStandard,
           organizationId: organization.id,
         }
       });
     } else {
-      // Update participant info just in case they changed jobs
       participant = await prisma.participant.update({
         where: { id: participant.id },
         data: {
-          firstName: validatedData.firstName,
-          lastName: validatedData.lastName,
-          phone: validatedData.phone,
-          jobTitle: validatedData.jobTitle,
+          fullName: validatedData.studentName,
+          mobile: validatedData.phone,
+          gender: validatedData.gender,
+          board: validatedData.board,
+          schoolLevel: validatedData.schoolLevel,
+          stream: validatedData.stream,
+          currentStandard: validatedData.currentStandard,
           organizationId: organization.id,
         }
       });
@@ -89,7 +103,7 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
         eventId: validatedData.eventId,
         participantId: participant.id,
         status: "CONFIRMED", // Auto-confirm as per instructions
-        qrCodeValue: qrCodeValue,
+        registrationId: qrCodeValue,
       }
     });
 

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { PrismaClient } from '@prisma/client';
 import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 const prisma = new PrismaClient();
 
@@ -19,22 +20,41 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
   const isRegistrationOpen = ['OPEN', 'LIMITED_SEATS'].includes(event.status);
 
+  const eventImages: Record<string, string> = {
+    'school-leaders-conclave-trichy-2026': '/images/event-1.jpg',
+    'university-fair-coimbatore-2026': '/images/event-2.jpg',
+    'international-education-fair-chennai-2027': '/images/event-3.jpg',
+  };
+  const imageSrc = eventImages[event.slug] || '/images/event-1.jpg';
+
   return (
     <div className="bg-brand-light min-h-screen pb-20">
       {/* Breadcrumbs & Simple Header */}
-      <div className="bg-white border-b border-brand-border py-4">
+      <div className="bg-white border-b border-brand-border py-4 relative z-20">
         <div className="container mx-auto px-4 flex items-center text-sm text-brand-muted">
-          <Link href="/" className="hover:text-brand-purple">Home</Link>
-          <ChevronRight size={14} className="mx-2" />
-          <Link href="/events" className="hover:text-brand-purple">Events</Link>
-          <ChevronRight size={14} className="mx-2" />
+          <Link href="/" className="hover:text-brand-purple transition-colors">Home</Link>
+          <ChevronRight size={14} className="mx-2 opacity-50" />
+          <Link href="/events" className="hover:text-brand-purple transition-colors">Events</Link>
+          <ChevronRight size={14} className="mx-2 opacity-50" />
           <span className="text-brand-navy font-medium truncate">{event.title}</span>
         </div>
       </div>
 
       {/* Hero Section */}
-      <div className="bg-brand-navy text-white py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-10"></div>
+      <div className="relative text-white py-16 md:py-24 overflow-hidden">
+        {/* Background Image with Premium Overlay */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src={imageSrc} 
+            alt={event.title}
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-brand-navy/90 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/70 to-transparent"></div>
+        </div>
+
         <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
             <div className="inline-block bg-white/10 backdrop-blur border border-white/20 text-brand-turquoise px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6">

@@ -82,11 +82,25 @@ export default async function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event) => (
+            {events.map((event, i) => {
+              const eventImages: Record<string, string> = {
+                'school-leaders-conclave-trichy-2026': '/images/event-1.jpg',
+                'university-fair-coimbatore-2026': '/images/event-2.jpg',
+                'international-education-fair-chennai-2027': '/images/event-3.jpg',
+              };
+              const imageSrc = eventImages[event.slug] || '/images/event-1.jpg';
+              
+              return (
               <div key={event.id} className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                <div className="h-48 bg-gray-200 relative">
-                  {/* Placeholder for event banner */}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full">
+                <div className="h-48 relative bg-gray-200">
+                  <Image
+                    src={imageSrc}
+                    alt={event.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-brand-navy/10 mix-blend-multiply"></div>
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full z-10">
                     {event.status === 'OPEN' ? 'Registration Open' : event.status === 'OPENING_SOON' ? 'Opening Soon' : event.status}
                   </div>
                 </div>
@@ -107,7 +121,8 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
           
           <div className="text-center mt-12">
@@ -152,10 +167,12 @@ export default async function Home() {
                 </Link>
               </div>
               <div className="lg:w-1/2 w-full h-[400px] bg-gray-100 rounded-2xl border border-brand-border overflow-hidden relative">
-                {/* Image Placeholder */}
-                <div className="absolute inset-0 bg-brand-navy/5 flex items-center justify-center">
-                  <span className="text-brand-muted font-medium">Event Image Preview</span>
-                </div>
+                <Image
+                  src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80"
+                  alt="Featured Event"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>

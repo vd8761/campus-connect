@@ -15,8 +15,12 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Campus Connect",
-  description: "Indian & International University Fair Series",
+  title: {
+    template: '%s | Campus Connect',
+    default: 'Campus Connect | Indian & International University Fair Series',
+  },
+  description: "Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students.",
+  keywords: ["University Fair", "Education", "Students", "School Leaders", "Global Education"],
 };
 
 export default function RootLayout({

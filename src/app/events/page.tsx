@@ -1,8 +1,16 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { PrismaClient } from '@prisma/client';
 import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap } from 'lucide-react';
+
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Upcoming Events',
+  description: 'Browse and register for upcoming university fairs and educational conclaves.',
+};
 
 const prisma = new PrismaClient();
 
@@ -37,8 +45,8 @@ export default async function EventsPage() {
               Open for Registration
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {openEvents.map(event => (
-                <EventCard key={event.id} event={event} />
+              {openEvents.map((event, index) => (
+                <EventCard key={event.id} event={event} index={index} />
               ))}
             </div>
           </div>
@@ -52,8 +60,8 @@ export default async function EventsPage() {
               Opening Soon
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {upcomingEvents.map(event => (
-                <EventCard key={event.id} event={event} />
+              {upcomingEvents.map((event, index) => (
+                <EventCard key={event.id} event={event} index={index + openEvents.length} />
               ))}
             </div>
           </div>
@@ -64,8 +72,8 @@ export default async function EventsPage() {
           <div className="mb-16 opacity-75">
             <h2 className="text-2xl font-heading font-bold text-brand-navy mb-8">Past Events</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pastEvents.map(event => (
-                <EventCard key={event.id} event={event} />
+              {pastEvents.map((event, index) => (
+                <EventCard key={event.id} event={event} index={index + openEvents.length + upcomingEvents.length} />
               ))}
             </div>
           </div>
@@ -85,12 +93,25 @@ export default async function EventsPage() {
   );
 }
 
-function EventCard({ event }: { event: any }) {
+function EventCard({ event, index = 0 }: { event: any, index?: number }) {
+  const eventImages: Record<string, string> = {
+    'school-leaders-conclave-trichy-2026': '/images/event-1.jpg',
+    'university-fair-coimbatore-2026': '/images/event-2.jpg',
+    'international-education-fair-chennai-2027': '/images/event-3.jpg',
+  };
+  const imageSrc = eventImages[event.slug] || '/images/event-1.jpg';
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-      <div className="h-48 bg-gray-200 relative">
+      <div className="h-48 relative bg-gray-200">
+        <Image
+          src={imageSrc}
+          alt={event.title}
+          fill
+          className="object-cover"
+        />
         <div className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-10 mix-blend-multiply"></div>
-        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
           {event.status === 'OPEN' ? 'Registration Open' : 
            event.status === 'LIMITED_SEATS' ? 'Limited Seats' : 
            event.status === 'OPENING_SOON' ? 'Opening Soon' : 'Completed'}

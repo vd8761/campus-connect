@@ -9,7 +9,7 @@ export function Logo({ light = false }: LogoProps) {
   return (
     <div className="flex items-center">
       <Image 
-        src={light ? "/campus-connect-logo-white.png" : "/campus-connect-logo.png"} 
+        src={light ? "/campus-connect-logo-white-new.png" : "/campus-connect-logo-new.png"} 
         alt="Campus Connect" 
         width={1200}
         height={320}
