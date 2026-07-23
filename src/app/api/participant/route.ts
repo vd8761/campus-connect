@@ -3,9 +3,12 @@ import { PrismaClient } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
+let prisma: PrismaClient;
 
 export async function GET(request: NextRequest) {
+  if (!prisma) {
+    prisma = new PrismaClient();
+  }
   const searchParams = request.nextUrl.searchParams;
   const email = searchParams.get('email');
   const mobile = searchParams.get('mobile');
