@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/Button';
+import { Logo } from './Logo';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -19,19 +20,12 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-brand-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 w-full border-b border-brand-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95">
       <div className="container mx-auto px-4 min-h-[5rem] py-3 flex items-center justify-between">
         {/* Logo area */}
         <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2">
-            <Image 
-              src="/campus-connect-logo.png" 
-              alt="Campus Connect" 
-              width={240} 
-              height={80} 
-              className="h-auto w-36 md:w-48 object-contain"
-              priority
-            />
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <Logo />
           </Link>
         </div>
 
