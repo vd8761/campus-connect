@@ -1,10 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { MapPin, Calendar, Users, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
-
-const prisma = new PrismaClient();
 
 export default async function Home() {
   const events = await prisma.event.findMany({

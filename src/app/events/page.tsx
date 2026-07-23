@@ -1,18 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap } from 'lucide-react';
-
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Upcoming Events',
   description: 'Browse and register for upcoming university fairs and educational conclaves.',
 };
-
-const prisma = new PrismaClient();
 
 export default async function EventsPage() {
   const events = await prisma.event.findMany({

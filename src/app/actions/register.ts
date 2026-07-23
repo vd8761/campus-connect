@@ -4,8 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 const registrationSchema = z.object({
   eventId: z.string(),

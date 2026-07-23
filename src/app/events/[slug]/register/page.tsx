@@ -1,11 +1,9 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { RegistrationForm } from './RegistrationForm';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-
-const prisma = new PrismaClient();
 
 export default async function RegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
