@@ -98,7 +98,7 @@ function EventCard({ event, index = 0 }: { event: any, index?: number }) {
     'university-fair-coimbatore-2026': '/images/event-2.jpg',
     'international-education-fair-chennai-2027': '/images/event-3.jpg',
   };
-  const imageSrc = eventImages[event.slug] || '/images/event-1.jpg';
+  const imageSrc = eventImages[event.slug] || `/images/event-${(index % 3) + 1}.jpg`;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
@@ -151,7 +151,7 @@ function EventCard({ event, index = 0 }: { event: any, index?: number }) {
               className="w-full" 
               disabled={!['OPEN', 'LIMITED_SEATS'].includes(event.status)}
             >
-              {['OPEN', 'LIMITED_SEATS'].includes(event.status) ? 'Register' : 'Closed'}
+              {['OPEN', 'LIMITED_SEATS'].includes(event.status) ? 'Register' : event.status === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
             </Button>
           </Link>
         </div>

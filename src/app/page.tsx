@@ -88,7 +88,7 @@ export default async function Home() {
                 'university-fair-coimbatore-2026': '/images/event-2.jpg',
                 'international-education-fair-chennai-2027': '/images/event-3.jpg',
               };
-              const imageSrc = eventImages[event.slug] || '/images/event-1.jpg';
+              const imageSrc = eventImages[event.slug] || `/images/event-${(i % 3) + 1}.jpg`;
               
               return (
               <div key={event.id} className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
@@ -116,7 +116,9 @@ export default async function Home() {
                       <Button variant="outline" className="w-full">View Details</Button>
                     </Link>
                     <Link href={`/events/${event.slug}`} className="w-full">
-                      <Button variant="default" className="w-full" disabled={event.status !== 'OPEN' && event.status !== 'LIMITED_SEATS'}>Register</Button>
+                      <Button variant="default" className="w-full" disabled={event.status !== 'OPEN' && event.status !== 'LIMITED_SEATS'}>
+                        {['OPEN', 'LIMITED_SEATS'].includes(event.status) ? 'Register' : event.status === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
+                      </Button>
                     </Link>
                   </div>
                 </div>
