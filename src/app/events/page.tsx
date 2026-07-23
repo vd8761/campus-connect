@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap } from 'lucide-react';
 import { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Upcoming Events',
   description: 'Browse and register for upcoming university fairs and educational conclaves.',

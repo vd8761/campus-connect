@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/Button";
 import prisma from "@/lib/prisma";
 import { MapPin, Calendar, Users, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const events = await prisma.event.findMany({
     where: { status: { in: ['OPEN', 'OPENING_SOON', 'LIMITED_SEATS'] } },

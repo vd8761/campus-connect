@@ -8,8 +8,13 @@ declare global {
   var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>;
 }
 
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+const prisma = new Proxy({} as ReturnType<typeof prismaClientSingleton>, {
+  get(target, prop) {
+    if (!globalThis.prismaGlobal) {
+      globalThis.prismaGlobal = prismaClientSingleton();
+    }
+    return (globalThis.prismaGlobal as any)[prop];
+  }
+});
 
 export default prisma;
-
-if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma;

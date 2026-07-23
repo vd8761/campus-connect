@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const event = await prisma.event.findUnique({
