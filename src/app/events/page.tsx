@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap } from 'lucide-react';
 import { Metadata } from 'next';
+import { getEventStatus } from '@/lib/event-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,9 +19,28 @@ export default async function EventsPage() {
     orderBy: { startDate: 'asc' }
   });
 
-  const openEvents = events.filter(e => ['OPEN', 'LIMITED_SEATS'].includes(e.status));
-  const upcomingEvents = events.filter(e => e.status === 'OPENING_SOON');
-  const pastEvents = events.filter(e => e.status === 'COMPLETED');
+  const eventsWithStatus = events.map(e => ({
+    ...e,
+    dynamicStatus: getEventStatus(e.startDate, e.endDate, e.registrationOpen, e.registrationClose, e.status === 'DRAFT')
+  }));
+
+  const openEvents = eventsWithStatus.filter(e => ['OPEN', 'LIMITED_SEATS'].includes(e.dynamicStatus) || ['OPEN', 'LIMITED_SEATS'].includes(e.status));
+  // Filter out the ones that match openEvents from the others to prevent duplicates if DB status and dynamic status diverge weirdly.
+  // Actually, let's just rely on dynamicStatus. Wait, LIMITED_SEATS is not in dynamicStatus, it's a manual override.
+  // So if db status is LIMITED_SEATS, we should keep it.
+  const getDisplayStatus = (event: any) => {
+    if (event.status === 'LIMITED_SEATS') return 'LIMITED_SEATS';
+    return event.dynamicStatus;
+  };
+
+  const displayEvents = eventsWithStatus.map(e => ({
+    ...e,
+    displayStatus: getDisplayStatus(e)
+  }));
+
+  const openList = displayEvents.filter(e => ['OPEN', 'LIMITED_SEATS'].includes(e.displayStatus));
+  const upcomingList = displayEvents.filter(e => ['OPENING_SOON', 'CLOSED'].includes(e.displayStatus));
+  const pastList = displayEvents.filter(e => e.displayStatus === 'COMPLETED');
 
   return (
     <div className="bg-brand-light min-h-screen pb-20">
@@ -34,7 +54,7 @@ export default async function EventsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 -mt-10 relative z-10">
+      <div className="container mx-auto px-4 py-10 relative z-10">
         
         {/* Open Events Section */}
         {openEvents.length > 0 && (
@@ -44,7 +64,7 @@ export default async function EventsPage() {
               Open for Registration
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {openEvents.map((event, index) => (
+              {openList.map((event, index) => (
                 <EventCard key={event.id} event={event} index={index} />
               ))}
             </div>
@@ -52,27 +72,27 @@ export default async function EventsPage() {
         )}
 
         {/* Upcoming Events Section */}
-        {upcomingEvents.length > 0 && (
+        {upcomingList.length > 0 && (
           <div className="mb-16">
             <h2 className="text-2xl font-heading font-bold text-brand-navy mb-8 flex items-center gap-3">
               <span className="w-3 h-3 rounded-full bg-status-warning"></span>
-              Opening Soon
+              Upcoming Events
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {upcomingEvents.map((event, index) => (
-                <EventCard key={event.id} event={event} index={index + openEvents.length} />
+              {upcomingList.map((event, index) => (
+                <EventCard key={event.id} event={event} index={index + openList.length} />
               ))}
             </div>
           </div>
         )}
 
         {/* Past Events Section */}
-        {pastEvents.length > 0 && (
+        {pastList.length > 0 && (
           <div className="mb-16 opacity-75">
             <h2 className="text-2xl font-heading font-bold text-brand-navy mb-8">Past Events</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pastEvents.map((event, index) => (
-                <EventCard key={event.id} event={event} index={index + openEvents.length + upcomingEvents.length} />
+              {pastList.map((event, index) => (
+                <EventCard key={event.id} event={event} index={index + openList.length + upcomingList.length} />
               ))}
             </div>
           </div>
@@ -98,7 +118,7 @@ function EventCard({ event, index = 0 }: { event: any, index?: number }) {
     'university-fair-coimbatore-2026': '/images/event-2.jpg',
     'international-education-fair-chennai-2027': '/images/event-3.jpg',
   };
-  const imageSrc = eventImages[event.slug] || `/images/event-${(index % 3) + 1}.jpg`;
+  const imageSrc = event.bannerUrl || eventImages[event.slug] || `/images/event-${(index % 3) + 1}.jpg`;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
@@ -111,9 +131,10 @@ function EventCard({ event, index = 0 }: { event: any, index?: number }) {
         />
         <div className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-10 mix-blend-multiply"></div>
         <div className="absolute top-4 right-4 bg-white/95 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
-          {event.status === 'OPEN' ? 'Registration Open' : 
-           event.status === 'LIMITED_SEATS' ? 'Limited Seats' : 
-           event.status === 'OPENING_SOON' ? 'Opening Soon' : 'Completed'}
+          {event.displayStatus === 'OPEN' ? 'Registration Open' : 
+           event.displayStatus === 'LIMITED_SEATS' ? 'Limited Seats' : 
+           event.displayStatus === 'OPENING_SOON' ? 'Opening Soon' : 
+           event.displayStatus === 'CLOSED' ? 'Registration Closed' : 'Completed'}
         </div>
       </div>
       <div className="p-6 flex-1 flex flex-col">
@@ -145,13 +166,13 @@ function EventCard({ event, index = 0 }: { event: any, index?: number }) {
           <Link href={`/events/${event.slug}`} className="w-full">
             <Button variant="outline" className="w-full">Details</Button>
           </Link>
-          <Link href={['OPEN', 'LIMITED_SEATS'].includes(event.status) ? `/events/${event.slug}/register` : `/events/${event.slug}`} className="w-full">
+          <Link href={['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus) ? `/events/${event.slug}/register` : `/events/${event.slug}`} className="w-full">
             <Button 
-              variant={['OPEN', 'LIMITED_SEATS'].includes(event.status) ? "gradient" : "default"} 
+              variant={['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus) ? "gradient" : "default"} 
               className="w-full" 
-              disabled={!['OPEN', 'LIMITED_SEATS'].includes(event.status)}
+              disabled={!['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus)}
             >
-              {['OPEN', 'LIMITED_SEATS'].includes(event.status) ? 'Register' : event.status === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
+              {['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus) ? 'Register' : event.displayStatus === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
             </Button>
           </Link>
         </div>

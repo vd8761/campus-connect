@@ -12,6 +12,7 @@ const registrationSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Valid phone number is required"),
   gender: z.string().min(2, "Gender is required"),
+  turnstileToken: z.string().min(1, "Human verification is required"),
   
   // Student details
   board: z.string().min(2, "Board is required"),
@@ -28,6 +29,21 @@ const registrationSchema = z.object({
 export async function registerForEvent(formData: z.infer<typeof registrationSchema>) {
   try {
     const validatedData = registrationSchema.parse(formData);
+
+    // Verify Turnstile Token
+    const verifyFormData = new FormData();
+    verifyFormData.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
+    verifyFormData.append('response', validatedData.turnstileToken);
+
+    const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: verifyFormData,
+    });
+    
+    const turnstileData = await turnstileRes.json();
+    if (!turnstileData.success) {
+      return { success: false, error: "Security check failed. Please try again." };
+    }
 
     // 1. Find or create organization (School)
     let organization = await prisma.organization.findFirst({
@@ -105,6 +121,21 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
         registrationId: qrCodeValue,
       }
     });
+
+    const eventDetails = await prisma.event.findUnique({
+      where: { id: validatedData.eventId }
+    });
+
+    // Send Email
+    if (eventDetails) {
+      const { sendRegistrationEmail } = await import('@/lib/email');
+      await sendRegistrationEmail({
+        to: validatedData.email,
+        name: validatedData.studentName,
+        ticketCode: qrCodeValue,
+        eventName: eventDetails.title,
+      });
+    }
 
     revalidatePath(`/events/[slug]`, 'page');
     revalidatePath(`/events/[slug]/register`, 'page');

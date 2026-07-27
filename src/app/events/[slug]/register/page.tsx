@@ -1,9 +1,10 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
-import { RegistrationForm } from './RegistrationForm';
+import { SmartRegistration } from './SmartRegistration';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { getEventStatus } from '@/lib/event-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +14,20 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
     where: { slug }
   });
 
-  if (!event || !['OPEN', 'LIMITED_SEATS'].includes(event.status)) {
+  if (!event) {
     notFound();
+  }
+  
+  const status = getEventStatus(
+    event.startDate,
+    event.endDate,
+    event.registrationOpen,
+    event.registrationClose,
+    event.status === 'DRAFT'
+  );
+
+  if (!['OPEN', 'LIMITED_SEATS'].includes(status)) {
+    notFound(); // Optionally show a "Registration Closed" page instead
   }
 
   return (
@@ -46,7 +59,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
           </div>
           
           <div className="p-8">
-            <RegistrationForm eventId={event.id} eventSlug={event.slug} />
+            <SmartRegistration eventId={event.id} eventSlug={event.slug} />
           </div>
         </div>
       </div>

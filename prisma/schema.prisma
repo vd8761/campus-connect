@@ -17,6 +17,14 @@ model Admin {
   updatedAt     DateTime @updatedAt
 }
 
+model EventType {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Event {
   id                 String               @id @default(uuid())
   slug               String               @unique
@@ -25,6 +33,7 @@ model Event {
   edition            String?
   shortDescription   String?
   fullDescription    String?
+  whatToExpect       String?
   city               String
   state              String?
   country            String               @default("India")

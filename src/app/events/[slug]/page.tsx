@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/Button';
 import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
+import { getEventStatus } from '@/lib/event-utils';
 import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
@@ -18,14 +19,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     notFound();
   }
 
-  const isRegistrationOpen = ['OPEN', 'LIMITED_SEATS'].includes(event.status);
+  const dynamicStatus = getEventStatus(
+    event.startDate,
+    event.endDate,
+    event.registrationOpen,
+    event.registrationClose,
+    event.status === 'DRAFT'
+  );
+  const displayStatus = event.status === 'LIMITED_SEATS' ? 'LIMITED_SEATS' : dynamicStatus;
+  const isRegistrationOpen = ['OPEN', 'LIMITED_SEATS'].includes(displayStatus);
 
-  const eventImages: Record<string, string> = {
-    'school-leaders-conclave-trichy-2026': '/images/event-1.jpg',
-    'university-fair-coimbatore-2026': '/images/event-2.jpg',
-    'international-education-fair-chennai-2027': '/images/event-3.jpg',
-  };
-  const imageSrc = eventImages[event.slug] || '/images/event-1.jpg';
+  const imageSrc = event.bannerUrl || '/images/event-1.jpg';
 
   return (
     <div className="bg-brand-light min-h-screen pb-20">
@@ -63,9 +67,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-6 leading-tight">
               {event.title}
             </h1>
-            <p className="text-lg text-white/80 max-w-2xl mb-8 text-balance">
-              {event.shortDescription}
-            </p>
+            <div 
+              className="text-lg text-white/80 max-w-2xl mb-8 text-balance [&_p]:inline"
+              dangerouslySetInnerHTML={{ __html: event.shortDescription || '' }}
+            />
             <div className="flex flex-col sm:flex-row gap-4">
               {isRegistrationOpen ? (
                 <Link href={`/events/${event.slug}/register`}>
@@ -73,7 +78,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </Link>
               ) : (
                 <Button variant="outline" size="lg" disabled className="bg-white/10 text-white border-white/20">
-                  Registration {event.status === 'OPENING_SOON' ? 'Opening Soon' : 'Closed'}
+                  Registration {displayStatus === 'OPENING_SOON' ? 'Opening Soon' : 'Closed'}
                 </Button>
               )}
             </div>
@@ -93,7 +98,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   <Clock className="text-brand-turquoise mt-1" size={20} />
                   <div>
                     <div className="text-sm text-white/70">Time</div>
-                    <div className="font-medium">{event.startTime} - {event.endTime}</div>
+                    <div className="font-medium">
+                      {event.startTime || '10:00 AM'} - {event.endTime || '5:00 PM'}
+                    </div>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -117,29 +124,22 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <h2 className="text-2xl font-heading font-bold text-brand-navy mb-6 flex items-center gap-2">
               <FileText className="text-brand-purple" /> About The Event
             </h2>
-            <div className="prose prose-brand max-w-none text-brand-muted space-y-4">
-              {(event.fullDescription || '').split('\n').map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </div>
+            <div 
+              className={`text-brand-muted leading-relaxed space-y-4 max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-4 [&_p]:mb-4 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:my-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:my-3 [&_a]:text-brand-purple [&_a]:underline [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-6 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:mb-5 [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:min-w-8 [&_ul_li::before]:min-h-8 [&_ul_li::before]:w-8 [&_ul_li::before]:h-8 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:border-[12px] [&_ul_li::before]:border-brand-light [&_ul_li::before]:mr-4 [&_ul_li::before]:-mt-1`}
+              dangerouslySetInnerHTML={{ __html: event.fullDescription || 'Detailed description coming soon.' }}
+            />
 
-            <h2 className="text-2xl font-heading font-bold text-brand-navy mt-12 mb-6 flex items-center gap-2">
-              <CheckCircle2 className="text-brand-purple" /> What to Expect
-            </h2>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-brand-muted">
-                <span className="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center text-brand-purple flex-shrink-0 mt-0.5">•</span>
-                <span>Direct networking opportunities with international university delegates.</span>
-              </li>
-              <li className="flex items-start gap-3 text-brand-muted">
-                <span className="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center text-brand-purple flex-shrink-0 mt-0.5">•</span>
-                <span>Panel discussions on the future of global education and student readiness.</span>
-              </li>
-              <li className="flex items-start gap-3 text-brand-muted">
-                <span className="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center text-brand-purple flex-shrink-0 mt-0.5">•</span>
-                <span>Exclusive resources and collateral from participating institutions.</span>
-              </li>
-            </ul>
+            {event.whatToExpect && (
+              <>
+                <h2 className="text-2xl font-heading font-bold text-brand-navy mt-12 mb-6 flex items-center gap-2">
+                  <CheckCircle2 className="text-brand-purple" /> What to Expect
+                </h2>
+                <div 
+                  className={`text-brand-muted max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:mb-4 [&_p]:mb-2 [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-6 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:mb-5 [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:min-w-8 [&_ul_li::before]:min-h-8 [&_ul_li::before]:w-8 [&_ul_li::before]:h-8 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:border-[12px] [&_ul_li::before]:border-brand-light [&_ul_li::before]:mr-4 [&_ul_li::before]:-mt-1`}
+                  dangerouslySetInnerHTML={{ __html: event.whatToExpect }}
+                />
+              </>
+            )}
           </div>
           
           <div className="md:w-1/3 bg-brand-light p-8 md:p-12 flex flex-col justify-center">
@@ -155,7 +155,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </Link>
               ) : (
                 <Button variant="outline" size="lg" className="w-full" disabled>
-                  Registration Closed
+                  Registration {displayStatus === 'OPENING_SOON' ? 'Opening Soon' : 'Closed'}
                 </Button>
               )}
             </div>

@@ -2,16 +2,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import prisma from "@/lib/prisma";
-import { MapPin, Calendar, Users, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
+import { MapPin, Calendar, Clock, Users, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
+import { getEventStatus } from "@/lib/event-utils";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const events = await prisma.event.findMany({
-    where: { status: { in: ['OPEN', 'OPENING_SOON', 'LIMITED_SEATS'] } },
+  const rawEvents = await prisma.event.findMany({
     orderBy: { startDate: 'asc' },
-    take: 3
   });
+
+  const getDisplayStatus = (e: any) => {
+    if (e.status === 'LIMITED_SEATS') return 'LIMITED_SEATS';
+    return getEventStatus(e.startDate, e.endDate, e.registrationOpen, e.registrationClose, e.status === 'DRAFT');
+  };
+
+  const allEventsWithStatus = rawEvents.map(e => ({
+    ...e,
+    displayStatus: getDisplayStatus(e)
+  }));
+
+  const events = allEventsWithStatus
+    .filter(e => ['OPEN', 'OPENING_SOON', 'LIMITED_SEATS'].includes(e.displayStatus))
+    .slice(0, 3);
 
   const featuredEvent = await prisma.event.findFirst({
     where: { featured: true, status: { in: ['OPEN', 'LIMITED_SEATS'] } }
@@ -29,7 +42,7 @@ export default async function Home() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white pt-24 pb-32">
+      <section className="relative overflow-hidden bg-white pt-10 pb-32">
         <div className="absolute inset-0 z-0 bg-[image:var(--primary-gradient)] opacity-[0.03]"></div>
         <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-heading font-extrabold text-brand-navy leading-tight mb-6">
@@ -88,7 +101,7 @@ export default async function Home() {
                 'university-fair-coimbatore-2026': '/images/event-2.jpg',
                 'international-education-fair-chennai-2027': '/images/event-3.jpg',
               };
-              const imageSrc = eventImages[event.slug] || `/images/event-${(i % 3) + 1}.jpg`;
+              const imageSrc = event.bannerUrl || eventImages[event.slug] || `/images/event-${(i % 3) + 1}.jpg`;
               
               return (
               <div key={event.id} className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
@@ -101,23 +114,36 @@ export default async function Home() {
                   />
                   <div className="absolute inset-0 bg-brand-navy/10 mix-blend-multiply"></div>
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full z-10">
-                    {event.status === 'OPEN' ? 'Registration Open' : event.status === 'OPENING_SOON' ? 'Opening Soon' : event.status}
+                    {event.displayStatus === 'OPEN' ? 'Registration Open' : 
+                     event.displayStatus === 'LIMITED_SEATS' ? 'Limited Seats' : 
+                     event.displayStatus === 'OPENING_SOON' ? 'Opening Soon' : 
+                     event.displayStatus === 'CLOSED' ? 'Registration Closed' : event.displayStatus}
                   </div>
                 </div>
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="text-sm text-brand-purple font-semibold mb-2">{event.type} • {event.city}</div>
                   <h3 className="text-xl font-heading font-bold text-brand-navy mb-4">{event.title}</h3>
-                  <div className="space-y-2 text-sm text-brand-muted mb-6 flex-1">
-                    <div className="flex items-center gap-2"><Calendar size={16} /> {new Date(event.startDate).toLocaleDateString()}</div>
-                    <div className="flex items-center gap-2"><MapPin size={16} /> {event.venue || event.city}</div>
+                  <div className="space-y-2 text-[15px] text-brand-muted mb-6 flex-1">
+                    <div className="flex items-center gap-2">
+                      <Calendar size={18} className="text-brand-turquoise shrink-0" /> 
+                      {new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock size={18} className="text-brand-turquoise shrink-0" /> 
+                      {event.startTime || '10:00'} - {event.endTime || '19:00'}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin size={18} className="text-brand-turquoise shrink-0" /> 
+                      {event.venue || event.city}
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 mt-auto">
                     <Link href={`/events/${event.slug}`} className="w-full">
                       <Button variant="outline" className="w-full">View Details</Button>
                     </Link>
                     <Link href={`/events/${event.slug}`} className="w-full">
-                      <Button variant="default" className="w-full" disabled={event.status !== 'OPEN' && event.status !== 'LIMITED_SEATS'}>
-                        {['OPEN', 'LIMITED_SEATS'].includes(event.status) ? 'Register' : event.status === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
+                      <Button variant="default" className="w-full" disabled={event.displayStatus !== 'OPEN' && event.displayStatus !== 'LIMITED_SEATS'}>
+                        {['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus) ? 'Register' : event.displayStatus === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
                       </Button>
                     </Link>
                   </div>
@@ -145,15 +171,16 @@ export default async function Home() {
                 <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-navy mb-6">
                   {featuredEvent.title}
                 </h2>
-                <p className="text-lg text-brand-muted mb-8 text-balance">
-                  {featuredEvent.shortDescription}
-                </p>
+                <div 
+                  className="text-lg text-brand-muted mb-8 text-balance [&_p]:inline [&_*]:max-w-full break-words"
+                  dangerouslySetInnerHTML={{ __html: featuredEvent.shortDescription || '' }}
+                />
                 <div className="space-y-4 mb-8 bg-brand-light p-6 rounded-xl border border-brand-border">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-brand-navy/5 flex items-center justify-center text-brand-navy"><Calendar size={20} /></div>
                     <div>
                       <div className="text-sm text-brand-muted font-medium">Date & Time</div>
-                      <div className="font-semibold text-brand-navy">{new Date(featuredEvent.startDate).toLocaleDateString()} • {featuredEvent.startTime}</div>
+                      <div className="font-semibold text-brand-navy">{new Date(featuredEvent.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • {featuredEvent.startTime}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -170,8 +197,8 @@ export default async function Home() {
               </div>
               <div className="lg:w-1/2 w-full h-[400px] bg-gray-100 rounded-2xl border border-brand-border overflow-hidden relative">
                 <Image
-                  src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80"
-                  alt="Featured Event"
+                  src={featuredEvent.bannerUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80"}
+                  alt={featuredEvent.title}
                   fill
                   className="object-cover"
                 />
@@ -182,14 +209,32 @@ export default async function Home() {
       )}
 
       {/* Future Readiness Partner */}
-      <section className="py-16 bg-[image:var(--secondary-gradient)] text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="uppercase tracking-widest text-sm font-semibold mb-4 text-white/80">Future Readiness Partner</div>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">OriginBI Mindworks</h2>
-          <p className="max-w-3xl mx-auto text-lg text-white/90 mb-8">
-            We are delighted to announce OriginBI Mindworks as the Future Readiness Partner for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
+      <section className="py-20 bg-[image:var(--secondary-gradient)] text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="uppercase tracking-widest text-sm font-semibold mb-10 text-white/80">Future Readiness Partner</div>
+          
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12">
+            <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 transform hover:-translate-y-1 transition-transform">
+              <Image src="/campus-connect-logo-new.png" alt="Campus Connect" fill className="object-contain p-4" />
+            </div>
+            
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur text-white font-bold text-xl">
+              ✕
+            </div>
+            
+            <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 transform hover:-translate-y-1 transition-transform">
+              <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill className="object-contain p-4" />
+            </div>
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">Empowering Education Leaders</h2>
+          <p className="max-w-3xl mx-auto text-lg text-white/90 mb-10 leading-relaxed">
+            We are delighted to announce <span className="font-bold text-white">OriginBI Mindworks</span> as the Future Readiness Partner for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
           </p>
-          <Button variant="outline" className="border-white text-brand-navy bg-white hover:bg-white/90">Learn More About the Partnership</Button>
+          <Button variant="outline" className="border-white text-brand-navy bg-white hover:bg-white/90 px-8 py-6 text-base rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
+            Learn More About the Partnership
+          </Button>
         </div>
       </section>
 

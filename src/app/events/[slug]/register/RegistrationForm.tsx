@@ -12,6 +12,8 @@ import PhoneInput, { isValidPhoneNumber, getCountryCallingCode } from 'react-pho
 import 'react-phone-number-input/style.css'; 
 import { getExampleNumber } from 'libphonenumber-js';
 import examples from 'libphonenumber-js/examples.mobile.json';
+import { Turnstile } from '@marsidev/react-turnstile';
+import { CountrySelect } from '@/components/ui/CountrySelect';
 
 const formSchema = z.object({
   studentName: z.string().min(2, "Student name is required"),
@@ -20,6 +22,7 @@ const formSchema = z.object({
   phone: z.string().refine((val) => val && isValidPhoneNumber(val), {
     message: "Invalid phone number for the selected country"
   }),
+  turnstileToken: z.string().min(1, "Please complete the security check"),
   board: z.string().min(2, "Board is required"),
   schoolLevel: z.string().min(2, "School level is required"),
   stream: z.string().optional(),
@@ -86,109 +89,7 @@ function CustomSelect({ options, value, onChange, placeholder, hasError, disable
   );
 }
 
-function CustomCountrySelect({ value, onChange, labels, options, iconComponent: Icon }: any) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        // Optional: clear search when closing
-        // setSearchTerm('');
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const filteredOptions = options ? options.filter((o: any) => o.value).filter((o: any) => {
-    if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
-    const countryName = (o.label || '').toLowerCase();
-    const code = (getCountryCallingCode(o.value) || '').toString();
-    return countryName.includes(searchLower) || code.includes(searchLower) || `+${code}`.includes(searchLower);
-  }) : [];
-
-  return (
-    <div className="relative flex items-center h-full border-r border-brand-border bg-gray-50/80 rounded-l-md hover:bg-gray-100 transition-colors z-10" ref={dropdownRef}>
-      <div 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2.5 px-3 cursor-pointer h-full"
-      >
-        <div className="flex items-center justify-center shrink-0 w-6 h-4 overflow-hidden rounded-[2px] shadow-sm">
-          {Icon && value ? (
-            <Icon country={value} label={labels ? labels[value] : value} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-gray-200 shadow-inner" />
-          )}
-        </div>
-        <span className="text-sm font-medium text-brand-navy whitespace-nowrap">
-          {value ? `+${getCountryCallingCode(value)}` : ''}
-        </span>
-        <ChevronDown size={14} className={`text-brand-muted transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
-      </div>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-brand-border rounded-md shadow-xl py-1 flex flex-col max-h-[300px] animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-          
-          <div className="p-2 border-b border-gray-100 bg-gray-50/50">
-            <input 
-              type="text" 
-              placeholder="Search country or code..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full bg-white border border-brand-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand-purple shadow-sm transition-all"
-              autoFocus
-            />
-          </div>
-
-          <div className="overflow-y-auto flex-1">
-            <div
-              onClick={() => {
-                onChange(undefined);
-                setIsOpen(false);
-                setSearchTerm('');
-              }}
-              className="px-4 py-2.5 text-sm cursor-pointer hover:bg-gray-50 text-brand-navy"
-            >
-              {labels ? labels['ZZ'] : 'International'}
-            </div>
-            
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map(({ value: countryValue, label }: any) => (
-                <div
-                  key={countryValue}
-                  onClick={() => {
-                    onChange(countryValue);
-                    setIsOpen(false);
-                    setSearchTerm('');
-                  }}
-                  className={`px-4 py-2 text-sm cursor-pointer transition-colors duration-150 flex items-center gap-3
-                    ${value === countryValue 
-                      ? 'bg-brand-purple/5 text-brand-purple font-semibold' 
-                      : 'text-brand-navy hover:bg-gray-50'}`}
-                >
-                  <div className="flex items-center justify-center shrink-0 w-6 h-4 overflow-hidden rounded-[2px] shadow-sm">
-                    {Icon && <Icon country={countryValue} label={label} className="w-full h-full object-cover" />}
-                  </div>
-                  <span className="truncate flex-1">{label}</span>
-                  <span className="text-gray-400 font-mono text-xs">+{(getCountryCallingCode as any)(countryValue)}</span>
-                </div>
-              ))
-            ) : (
-              <div className="px-4 py-8 text-sm text-center text-gray-500 font-medium">
-                No countries found
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 const ErrorMessage = ({ message }: { message?: string }) => {
   if (!message) return null;
@@ -201,9 +102,23 @@ const ErrorMessage = ({ message }: { message?: string }) => {
 };
 
 const PhoneInputAdapter = React.forwardRef<HTMLInputElement, any>(
-  ({ expectedDigits, onChange, value, ...props }, ref) => {
+  ({ expectedDigits, onDigitsChange, selectedCountry, country, onChange, value, ...props }, ref) => {
     // Strip spaces from the formatted value passed down by the library
-    const displayValue = typeof value === 'string' ? value.replace(/\s+/g, '') : value;
+    let displayValue = typeof value === 'string' ? value.replace(/\s+/g, '') : value;
+
+    const actualCountry = selectedCountry || country;
+
+    // libphonenumber-js adds a '0' trunk prefix for Indian numbers in national format.
+    // We strip it here so the user only sees the 10 digits they typed.
+    if (actualCountry === 'IN' && typeof displayValue === 'string' && displayValue.startsWith('0')) {
+      displayValue = displayValue.substring(1);
+    }
+
+    React.useEffect(() => {
+      if (onDigitsChange) {
+        onDigitsChange(displayValue ? displayValue.replace(/\D/g, '').length : 0);
+      }
+    }, [displayValue, onDigitsChange]);
 
     return (
       <input
@@ -225,7 +140,7 @@ const PhoneInputAdapter = React.forwardRef<HTMLInputElement, any>(
 );
 PhoneInputAdapter.displayName = 'PhoneInputAdapter';
 
-export function RegistrationForm({ eventId, eventSlug }: { eventId: string, eventSlug: string }) {
+export function RegistrationForm({ eventId, eventSlug, initialData }: { eventId: string, eventSlug: string, initialData?: any }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [successData, setSuccessData] = useState<{ticketCode: string} | null>(null);
@@ -235,39 +150,49 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
   const { register, handleSubmit, watch, setValue, control, formState: { errors } } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      board: "",
-      schoolLevel: "",
-      gender: "",
+      studentName: initialData?.studentName || initialData?.fullName || "",
+      gender: initialData?.gender || "",
+      email: initialData?.email || "",
+      phone: (() => {
+        const p = initialData?.phone || initialData?.mobile || "";
+        if (!p) return "";
+        
+        if (p.startsWith("+")) {
+          let digits = p.replace(/\D/g, "");
+          if (digits.startsWith("910") && digits.length === 13) {
+            digits = "91" + digits.substring(3);
+          }
+          return `+${digits}`;
+        }
+
+        let digits = p.replace(/\D/g, "");
+        if (!digits) return "";
+        
+        if (digits.length === 11 && digits.startsWith("0")) {
+          digits = digits.substring(1);
+        }
+        
+        if (digits.length === 10) return `+91${digits}`;
+        return `+${digits}`;
+      })(),
+      board: initialData?.board || "",
+      schoolLevel: initialData?.schoolLevel || "",
+      stream: initialData?.stream || "",
+      currentStandard: initialData?.currentStandard || "",
+      organizationName: initialData?.organizationName || initialData?.organization?.name || "",
+      city: initialData?.city || initialData?.organization?.city || "",
+      address: initialData?.address || initialData?.organization?.address || "",
+      turnstileToken: "",
     }
   });
+
+  const [typedLength, setTypedLength] = useState(0);
 
   const selectedBoard = watch("board");
   const selectedSchoolLevel = watch("schoolLevel");
 
-  useEffect(() => {
-    setValue("schoolLevel", "");
-    setValue("stream", "");
-    setValue("currentStandard", "");
-  }, [selectedBoard, setValue]);
-
-  useEffect(() => {
-    setValue("stream", "");
-    setValue("currentStandard", "");
-  }, [selectedSchoolLevel, setValue]);
-
   const exampleNum = phoneCountry ? getExampleNumber(phoneCountry, examples) : undefined;
   const requiredLength = exampleNum ? exampleNum.nationalNumber.length : 10;
-  
-  const currentPhoneVal = watch('phone');
-  let typedLength = 0;
-  if (currentPhoneVal) {
-    try {
-      const callingCode = getCountryCallingCode(phoneCountry || 'IN');
-      typedLength = Math.max(0, currentPhoneVal.length - callingCode.toString().length - 1);
-    } catch(e) {
-      typedLength = 0;
-    }
-  }
 
   const handleAutoFetch = async (field: 'email' | 'mobile', value: string) => {
     if (!value || value.length < 5) return;
@@ -283,11 +208,8 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
         
         if (p.board) setValue('board', p.board);
         if (p.schoolLevel) setValue('schoolLevel', p.schoolLevel);
-        
-        setTimeout(() => {
-          if (p.stream) setValue('stream', p.stream);
-          if (p.currentStandard) setValue('currentStandard', p.currentStandard);
-        }, 100);
+        if (p.stream) setValue('stream', p.stream);
+        if (p.currentStandard) setValue('currentStandard', p.currentStandard);
         
         if (p.organization) {
           if (p.organization.name) setValue('organizationName', p.organization.name);
@@ -358,12 +280,7 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
-      {error && (
-        <div className="bg-status-error/10 text-status-error px-4 py-4 rounded-lg text-sm font-semibold border border-status-error/20 flex items-center gap-3 animate-in shake">
-          <AlertCircle size={18} className="shrink-0" />
-          {error}
-        </div>
-      )}
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-7">
         <div className="space-y-2.5 md:col-span-2 relative group">
@@ -374,6 +291,7 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
             {...register("studentName")}
             className={`${baseInputClass} ${getErrorClass(errors.studentName)}`}
             placeholder="e.g. John Doe" 
+            autoFocus
           />
           <ErrorMessage message={errors.studentName?.message} />
         </div>
@@ -409,7 +327,6 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
           <input 
             {...register("email")}
             type="email"
-            onBlur={(e) => handleAutoFetch('email', e.target.value)}
             className={`${baseInputClass} ${getErrorClass(errors.email)}`}
             placeholder="e.g. john@example.com" 
           />
@@ -447,14 +364,16 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
                   international={false}
                   defaultCountry="IN"
                   limitMaxLength={true}
-                  countrySelectComponent={CustomCountrySelect}
+                  countrySelectComponent={CountrySelect}
                   onBlur={() => {
                     field.onBlur();
-                    if (field.value) handleAutoFetch('mobile', field.value);
                   }}
                   className="w-full flex"
                   numberInputProps={{
                     expectedDigits: requiredLength,
+                    onDigitsChange: setTypedLength,
+                    country: phoneCountry,
+                    selectedCountry: phoneCountry,
                     className: "flex-1 h-full border-none focus:outline-none bg-transparent text-sm font-medium text-brand-navy px-4 placeholder:text-gray-400 placeholder:font-normal pr-16",
                     placeholder: exampleNum ? exampleNum.nationalNumber : "9876543210"
                   }}
@@ -494,7 +413,12 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
                     { value: "IGCSE", label: "IGCSE" }
                   ]}
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(val: any) => {
+                    field.onChange(val);
+                    setValue("schoolLevel", "");
+                    setValue("stream", "");
+                    setValue("currentStandard", "");
+                  }}
                   placeholder="Select Board"
                   hasError={!!errors.board}
                 />
@@ -522,7 +446,11 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
                   <CustomSelect
                     options={getOptions()}
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(val: any) => {
+                      field.onChange(val);
+                      setValue("stream", "");
+                      setValue("currentStandard", "");
+                    }}
                     placeholder="Select Level"
                     hasError={!!errors.schoolLevel}
                     disabled={!selectedBoard}
@@ -635,6 +563,26 @@ export function RegistrationForm({ eventId, eventSlug }: { eventId: string, even
       </div>
 
       <div className="pt-8">
+        <div className="mb-6 flex flex-col items-center justify-center">
+          <Turnstile 
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+            onSuccess={(token) => setValue('turnstileToken', token)}
+            onError={() => setError("Security check failed. Please refresh and try again.")}
+            options={{
+              theme: 'light',
+              size: 'normal'
+            }}
+          />
+          {errors.turnstileToken && <ErrorMessage message={errors.turnstileToken.message} />}
+        </div>
+        
+        {error && (
+          <div className="mb-6 bg-status-error/10 text-status-error px-4 py-4 rounded-lg text-sm font-semibold border border-status-error/20 flex items-center gap-3 animate-in shake">
+            <AlertCircle size={18} className="shrink-0" />
+            {error}
+          </div>
+        )}
+
         <Button type="submit" variant="gradient" size="lg" className="w-full h-14 text-lg font-semibold shadow-xl shadow-brand-purple/20 cursor-pointer" disabled={isSubmitting}>
           {isSubmitting ? "Processing..." : "Complete Registration"}
         </Button>
