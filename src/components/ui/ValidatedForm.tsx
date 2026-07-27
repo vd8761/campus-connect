@@ -18,7 +18,7 @@ export function ValidatedForm({ children, action, className = '', onSubmit, ...p
       
       // Give a tiny delay for React to render the .is-submitted classes
       setTimeout(() => {
-        const firstInvalid = e.target.closest('form')?.querySelector(':invalid') as HTMLElement;
+        const firstInvalid = (e.target as HTMLElement).closest('form')?.querySelector(':invalid') as HTMLElement;
         if (firstInvalid) {
           firstInvalid.focus();
           firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -30,7 +30,7 @@ export function ValidatedForm({ children, action, className = '', onSubmit, ...p
     
     // Otherwise allow the Server Action to run or call the custom onSubmit
     if (onSubmit) {
-      onSubmit(e);
+      onSubmit(e as any);
     }
   };
 

@@ -25,9 +25,9 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
     return registrations.filter(reg => {
       // Search matching
       const query = searchQuery.toLowerCase();
-      const name = (reg.participant.fullName || `${reg.participant.firstName} ${reg.participant.lastName}`).toLowerCase();
+      const name = (reg.participant.fullName || '').toLowerCase();
       const email = (reg.participant.email || '').toLowerCase();
-      const phone = (reg.participant.mobile || reg.participant.phone || '').toLowerCase();
+      const phone = (reg.participant.mobile || '').toLowerCase();
       
       const matchesSearch = !query || name.includes(query) || email.includes(query) || phone.includes(query);
       
@@ -87,10 +87,10 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
                 filteredRegistrations.map(reg => (
                   <tr key={reg.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-brand-navy">
-                      {reg.participant.fullName || `${reg.participant.firstName} ${reg.participant.lastName}`}
+                      {reg.participant.fullName}
                     </td>
                     <td className="px-6 py-4 text-brand-muted">{reg.participant.email}</td>
-                    <td className="px-6 py-4 text-brand-muted">{reg.participant.mobile || reg.participant.phone}</td>
+                    <td className="px-6 py-4 text-brand-muted">{reg.participant.mobile}</td>
                     <td className="px-6 py-4 text-brand-muted max-w-[200px] truncate">{reg.event.title}</td>
                     <td className="px-6 py-4 text-brand-muted">{new Date(reg.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                     <td className="px-6 py-4 text-right">
@@ -137,14 +137,14 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
               <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <h2 className="text-3xl font-heading font-bold">{selectedReg.participant.fullName || `${selectedReg.participant.firstName} ${selectedReg.participant.lastName}`}</h2>
+                    <h2 className="text-3xl font-heading font-bold">{selectedReg.participant.fullName}</h2>
                     <span className="bg-white/10 border border-white/20 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-sm">
                       {selectedReg.participant.category || 'Student'}
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-6 text-white/80 text-sm font-medium">
                     <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg"><Mail size={16} className="text-brand-turquoise" /> {selectedReg.participant.email}</div>
-                    <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg"><Phone size={16} className="text-brand-turquoise" /> {selectedReg.participant.mobile || selectedReg.participant.phone || '-'}</div>
+                    <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg"><Phone size={16} className="text-brand-turquoise" /> {selectedReg.participant.mobile || '-'}</div>
                     {selectedReg.participant.gender && (
                        <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg">
                          <span className="text-brand-turquoise font-bold">Gender:</span> {selectedReg.participant.gender}

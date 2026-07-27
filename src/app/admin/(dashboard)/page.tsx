@@ -71,9 +71,9 @@ export default async function AdminDashboard() {
                   <tr key={reg.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-medium text-brand-navy">
-                        {reg.participant.fullName || `${reg.participant.firstName} ${reg.participant.lastName}`}
+                        {reg.participant.fullName}
                       </div>
-                      <div className="text-sm text-brand-muted">{reg.participant.mobile || reg.participant.phone}</div>
+                      <div className="text-sm text-brand-muted">{reg.participant.mobile}</div>
                     </td>
                     <td className="px-6 py-4 text-brand-muted">{reg.participant.email}</td>
                     <td className="px-6 py-4 text-brand-muted truncate max-w-[200px]">{reg.event.title}</td>
