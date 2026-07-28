@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Eye, X, Mail, Phone, MapPin, Calendar, BookOpen, Building2, Ticket, Search, Filter } from 'lucide-react';
+import { Eye, X, Mail, Phone, MapPin, Calendar, BookOpen, Building2, Ticket, Search, Filter, Download } from 'lucide-react';
 import { SearchableDropdown } from '@/components/ui/SearchableDropdown';
+import { Button } from '@/components/ui/Button';
 
 export function ParticipantsTable({ registrations }: { registrations: any[] }) {
   const [selectedReg, setSelectedReg] = useState<any>(null);
@@ -38,75 +39,114 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
     });
   }, [registrations, searchQuery, eventFilter]);
 
+  const exportCSV = () => {
+    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Board', 'School Level', 'Stream', 'Standard', 'Institution', 'City', 'Event', 'Registered On'];
+    const rows = filteredRegistrations.map(reg => [
+      reg.participant.fullName || '',
+      reg.participant.email || '',
+      reg.participant.mobile || '',
+      reg.participant.gender || '',
+      reg.participant.board || '',
+      reg.participant.schoolLevel || '',
+      reg.participant.stream || '',
+      reg.participant.currentStandard || '',
+      reg.participant.organization?.name || '',
+      reg.participant.organization?.city || '',
+      reg.event.title || '',
+      new Date(reg.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `participants-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Search and Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border border-brand-border shadow-sm">
-        <div className="relative w-full sm:w-96">
+    <div className="space-y-3 min-w-0">
+      {/* Search, Filter & Export Toolbar */}
+      <div className="flex flex-wrap gap-2 justify-between items-center bg-white p-3 rounded-xl border border-brand-border shadow-sm">
+        <div className="relative min-w-0 flex-1 max-w-xs">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-            <Search size={18} />
+            <Search size={15} />
           </div>
           <input
             type="text"
             placeholder="Search by name, email, or phone..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all"
+            className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         
-        <div className="relative w-full sm:w-auto min-w-[250px] z-10">
-          <SearchableDropdown
-            options={[
-              { id: 'all', name: 'All Events' },
-              ...uniqueEvents.map(event => ({ id: event.id, name: event.title }))
-            ]}
-            value={eventFilter}
-            onChange={(val) => setEventFilter(val)}
-            placeholder="All Events"
-            icon={Filter}
-          />
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="relative z-10">
+            <SearchableDropdown
+              options={[
+                { id: 'all', name: 'All Events' },
+                ...uniqueEvents.map(event => ({ id: event.id, name: event.title }))
+              ]}
+              value={eventFilter}
+              onChange={(val) => setEventFilter(val)}
+              placeholder="All Events"
+              icon={Filter}
+            />
+          </div>
+          <Button variant="outline" onClick={exportCSV} className="flex items-center gap-1.5 shrink-0 text-sm py-1.5 px-3">
+            <Download size={14} />
+            Export CSV
+            {filteredRegistrations.length < registrations.length && (
+              <span className="ml-1 bg-brand-purple text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{filteredRegistrations.length}</span>
+            )}
+          </Button>
         </div>
       </div>
 
       <div className="bg-white rounded-xl border border-brand-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left whitespace-nowrap">
-            <thead className="bg-gray-50 text-brand-muted text-sm uppercase">
+          <table className="w-full text-left whitespace-nowrap text-sm">
+            <thead className="bg-gray-50 text-brand-muted text-xs uppercase tracking-wide">
               <tr>
-                <th className="px-6 py-4 font-medium">Name</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 font-medium">Phone</th>
-                <th className="px-6 py-4 font-medium">Event</th>
-                <th className="px-6 py-4 font-medium">Date Registered</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-4 py-3 font-medium">Name</th>
+                <th className="px-4 py-3 font-medium">Email</th>
+                <th className="px-4 py-3 font-medium">Phone</th>
+                <th className="px-4 py-3 font-medium">Event</th>
+                <th className="px-4 py-3 font-medium">Date Registered</th>
+                <th className="px-4 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredRegistrations.length > 0 ? (
                 filteredRegistrations.map(reg => (
                   <tr key={reg.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-brand-navy">
+                    <td className="px-4 py-3 font-medium text-brand-navy max-w-[130px] truncate">
                       {reg.participant.fullName}
                     </td>
-                    <td className="px-6 py-4 text-brand-muted">{reg.participant.email}</td>
-                    <td className="px-6 py-4 text-brand-muted">{reg.participant.mobile}</td>
-                    <td className="px-6 py-4 text-brand-muted max-w-[200px] truncate">{reg.event.title}</td>
-                    <td className="px-6 py-4 text-brand-muted">{new Date(reg.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 py-3 text-brand-muted max-w-[160px] truncate" title={reg.participant.email || ''}>{reg.participant.email}</td>
+                    <td className="px-4 py-3 text-brand-muted">{reg.participant.mobile}</td>
+                    <td className="px-4 py-3 text-brand-muted max-w-[160px] truncate" title={reg.event.title}>{reg.event.title}</td>
+                    <td className="px-4 py-3 text-brand-muted">{new Date(reg.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                    <td className="px-4 py-3 text-right">
                       <button 
                         onClick={() => setSelectedReg(reg)}
-                        className="p-2 text-brand-purple hover:bg-brand-purple/10 rounded-lg transition-colors"
+                        className="p-1.5 text-brand-purple hover:bg-brand-purple/10 rounded-lg transition-colors"
                         title="View Details"
                       >
-                        <Eye size={18} />
+                        <Eye size={16} />
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-brand-muted">No participants found.</td>
+                  <td colSpan={6} className="px-4 py-8 text-center text-brand-muted">No participants found.</td>
                 </tr>
               )}
             </tbody>
@@ -122,130 +162,128 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
             onClick={e => e.stopPropagation()}
           >
             {/* Header Section with Gradient Background */}
-            <div className="relative bg-brand-navy p-8 md:p-10 text-white overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-primary/20 rounded-full translate-y-1/3 -translate-x-1/3 blur-2xl"></div>
+            <div className="relative bg-brand-navy p-5 text-white overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand-primary/20 rounded-full translate-y-1/3 -translate-x-1/3 blur-2xl"></div>
               
               <button 
                 onClick={() => setSelectedReg(null)} 
-                className="absolute top-6 right-6 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors z-20"
+                className="absolute top-4 right-4 p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors z-20"
                 aria-label="Close modal"
               >
-                <X size={24} />
+                <X size={18} />
               </button>
 
-              <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <h2 className="text-3xl font-heading font-bold">{selectedReg.participant.fullName}</h2>
-                    <span className="bg-white/10 border border-white/20 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-sm">
-                      {selectedReg.participant.category || 'Student'}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-6 text-white/80 text-sm font-medium">
-                    <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg"><Mail size={16} className="text-brand-turquoise" /> {selectedReg.participant.email}</div>
-                    <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg"><Phone size={16} className="text-brand-turquoise" /> {selectedReg.participant.mobile || '-'}</div>
-                    {selectedReg.participant.gender && (
-                       <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg">
-                         <span className="text-brand-turquoise font-bold">Gender:</span> {selectedReg.participant.gender}
-                       </div>
-                    )}
-                  </div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2">
+                  <h2 className="text-xl font-heading font-bold">{selectedReg.participant.fullName}</h2>
+                  <span className="bg-white/10 border border-white/20 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-widest">
+                    {selectedReg.participant.category || 'Student'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-white/80 text-xs font-medium">
+                  <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg"><Mail size={13} className="text-brand-turquoise" /> {selectedReg.participant.email}</div>
+                  <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg"><Phone size={13} className="text-brand-turquoise" /> {selectedReg.participant.mobile || '-'}</div>
+                  {selectedReg.participant.gender && (
+                    <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg">
+                      <span className="text-brand-turquoise font-bold">Gender:</span> {selectedReg.participant.gender}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Body Section */}
-            <div className="p-8 md:p-10 max-h-[70vh] overflow-y-auto bg-gray-50/50">
+            <div className="p-5 max-h-[65vh] overflow-y-auto bg-gray-50/50">
               
               {/* Event Reg Card */}
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-5">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-purple to-brand-turquoise text-white flex items-center justify-center shadow-lg shadow-brand-purple/20">
-                    <Ticket size={28} />
+              <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-purple to-brand-turquoise text-white flex items-center justify-center shadow-md shadow-brand-purple/20">
+                    <Ticket size={18} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Registered Event</div>
-                    <div className="font-bold text-brand-navy text-xl">{selectedReg.event.title}</div>
+                    <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">Registered Event</div>
+                    <div className="font-bold text-brand-navy text-sm">{selectedReg.event.title}</div>
                   </div>
                 </div>
-                <div className="md:text-right bg-gray-50 p-4 rounded-xl border border-gray-100">
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Registration Date</div>
-                  <div className="font-bold text-brand-navy flex items-center gap-2">
-                    <Calendar size={18} className="text-brand-purple" />
+                <div className="sm:text-right bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">Registration Date</div>
+                  <div className="font-semibold text-brand-navy text-sm flex items-center gap-1.5">
+                    <Calendar size={14} className="text-brand-purple" />
                     {new Date(selectedReg.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
                   </div>
                 </div>
               </div>
 
               {/* Two Column Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {/* Educational Profile */}
-                <div className="space-y-6">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-brand-navy flex items-center gap-2 pb-4 border-b border-gray-200">
-                    <BookOpen size={20} className="text-brand-purple" />
-                    Educational Profile
-                  </h3>
-                  <div className="grid grid-cols-2 gap-y-8 gap-x-4">
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                {/* Shared header row - both titles on same line */}
+                <div className="grid grid-cols-2 border-b border-gray-100">
+                  <div className="flex items-center gap-2 px-4 py-3 border-r border-gray-100">
+                    <BookOpen size={13} className="text-brand-purple shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-widest text-brand-navy">Educational Profile</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-3">
+                    <Building2 size={13} className="text-brand-purple shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-widest text-brand-navy">Institution Details</span>
+                  </div>
+                </div>
+
+                {/* Content row */}
+                <div className="grid grid-cols-2 divide-x divide-gray-100">
+                  {/* Educational Profile content */}
+                  <div className="p-4 grid grid-cols-2 gap-y-4 gap-x-3 content-start">
                     <div>
-                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Board</div>
-                      <div className="font-semibold text-brand-navy text-lg">{selectedReg.participant.board || '-'}</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Board</div>
+                      <div className="font-semibold text-brand-navy text-sm">{selectedReg.participant.board || '-'}</div>
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">School Level</div>
-                      <div className="font-semibold text-brand-navy text-lg">{selectedReg.participant.schoolLevel || '-'}</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">School Level</div>
+                      <div className="font-semibold text-brand-navy text-sm">{selectedReg.participant.schoolLevel || '-'}</div>
                     </div>
                     {selectedReg.participant.stream && (
                       <div>
-                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Stream</div>
-                        <div className="font-semibold text-brand-navy text-lg">{selectedReg.participant.stream}</div>
+                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Stream</div>
+                        <div className="font-semibold text-brand-navy text-sm">{selectedReg.participant.stream}</div>
                       </div>
                     )}
                     {selectedReg.participant.currentStandard && (
                       <div>
-                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Standard</div>
-                        <div className="font-semibold text-brand-navy text-lg">{selectedReg.participant.currentStandard}</div>
+                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Standard</div>
+                        <div className="font-semibold text-brand-navy text-sm">{selectedReg.participant.currentStandard}</div>
                       </div>
                     )}
                   </div>
-                </div>
 
-                {/* Institution Details */}
-                <div className="space-y-6">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-brand-navy flex items-center gap-2 pb-4 border-b border-gray-200">
-                    <Building2 size={20} className="text-brand-purple" />
-                    Institution Details
-                  </h3>
-                  <div className="space-y-8">
+                  {/* Institution Details content */}
+                  <div className="p-4 space-y-3">
                     <div>
-                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Institution Name</div>
-                      <div className="font-semibold text-brand-navy text-lg">{selectedReg.participant.organization?.name || '-'}</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Institution Name</div>
+                      <div className="font-semibold text-brand-navy text-sm">{selectedReg.participant.organization?.name || '-'}</div>
                     </div>
-                    
-                    <div className="flex gap-3 items-start bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-                      <div className="p-2 bg-gray-50 rounded-lg shrink-0">
-                        <MapPin size={20} className="text-brand-turquoise" />
-                      </div>
+                    <div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">City</div>
+                      <div className="font-semibold text-brand-navy text-sm">{selectedReg.participant.organization?.city || '-'}</div>
+                    </div>
+                    {selectedReg.participant.organization?.address && (
                       <div>
-                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">City</div>
-                        <div className="font-semibold text-brand-navy text-base mb-2">{selectedReg.participant.organization?.city || '-'}</div>
-                        
-                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 border-t border-gray-100 pt-2 mt-2">Full Address</div>
-                        <div className="text-sm text-gray-600 leading-relaxed font-medium">{selectedReg.participant.organization?.address || '-'}</div>
+                        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Full Address</div>
+                        <div className="text-xs text-gray-600 leading-relaxed">{selectedReg.participant.organization.address}</div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Footer */}
-            <div className="p-6 md:p-8 border-t border-gray-100 bg-white flex justify-end">
+            <div className="px-5 py-3 border-t border-gray-100 bg-white flex justify-end">
               <button 
                 onClick={() => setSelectedReg(null)}
-                className="px-8 py-3 bg-gray-100 text-brand-navy font-bold rounded-xl hover:bg-gray-200 transition-all shadow-sm active:scale-95"
+                className="px-6 py-2 bg-gray-100 text-brand-navy font-bold text-sm rounded-lg hover:bg-gray-200 transition-all shadow-sm active:scale-95"
               >
-                Close Window
+                Close
               </button>
             </div>
           </div>

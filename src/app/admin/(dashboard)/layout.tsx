@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <AdminSidebar onLogout={logout} />
       
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 min-w-0 overflow-hidden">
         {children}
       </div>
     </div>
