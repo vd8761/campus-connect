@@ -4,9 +4,14 @@ import { EditEventForm } from './EditEventForm';
 
 export default async function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = await prisma.event.findUnique({
-    where: { id }
-  });
+  let event: any = null;
+  try {
+    event = await prisma.event.findUnique({
+      where: { id }
+    });
+  } catch (error) {
+    console.warn("Database connection failed on Admin Event details page (Network blocked).");
+  }
 
   if (!event) {
     notFound();

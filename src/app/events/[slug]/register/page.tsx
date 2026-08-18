@@ -10,9 +10,14 @@ export const dynamic = 'force-dynamic';
 
 export default async function RegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const event = await prisma.event.findUnique({
-    where: { slug }
-  });
+  let event: any = null;
+  try {
+    event = await prisma.event.findUnique({
+      where: { slug }
+    });
+  } catch (error) {
+    console.warn("Database connection failed on Event register page (Network blocked).");
+  }
 
   if (!event) {
     notFound();

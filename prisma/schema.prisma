@@ -3,18 +3,22 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Admin {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  passwordHash  String
-  name          String
-  role          String   @default("ADMIN")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // ADMIN or UNIVERSITY_REP
+  universityId String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  university University? @relation(fields: [universityId], references: [id])
 }
 
 model EventType {
@@ -26,37 +30,37 @@ model EventType {
 }
 
 model Event {
-  id                 String               @id @default(uuid())
-  slug               String               @unique
-  title              String
-  type               String
-  edition            String?
-  shortDescription   String?
-  fullDescription    String?
-  whatToExpect       String?
-  city               String
-  state              String?
-  country            String               @default("India")
-  venue              String?
-  venueAddress       String?
-  googleMapsUrl      String?
-  startDate          DateTime
-  endDate            DateTime
-  startTime          String?
-  endTime            String?
-  registrationOpen   DateTime?
-  registrationClose  DateTime?
-  maxCapacity        Int                  @default(0)
-  waitingListCapacity Int                 @default(0)
-  status             String               @default("DRAFT") // DRAFT, OPENING_SOON, OPEN, LIMITED_SEATS, CLOSED, COMPLETED, CANCELLED
-  bannerUrl          String?
-  mobileBannerUrl    String?
-  thumbnailUrl       String?
-  seoTitle           String?
-  seoDescription     String?
-  featured           Boolean              @default(false)
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  id                  String    @id @default(uuid())
+  slug                String    @unique
+  title               String
+  type                String
+  edition             String?
+  shortDescription    String?
+  fullDescription     String?
+  whatToExpect        String?
+  city                String
+  state               String?
+  country             String    @default("India")
+  venue               String?
+  venueAddress        String?
+  googleMapsUrl       String?
+  startDate           DateTime
+  endDate             DateTime
+  startTime           String?
+  endTime             String?
+  registrationOpen    DateTime?
+  registrationClose   DateTime?
+  maxCapacity         Int       @default(0)
+  waitingListCapacity Int       @default(0)
+  status              String    @default("DRAFT") // DRAFT, OPENING_SOON, OPEN, LIMITED_SEATS, CLOSED, COMPLETED, CANCELLED
+  bannerUrl           String?
+  mobileBannerUrl     String?
+  thumbnailUrl        String?
+  seoTitle            String?
+  seoDescription      String?
+  featured            Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   registrations      EventRegistration[]
   groupRegistrations GroupRegistration[]
@@ -64,77 +68,81 @@ model Event {
   faqs               Faq[]
   agenda             EventAgenda[]
   speakers           EventSpeaker[]
+  universityEvents   UniversityEvent[]
+  boothVisits        BoothVisit[]
 }
 
 model Participant {
-  id               String               @id @default(uuid())
-  mobile           String
-  email            String?
-  fullName         String
-  category         String
-  designation      String?
+  id                String  @id @default(uuid())
+  mobile            String
+  email             String?
+  fullName          String
+  category          String
+  designation       String?
   yearsOfExperience String?
-  gender           String?
-  city             String?
-  state            String?
-  country          String               @default("India")
-  
+  gender            String?
+  city              String?
+  state             String?
+  country           String  @default("India")
+
   // Student specific fields
-  board            String?
-  schoolLevel      String?
-  stream           String?
-  currentStandard  String?
-  
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
+  board           String?
+  schoolLevel     String?
+  stream          String?
+  currentStandard String?
 
-  organizationId   String?
-  organization     Organization?        @relation(fields: [organizationId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  registrations    EventRegistration[]
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  registrations     EventRegistration[]
   coordinatedGroups GroupRegistration[] @relation("GroupCoordinator")
+  assessmentResult  AssessmentResult?
+  boothVisits       BoothVisit[]
 
   @@unique([mobile]) // Assuming mobile is the primary contact identifier
 }
 
 model Organization {
-  id          String   @id @default(uuid())
-  name        String
-  orgType     String
-  board       String?
-  city        String?
-  state       String?
-  address     String?
-  email       String?
-  website     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  name      String
+  orgType   String
+  board     String?
+  city      String?
+  state     String?
+  address   String?
+  email     String?
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   participants Participant[]
 }
 
 model EventRegistration {
-  id               String   @id @default(uuid())
-  registrationId   String   @unique
-  eventId          String
-  participantId    String
-  status           String   @default("CONFIRMED") // PENDING, CONFIRMED, WAITING_LIST, CANCELLED, REJECTED, CHECKED_IN, NO_SHOW
-  secureToken      String   @unique @default(uuid())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id             String   @id @default(uuid())
+  registrationId String   @unique
+  eventId        String
+  participantId  String
+  status         String   @default("CONFIRMED") // PENDING, CONFIRMED, WAITING_LIST, CANCELLED, REJECTED, CHECKED_IN, NO_SHOW
+  secureToken    String   @unique @default(uuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Event preferences
   foodPreference   String?
   areasOfInterest  String? // Stored as comma-separated or JSON
-  accommodationReq Boolean  @default(false)
-  invitationReq    Boolean  @default(false)
+  accommodationReq Boolean @default(false)
+  invitationReq    Boolean @default(false)
   accessibilityReq String?
   heardAbout       String?
-  consentUpdates   Boolean  @default(true)
-  consentMedia     Boolean  @default(true)
+  consentUpdates   Boolean @default(true)
+  consentMedia     Boolean @default(true)
 
-  event            Event    @relation(fields: [eventId], references: [id])
-  participant      Participant @relation(fields: [participantId], references: [id])
+  event       Event       @relation(fields: [eventId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
 
   @@unique([eventId, participantId]) // One registration per event per participant
 }
@@ -148,8 +156,8 @@ model GroupRegistration {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  event             Event       @relation(fields: [eventId], references: [id])
-  coordinator       Participant @relation("GroupCoordinator", fields: [coordinatorId], references: [id])
+  event       Event       @relation(fields: [eventId], references: [id])
+  coordinator Participant @relation("GroupCoordinator", fields: [coordinatorId], references: [id])
 }
 
 model Partner {
@@ -162,7 +170,7 @@ model Partner {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  events      EventPartner[]
+  events EventPartner[]
 }
 
 model EventPartner {
@@ -172,8 +180,8 @@ model EventPartner {
   partnershipLevel String // e.g., Platinum, Strategic, Exhibition, Future Readiness
   createdAt        DateTime @default(now())
 
-  event            Event   @relation(fields: [eventId], references: [id])
-  partner          Partner @relation(fields: [partnerId], references: [id])
+  event   Event   @relation(fields: [eventId], references: [id])
+  partner Partner @relation(fields: [partnerId], references: [id])
 
   @@unique([eventId, partnerId])
 }
@@ -187,7 +195,7 @@ model Faq {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  event     Event    @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 }
 
 model EventAgenda {
@@ -201,7 +209,7 @@ model EventAgenda {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  event       Event    @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 }
 
 model EventSpeaker {
@@ -215,24 +223,100 @@ model EventSpeaker {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  event       Event    @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 }
 
 model PartnerEnquiry {
-  id                String   @id @default(uuid())
-  contactName       String
-  organizationName  String
-  organizationType  String
-  designation       String?
-  mobile            String
-  email             String
-  website           String?
-  city              String?
-  state             String?
-  interestedEvent   String?
+  id                  String   @id @default(uuid())
+  contactName         String
+  organizationName    String
+  organizationType    String
+  designation         String?
+  mobile              String
+  email               String
+  website             String?
+  city                String?
+  state               String?
+  interestedEvent     String?
   partnershipCategory String
-  message           String?
-  callbackTime      String?
-  status            String   @default("PENDING")
-  createdAt         DateTime @default(now())
+  message             String?
+  callbackTime        String?
+  status              String   @default("PENDING")
+  createdAt           DateTime @default(now())
+}
+
+model University {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  logoUrl     String?
+  city        String?
+  country     String   @default("India")
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admins      Admin[]
+  courses     Course[]
+  events      UniversityEvent[]
+  boothVisits BoothVisit[]
+}
+
+model Course {
+  id           String  @id @default(uuid())
+  universityId String
+  name         String
+  category     String
+  level        String
+  marginType   String  @default("FIXED") // "FIXED" or "PERCENTAGE"
+  marginValue  Float
+  isActive     Boolean @default(true)
+
+  university University @relation(fields: [universityId], references: [id])
+}
+
+model UniversityEvent {
+  id           String   @id @default(uuid())
+  eventId      String
+  universityId String
+  boothNumber  String?
+  createdAt    DateTime @default(now())
+
+  event      Event      @relation(fields: [eventId], references: [id])
+  university University @relation(fields: [universityId], references: [id])
+
+  @@unique([eventId, universityId])
+}
+
+model AssessmentResult {
+  id            String   @id @default(uuid())
+  participantId String   @unique
+  completedAt   DateTime @default(now())
+
+  scoreD       Float
+  scoreI       Float
+  scoreS       Float
+  scoreC       Float
+  primaryTrait String
+  profileType  String
+
+  skillDocumentUrl String?
+
+  participant Participant @relation(fields: [participantId], references: [id])
+}
+
+model BoothVisit {
+  id            String   @id @default(uuid())
+  eventId       String
+  universityId  String
+  participantId String
+  status        String   @default("PRESENT")
+  visitedAt     DateTime @default(now())
+  notes         String?
+
+  event       Event       @relation(fields: [eventId], references: [id])
+  university  University  @relation(fields: [universityId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([eventId, universityId, participantId])
 }

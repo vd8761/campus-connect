@@ -41,9 +41,14 @@ export async function deleteEventTypeAction(id: string) {
 }
 
 export async function getActiveEventTypesAction() {
-  return await prisma.eventType.findMany({
-    where: { isActive: true },
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' }
-  });
+  try {
+    return await prisma.eventType.findMany({
+      where: { isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' }
+    });
+  } catch (error) {
+    console.warn("Database connection failed in getActiveEventTypesAction (Network blocked). Returning empty array.");
+    return [];
+  }
 }

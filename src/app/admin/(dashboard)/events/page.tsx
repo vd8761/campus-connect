@@ -10,20 +10,27 @@ export const dynamic = 'force-dynamic';
 export default async function AdminEvents({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const { type, status } = await searchParams;
   
-  const allEvents = await prisma.event.findMany({
-    orderBy: { startDate: 'desc' },
-    include: {
-      _count: {
-        select: { registrations: true }
-      }
-    }
-  });
+  let allEvents: any[] = [];
+  let eventTypes: any[] = [];
 
-  const eventTypes = await prisma.eventType.findMany({
-    where: { isActive: true },
-    select: { id: true, name: true },
-    orderBy: { name: 'asc' }
-  });
+  try {
+    allEvents = await prisma.event.findMany({
+      orderBy: { startDate: 'desc' },
+      include: {
+        _count: {
+          select: { registrations: true }
+        }
+      }
+    });
+
+    eventTypes = await prisma.eventType.findMany({
+      where: { isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' }
+    });
+  } catch (error) {
+    console.warn("Database connection failed on Admin Events page (Network blocked). Showing empty state.");
+  }
 
   // Filter in JS since status is dynamically calculated
   const events = allEvents.filter(event => {

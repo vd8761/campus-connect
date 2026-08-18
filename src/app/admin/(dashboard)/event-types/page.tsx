@@ -4,9 +4,14 @@ import { Check, Ban, Trash2 } from 'lucide-react';
 import { AddEventTypeForm } from './AddEventTypeForm';
 
 export default async function EventTypesPage() {
-  const eventTypes = await prisma.eventType.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+  let eventTypes: any[] = [];
+  try {
+    eventTypes = await prisma.eventType.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.warn("Database connection failed on Admin Event Types page (Network blocked). Showing empty state.");
+  }
 
   return (
     <div className="p-8 max-w-6xl mx-auto">

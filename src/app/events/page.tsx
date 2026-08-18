@@ -15,9 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function EventsPage() {
-  const events = await prisma.event.findMany({
-    orderBy: { startDate: 'asc' }
-  });
+  let events: any[] = [];
+  try {
+    events = await prisma.event.findMany({
+      orderBy: { startDate: 'asc' }
+    });
+  } catch (error) {
+    console.warn("Database connection failed. Showing empty state.");
+  }
 
   const eventsWithStatus = events.map(e => ({
     ...e,

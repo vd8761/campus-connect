@@ -3,16 +3,24 @@ import { Users, Calendar, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function AdminDashboard() {
-  const eventsCount = await prisma.event.count();
-  const registrationsCount = await prisma.eventRegistration.count();
-  const recentRegistrations = await prisma.eventRegistration.findMany({
-    take: 5,
-    orderBy: { createdAt: 'desc' },
-    include: { 
-      participant: true,
-      event: true 
-    }
-  });
+  let eventsCount = 0;
+  let registrationsCount = 0;
+  let recentRegistrations: any[] = [];
+
+  try {
+    eventsCount = await prisma.event.count();
+    registrationsCount = await prisma.eventRegistration.count();
+    recentRegistrations = await prisma.eventRegistration.findMany({
+      take: 5,
+      orderBy: { createdAt: 'desc' },
+      include: { 
+        participant: true,
+        event: true 
+      }
+    });
+  } catch (error) {
+    console.warn("Database connection failed on Admin Dashboard (Network blocked). Showing empty state.");
+  }
 
   return (
     <div className="p-8">

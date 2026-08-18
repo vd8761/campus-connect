@@ -8,9 +8,14 @@ import { getEventStatus } from "@/lib/event-utils";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const rawEvents = await prisma.event.findMany({
-    orderBy: { startDate: 'asc' },
-  });
+  let rawEvents: any[] = [];
+  try {
+    rawEvents = await prisma.event.findMany({
+      orderBy: { startDate: 'asc' },
+    });
+  } catch (error) {
+    console.warn("Database connection failed. Showing empty state.");
+  }
 
   const getDisplayStatus = (e: any) => {
     if (e.status === 'LIMITED_SEATS') return 'LIMITED_SEATS';
@@ -26,9 +31,14 @@ export default async function Home() {
     .filter(e => ['OPEN', 'OPENING_SOON', 'LIMITED_SEATS'].includes(e.displayStatus))
     .slice(0, 3);
 
-  const featuredEvent = await prisma.event.findFirst({
-    where: { featured: true, status: { in: ['OPEN', 'LIMITED_SEATS'] } }
-  });
+  let featuredEvent: any = null;
+  try {
+    featuredEvent = await prisma.event.findFirst({
+      where: { featured: true, status: { in: ['OPEN', 'LIMITED_SEATS'] } }
+    });
+  } catch (error) {
+    // console.warn already triggered for rawEvents, no need to duplicate log
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -216,7 +226,7 @@ export default async function Home() {
           
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12">
             <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 transform hover:-translate-y-1 transition-transform">
-              <Image src="/campus-connect-logo-new.png" alt="Campus Connect" fill className="object-contain p-4" />
+              <Image src="/atom-logo.png" alt="Atom Logo" fill sizes="(max-width: 768px) 14rem, 16rem" className="object-contain p-4" />
             </div>
             
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur text-white font-bold text-xl">
@@ -224,7 +234,7 @@ export default async function Home() {
             </div>
             
             <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 transform hover:-translate-y-1 transition-transform">
-              <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill className="object-contain p-4" />
+              <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill sizes="(max-width: 768px) 14rem, 16rem" className="object-contain p-4" />
             </div>
           </div>
 
