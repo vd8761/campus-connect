@@ -46,7 +46,7 @@ export function UniversitySidebar() {
       </nav>
       <div className="p-3 border-t border-brand-border">
         <button 
-          onClick={() => signOut({ callbackUrl: '/admin/login' })} 
+          onClick={() => signOut({ callbackUrl: '/university/login' })} 
           className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg text-sm text-red-600 hover:bg-red-50 font-medium transition-colors text-left cursor-pointer"
         >
           <LogOut size={18} /> Logout

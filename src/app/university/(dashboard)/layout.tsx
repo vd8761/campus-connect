@@ -11,7 +11,7 @@ export default async function UniversityDashboardLayout({
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'UNIVERSITY_REP') {
-    redirect('/admin/login');
+    redirect('/university/login');
   }
 
   return (
