@@ -6,6 +6,8 @@ import { MapPin, Calendar, Clock, Users, GraduationCap, Building2, CheckCircle2 
 import { getEventStatus } from "@/lib/event-utils";
 import { to12HourTime } from "@/lib/dateUtils";
 import { UniversityPartnersSection } from "@/components/UniversityPartnersSection";
+import { AboutOriginBISection } from "@/components/AboutOriginBISection";
+import { OriginBIBenefitsSection } from "@/components/OriginBIBenefitsSection";
 
 export const dynamic = 'force-dynamic';
 
@@ -256,11 +258,19 @@ export default async function Home() {
           <p className="max-w-3xl mx-auto text-lg text-white/90 mb-10 leading-relaxed">
             We are delighted to present a joint collaboration by <span className="font-bold text-white">Atom Infinity</span> and <span className="font-bold text-white">OriginBI Mindworks</span> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
           </p>
-          <Button variant="outline" className="border-white text-brand-navy bg-white hover:bg-white/90 px-8 py-6 text-base rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
-            Learn More About the Collaboration
-          </Button>
+          <Link href="#about-originbi">
+            <Button variant="outline" className="border-white text-brand-navy bg-white hover:bg-white/90 px-8 py-6 text-base rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer">
+              Learn More About the Collaboration
+            </Button>
+          </Link>
         </div>
       </section>
+
+      {/* About OriginBI Mindworks Section */}
+      <AboutOriginBISection />
+
+      {/* How Students Benefit Section */}
+      <OriginBIBenefitsSection />
 
       {/* University Partners Section */}
       <UniversityPartnersSection />

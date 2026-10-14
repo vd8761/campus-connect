@@ -5,6 +5,7 @@ import { SmartRegistration } from './SmartRegistration';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { getEventStatus } from '@/lib/event-utils';
+import { OriginBIHighlightBox } from '@/components/OriginBIHighlightBox';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,12 +51,15 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
       </div>
 
       <div className="container mx-auto px-4 mt-12 max-w-3xl">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-heading font-extrabold text-brand-navy mb-4">Event Registration</h1>
           <p className="text-brand-muted">
             Registering for: <strong className="text-brand-navy">{event.title}</strong>
           </p>
         </div>
+
+        {/* OriginBI Assessment Highlight Box */}
+        <OriginBIHighlightBox className="mb-8" />
 
         <div className="bg-white rounded-2xl shadow-sm border border-brand-border overflow-hidden">
           <div className="bg-[image:var(--secondary-gradient)] p-6 text-white">

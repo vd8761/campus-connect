@@ -8,6 +8,9 @@ import { getEventStatus } from '@/lib/event-utils';
 import { to12HourTime } from '@/lib/dateUtils';
 import Image from 'next/image';
 import { Metadata } from 'next';
+import { OriginBIBenefitsSection } from '@/components/OriginBIBenefitsSection';
+import { OriginBIHighlightBox } from '@/components/OriginBIHighlightBox';
+import { AboutOriginBISection } from '@/components/AboutOriginBISection';
 
 export const dynamic = 'force-dynamic';
 
@@ -161,7 +164,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
       {/* Breadcrumbs & Simple Header */}
-      <div className="bg-white border-b border-brand-border py-4 relative z-20">
+      <div className="bg-white border-b border-brand-border py-2.5 relative z-20">
         <div className="container mx-auto px-4 flex items-center text-sm text-brand-muted">
           <Link href="/" className="hover:text-brand-purple transition-colors">Home</Link>
           <ChevronRight size={14} className="mx-2 opacity-50" />
@@ -172,7 +175,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       </div>
 
       {/* Hero Section */}
-      <div className="relative text-white py-16 md:py-24 overflow-hidden">
+      <div className="relative text-white pt-8 md:pt-12 pb-12 md:pb-16 overflow-hidden">
         {/* Background Image with Premium Overlay */}
         <div className="absolute inset-0 z-0">
           <Image 
@@ -186,12 +189,12 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/70 to-transparent"></div>
         </div>
 
-        <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row gap-12 items-center">
+        <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row gap-10 items-center">
           <div className="flex-1">
-            <div className="inline-block bg-white/10 backdrop-blur border border-white/20 text-brand-turquoise px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6">
+            <div className="inline-block bg-white/10 backdrop-blur border border-white/20 text-brand-turquoise px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3.5">
               {event.type}
             </div>
-            <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-heading font-extrabold mb-4 leading-tight">
               {event.title}
             </h1>
             <div 
@@ -209,6 +212,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 </Button>
               )}
             </div>
+
+            {/* Short Version Highlight Box Near Registration Button */}
+            <OriginBIHighlightBox variant="hero" className="mt-6 max-w-xl" />
           </div>
           <div className="w-full md:w-1/3 space-y-4">
             <div className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
@@ -285,6 +291,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   Registration {displayStatus === 'OPENING_SOON' ? 'Opening Soon' : 'Closed'}
                 </Button>
               )}
+
+              {/* Highlight Box Near Registration Button */}
+              <OriginBIHighlightBox compact className="mt-6" />
             </div>
           </div>
         </div>
@@ -356,6 +365,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           </div>
         </div>
       )}
+
+      {/* How Students Benefit Section */}
+      <div className="mt-14">
+        <OriginBIBenefitsSection eventSlug={event.slug} isRegistrationOpen={isRegistrationOpen} />
+      </div>
+
+      {/* About OriginBI Mindworks Section */}
+      <div className="mt-4">
+        <AboutOriginBISection />
+      </div>
     </div>
   );
 }

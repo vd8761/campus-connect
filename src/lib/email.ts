@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { ORIGINBI_ASSESSMENT_AMOUNT } from './constants';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -95,7 +96,7 @@ export const sendRegistrationEmail = async ({
 <body>
   <div class="container">
     <div class="header">
-      <h1>Campus Connect</h1>
+      <h1>Campus Square</h1>
     </div>
     <div class="content">
       <h2>Registration Confirmed!</h2>
@@ -107,11 +108,28 @@ export const sendRegistrationEmail = async ({
         <div class="ticket-code">${ticketCode.substring(0, 8).toUpperCase()}</div>
         <p style="margin:0; font-size: 13px;">Please keep this code handy for check-in.</p>
       </div>
+
+      <!-- OriginBI Assessment Complimentary Benefit -->
+      <div style="background: linear-gradient(135deg, #FAF5FF 0%, #F0FDF4 100%); border: 1px solid #D8B4FE; border-radius: 12px; padding: 22px; margin: 30px 0; text-align: left;">
+        <div style="display: inline-block; background-color: #059669; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 9999px; margin-bottom: 10px;">
+          Complimentary Benefit • Worth ₹${ORIGINBI_ASSESSMENT_AMOUNT} (Entirely Free)
+        </div>
+        <h3 style="margin: 0 0 8px 0; color: #161B35; font-size: 16px; font-weight: 700;">Discover Your Strengths with OriginBI</h3>
+        <p style="margin: 0 0 10px 0; color: #4B5563; font-size: 14px; line-height: 1.5;">
+          Registering for Campus Square gives you <strong>free access</strong> to the OriginBI Assessment (Actual cost: <strong>₹${ORIGINBI_ASSESSMENT_AMOUNT}</strong> - completely free for you as an attendee, no payment needed).
+        </p>
+        <p style="margin: 0 0 10px 0; color: #4B5563; font-size: 14px; line-height: 1.5;">
+          You’ll receive an email to complete a short assessment. After finishing, download your <strong>personalised single-page result PDF on the university fair day spot</strong> - a clear snapshot of your strengths, working style, and career alignment to guide smarter choices.
+        </p>
+        <div style="font-size: 12px; color: #6D28D9; font-weight: 600; margin-top: 12px; padding-top: 10px; border-top: 1px solid #E9D5FF;">
+          A joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong>.
+        </div>
+      </div>
       
       <p>We look forward to seeing you at the event!</p>
     </div>
     <div class="footer">
-      &copy; ${new Date().getFullYear()} Campus Connect. All rights reserved.
+      &copy; ${new Date().getFullYear()} Campus Square. All rights reserved.
     </div>
   </div>
 </body>

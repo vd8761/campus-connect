@@ -14,6 +14,7 @@ import { getExampleNumber } from 'libphonenumber-js';
 import examples from 'libphonenumber-js/examples.mobile.json';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { CountrySelect } from '@/components/ui/CountrySelect';
+import { OriginBIHighlightBox } from '@/components/OriginBIHighlightBox';
 
 const formSchema = z.object({
   studentName: z.string().min(2, "Student name is required"),
@@ -582,6 +583,9 @@ export function RegistrationForm({ eventId, eventSlug, initialData }: { eventId:
             {error}
           </div>
         )}
+
+        {/* Free OriginBI Assessment Highlight Box */}
+        <OriginBIHighlightBox compact className="mb-6" />
 
         <Button type="submit" variant="gradient" size="lg" className="w-full h-14 text-lg font-semibold shadow-xl shadow-brand-purple/20 cursor-pointer" disabled={isSubmitting}>
           {isSubmitting ? "Processing..." : "Complete Registration"}
