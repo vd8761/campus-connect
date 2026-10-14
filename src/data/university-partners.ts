@@ -10,6 +10,15 @@ export interface UniversityPartner {
 
 export const UNIVERSITY_PARTNERS: UniversityPartner[] = [
   {
+    id: 'woxsen',
+    name: 'Woxsen University',
+    shortName: 'Woxsen University',
+    logo: '/university/8.%20Woxsen%20University.webp',
+    category: 'University',
+    location: 'Hyderabad, Telangana',
+    description: 'Ranked Top Private University for Tech, Business & Design'
+  },
+  {
     id: 'lakshya',
     name: 'Indian Institute of Commerce Lakshya',
     shortName: 'IIC Lakshya',
@@ -71,15 +80,6 @@ export const UNIVERSITY_PARTNERS: UniversityPartner[] = [
     category: 'University',
     location: 'Coimbatore, Tamil Nadu',
     description: 'India’s Leading Research & Innovation Driven University'
-  },
-  {
-    id: 'woxsen',
-    name: 'Woxsen University',
-    shortName: 'Woxsen University',
-    logo: '/university/8.%20Woxsen%20University.webp',
-    category: 'University',
-    location: 'Hyderabad, Telangana',
-    description: 'Ranked Top Private University for Tech, Business & Design'
   },
   {
     id: 'psg-ias',

@@ -42,16 +42,25 @@ export default async function Home() {
     // console.warn already triggered for rawEvents, no need to duplicate log
   }
 
+  const activeAnnouncementEvent = featuredEvent || events.find((e: any) => e.displayStatus === 'OPEN' || e.displayStatus === 'LIMITED_SEATS') || events[0] || rawEvents[0];
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Announcement Bar */}
-      <div className="bg-brand-navy text-white text-sm py-2 px-4 text-center">
-        <p className="flex items-center justify-center gap-2">
-          <span className="font-semibold text-brand-turquoise">New</span>
-          Registrations are now open for the School Leaders Conclave 2026 – Trichy Edition.
-          <Link href="/events/school-leaders-conclave-trichy-2026" className="underline underline-offset-2 hover:text-brand-turquoise">View Event</Link>
-        </p>
-      </div>
+      {activeAnnouncementEvent && (
+        <div className="bg-brand-navy text-white text-xs sm:text-sm py-2.5 px-4 text-center border-b border-white/10">
+          <p className="flex flex-wrap items-center justify-center gap-2">
+            <span className="font-bold text-[11px] px-2 py-0.5 rounded-full bg-brand-turquoise/20 text-brand-turquoise uppercase tracking-wider">New</span>
+            <span>Registrations are now open for the {activeAnnouncementEvent.title} – {activeAnnouncementEvent.city} Edition.</span>
+            <Link 
+              href={`/events/${activeAnnouncementEvent.slug}`} 
+              className="font-semibold text-brand-turquoise underline underline-offset-2 hover:text-white transition-colors ml-1"
+            >
+              View Event
+            </Link>
+          </p>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-white pt-10 pb-32">
@@ -122,6 +131,7 @@ export default async function Home() {
                       src={imageSrc}
                       alt={event.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-brand-navy/10 mix-blend-multiply"></div>

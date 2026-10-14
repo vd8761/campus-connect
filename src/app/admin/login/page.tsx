@@ -21,11 +21,15 @@ export default async function AdminLogin(props: { searchParams: Promise<{ error?
     
     if (username === correctUsername && password === correctPassword) {
       const cookieStore = await cookies();
-      cookieStore.set('admin_session', 'true', {
+      const { getAdminSessionToken } = await import('@/lib/session');
+      const token = await getAdminSessionToken();
+
+      cookieStore.set('admin_session', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        path: '/'
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7 // 7 days
       });
       redirect('/admin');
     } else {

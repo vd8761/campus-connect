@@ -7,8 +7,72 @@ import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, Chevron
 import { getEventStatus } from '@/lib/event-utils';
 import { to12HourTime } from '@/lib/dateUtils';
 import Image from 'next/image';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await prisma.event.findUnique({
+      where: { slug },
+      select: {
+        title: true,
+        edition: true,
+        shortDescription: true,
+        seoTitle: true,
+        seoDescription: true,
+        city: true,
+        state: true,
+        bannerUrl: true,
+      }
+    });
+
+    if (!event) {
+      return {
+        title: 'Event Not Found',
+      };
+    }
+
+    const title = event.seoTitle || `${event.title} – ${event.city} ${event.edition || 'Edition'}`.trim();
+    const cleanDesc = event.shortDescription?.replace(/<[^>]+>/g, '').trim() || '';
+    const description = event.seoDescription || cleanDesc || `Register for ${event.title} in ${event.city}. Connect with premier universities, school leaders, and explore undergraduate & postgraduate opportunities.`;
+    const imageUrl = event.bannerUrl || '/images/event-1.jpg';
+
+    return {
+      title,
+      description,
+      alternates: {
+        canonical: `/events/${slug}`,
+      },
+      openGraph: {
+        title: `${title} | Campus Square`,
+        description,
+        type: 'website',
+        url: `/events/${slug}`,
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: event.title,
+          }
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${title} | Campus Square`,
+        description,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error("Error in generateMetadata:", error);
+    return {
+      title: 'University Fair & Conclave | Campus Square',
+    };
+  }
+}
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -56,8 +120,46 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     return (a.university?.name || '').localeCompare(b.university?.name || '');
   });
 
+  const eventJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: event.title,
+    description: event.subtitle || event.title,
+    startDate: event.startDate ? new Date(event.startDate).toISOString() : undefined,
+    endDate: event.endDate ? new Date(event.endDate).toISOString() : undefined,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: event.venue || `${event.city} Venue`,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: event.city,
+        addressRegion: event.state,
+        addressCountry: 'IN',
+      },
+    },
+    image: [imageSrc],
+    organizer: {
+      '@type': 'Organization',
+      name: 'Campus Square',
+      url: 'https://campussquare.org',
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'INR',
+      availability: isRegistrationOpen ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+      url: `https://campussquare.org/events/${event.slug}/register`,
+    },
+  };
+
   return (
     <div className="bg-brand-light min-h-screen pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
       {/* Breadcrumbs & Simple Header */}
       <div className="bg-white border-b border-brand-border py-4 relative z-20">
         <div className="container mx-auto px-4 flex items-center text-sm text-brand-muted">
