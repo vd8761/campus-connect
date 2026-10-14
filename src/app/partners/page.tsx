@@ -1,55 +1,90 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
-
+import { UNIVERSITY_PARTNERS } from '@/data/university-partners';
+import { MapPin, Sparkles, Building2, ExternalLink } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Partnerships',
-  description: 'Discover our global network of university and educational partners.',
+  title: 'Our University Partners | Campus Connect',
+  description: 'Explore our prestigious network of university and higher education partners across India and worldwide.',
 };
-
-const partners = Array(12).fill({
-  name: "University Name",
-  type: "Educational Partner",
-});
 
 export default function PartnersPage() {
   return (
-    <main className="min-h-screen bg-gray-50 pb-20">
+    <main className="min-h-screen bg-brand-light pb-20">
       {/* Hero Section */}
-      <section className="bg-brand-navy text-white pt-32 pb-20 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">Our Global Network</h1>
-          <p className="text-xl text-gray-300">
-            We collaborate with world-leading universities and innovative organizations to bring you the best opportunities.
+      <section className="bg-brand-navy text-white pt-32 pb-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_rgba(91,39,217,0.25),_transparent_70%)] pointer-events-none"></div>
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-turquoise text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur">
+            <Sparkles size={14} />
+            <span>Higher Education Ecosystem</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-6 tracking-tight">
+            Our Prestigious <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">University Partners</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            We collaborate with premier national and international universities, deemed institutions, and innovative academic hubs to bring high-impact pathways to students.
           </p>
         </div>
       </section>
 
       {/* Partners Grid */}
       <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
-            <h2 className="text-2xl font-bold text-brand-navy">Featured Universities</h2>
-            <div className="flex gap-2">
-              <span className="px-4 py-2 bg-white rounded-full text-sm font-medium border border-gray-200 text-brand-primary cursor-pointer hover:bg-gray-50">All</span>
-              <span className="px-4 py-2 bg-transparent rounded-full text-sm font-medium border border-transparent text-gray-500 cursor-pointer hover:bg-gray-100">India</span>
-              <span className="px-4 py-2 bg-transparent rounded-full text-sm font-medium border border-transparent text-gray-500 cursor-pointer hover:bg-gray-100">International</span>
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-heading font-bold text-brand-navy">All Participating Institutions</h2>
+              <p className="text-sm text-brand-muted mt-1">Represented across our conclaves, education fairs, and academic summits ({UNIVERSITY_PARTNERS.length} Partners)</p>
             </div>
+            <Link href="/contact">
+              <Button variant="default" size="sm">Partner With Us</Button>
+            </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {partners.map((partner, i) => (
-              <Card key={i} className="hover:shadow-md transition-shadow group cursor-pointer border-gray-100">
-                <CardContent className="p-6 flex flex-col items-center justify-center text-center h-48">
-                  <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    {/* Placeholder for Logo */}
-                    <span className="text-gray-400 font-bold text-xl">LOGO</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {UNIVERSITY_PARTNERS.map((partner) => (
+              <Card
+                key={partner.id}
+                className="hover:shadow-lg transition-all duration-300 group border-brand-border/80 bg-white rounded-2xl overflow-hidden hover:border-brand-purple/40 hover:-translate-y-1 flex flex-col"
+              >
+                <CardContent className="p-6 flex flex-col items-center justify-between text-center flex-1">
+                  {/* Logo Container with Strict Equal Sizing & Seamless White Background */}
+                  <div className="w-full h-24 relative flex items-center justify-center mb-4 p-2">
+                    <Image
+                      src={partner.logo}
+                      alt={partner.name}
+                      fill
+                      unoptimized
+                      className="object-contain group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 320px"
+                    />
                   </div>
-                  <h3 className="font-semibold text-brand-navy line-clamp-1">{partner.name} {i + 1}</h3>
-                  <p className="text-xs text-gray-500 mt-1">{partner.type}</p>
+
+                  {/* Institution Details */}
+                  <div className="w-full flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-brand-purple mb-1.5">
+                        {partner.category}
+                      </div>
+                      <h3 className="font-heading font-bold text-base text-brand-navy line-clamp-2 mb-2 group-hover:text-brand-purple transition-colors">
+                        {partner.name}
+                      </h3>
+                      {partner.description && (
+                        <p className="text-xs text-brand-muted line-clamp-2 mb-4 leading-relaxed">
+                          {partner.description}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="pt-3 border-t border-gray-100 flex items-center justify-center gap-1.5 text-xs text-brand-muted w-full">
+                      <MapPin size={13} className="text-brand-turquoise shrink-0" />
+                      <span className="truncate">{partner.location}</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -58,17 +93,29 @@ export default function PartnersPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="px-4">
+      <section className="px-4 mt-6">
         <div className="container mx-auto max-w-5xl">
           <div className="bg-[image:var(--primary-gradient)] rounded-3xl p-10 md:p-16 text-center text-white shadow-xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-white/10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+            <div
+              className="absolute inset-0 bg-white/10"
+              style={{
+                backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0)',
+                backgroundSize: '24px 24px',
+              }}
+            ></div>
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Become a Partner</h2>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                Become a University Partner
+              </h2>
               <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-                Join our network to connect directly with ambitious students and leading school networks across the globe.
+                Join our network to connect directly with ambitious students and leading school leaders across India and abroad.
               </p>
               <Link href="/contact">
-                <Button variant="outline" size="lg" className="border-none hover:bg-gray-100 font-semibold px-8 py-6 rounded-full text-lg shadow-lg hover:shadow-xl transition-all">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-none bg-white text-brand-navy hover:bg-gray-100 font-semibold px-8 py-6 rounded-full text-lg shadow-lg hover:shadow-xl transition-all"
+                >
                   Get in Touch
                 </Button>
               </Link>

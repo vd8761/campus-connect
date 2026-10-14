@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F7F9FC;
-  --foreground: #161B35;
-  --muted: #667085;
-  --border: #E4E7EC;
-  --primary: #5B27D9;
-  --primary-gradient: linear-gradient(135deg, #6B24E8 0%, #1478F2 48%, #15CDB5 100%);
-  --secondary-gradient: linear-gradient(90deg, #5B27D9 0%, #08A9D8 55%, #15CDB5 100%);
+  --background: #FAF7FC;
+  --foreground: #22052C;
+  --muted: #6B5677;
+  --border: #E8DCF0;
+  --primary: #701A94;
+  --primary-gradient: linear-gradient(135deg, #701A94 0%, #8E23BA 50%, #B58BD7 100%);
+  --secondary-gradient: linear-gradient(90deg, #22052C 0%, #701A94 50%, #B58BD7 100%);
 }
 
 @theme inline {
-  --color-brand-purple: #5B27D9;
-  --color-brand-blue: #1478F2;
-  --color-brand-cyan: #08A9D8;
-  --color-brand-turquoise: #15CDB5;
-  --color-brand-navy: #161B35;
-  --color-brand-light: #F7F9FC;
-  --color-brand-muted: #667085;
-  --color-brand-border: #E4E7EC;
+  --color-brand-purple: #701A94;
+  --color-brand-blue: #8E23BA;
+  --color-brand-cyan: #A855F7;
+  --color-brand-turquoise: #B58BD7;
+  --color-brand-navy: #22052C;
+  --color-brand-light: #FAF7FC;
+  --color-brand-muted: #6B5677;
+  --color-brand-border: #E8DCF0;
   
   --color-status-success: #16A66A;
   --color-status-warning: #F59E0B;
@@ -47,11 +47,49 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
-/* Custom utility classes if needed */
+/* Modern Minimalist Scrollbars (No OS Arrows) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(112, 26, 148, 0.16);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(112, 26, 148, 0.35);
+}
+
+/* Hide Next.js dev indicator badge */
+nextjs-portal,
+[data-nextjs-toast],
+[data-nextjs-dev-indicator] {
+  display: none !important;
+}
+
+/* Custom utility classes */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
 /* Global Form Validation */
@@ -169,3 +207,48 @@ h1, h2, h3, h4, h5, h6 {
     page-break-inside: avoid;
   }
 }
+
+/* Continuous Logo Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-reverse 45s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* Tactile Immediate Button & Link Press Feedback */
+button:not(:disabled):active,
+.btn:not(:disabled):active {
+  transform: scale(0.985);
+  transition: transform 0.08s ease;
+}
+
+

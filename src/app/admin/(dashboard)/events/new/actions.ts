@@ -3,6 +3,8 @@
 import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 
+import { parseInputDateToUtcNoon, to12HourTime } from '@/lib/dateUtils';
+
 export async function createEventAction(formData: FormData) {
   const title = formData.get('title') as string;
   const slug = formData.get('slug') as string;
@@ -22,7 +24,12 @@ export async function createEventAction(formData: FormData) {
   const whatToExpect = formData.get('whatToExpect') as string;
   const bannerUrl = formData.get('bannerUrl') as string;
 
-  if (!title || !slug || !type || !city || !startDateStr || !endDateStr) {
+  const universityIds = formData.getAll('universityIds') as string[];
+
+  const parsedStartDate = parseInputDateToUtcNoon(startDateStr);
+  const parsedEndDate = parseInputDateToUtcNoon(endDateStr) || parsedStartDate;
+
+  if (!title || !slug || !type || !city || !parsedStartDate || !parsedEndDate) {
     throw new Error('Missing required fields');
   }
 
@@ -36,18 +43,23 @@ export async function createEventAction(formData: FormData) {
       type,
       city,
       venue: venue || null,
-      startDate: new Date(startDateStr),
-      endDate: new Date(endDateStr),
-      startTime: startTime || null,
-      endTime: endTime || null,
+      startDate: parsedStartDate,
+      endDate: parsedEndDate,
+      startTime: startTime ? to12HourTime(startTime) : null,
+      endTime: endTime ? to12HourTime(endTime) : null,
       shortDescription: shortDescription || null,
       fullDescription: fullDescription || null,
       whatToExpect: whatToExpect || null,
       bannerUrl: bannerUrl || null,
-      registrationOpen: registrationOpenStr ? new Date(registrationOpenStr) : null,
-      registrationClose: registrationCloseStr ? new Date(registrationCloseStr) : null,
+      registrationOpen: parseInputDateToUtcNoon(registrationOpenStr),
+      registrationClose: parseInputDateToUtcNoon(registrationCloseStr),
       maxCapacity,
       status: 'PUBLISHED', 
+      universityEvents: {
+        create: universityIds.map(uid => ({
+          universityId: uid
+        }))
+      }
     }
   });
 

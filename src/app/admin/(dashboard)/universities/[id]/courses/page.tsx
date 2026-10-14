@@ -1,9 +1,9 @@
 import sql from '@/lib/neon';
 import { AddCourseForm } from './AddCourseForm';
-import { ArrowLeft, BookOpen, Percent, Trash2 } from 'lucide-react';
+import { ArrowLeft, BookOpen, Percent } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { deleteCourseAction } from './actions';
+import { DeleteCourseButton } from './DeleteCourseButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,90 +29,103 @@ export default async function UniversityCoursesPage({ params }: { params: { id: 
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <Link href="/admin/universities" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand-navy mb-6 transition-colors">
-        <ArrowLeft size={16} /> Back to Universities
-      </Link>
-
-      <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold text-brand-navy">{university.name} — Courses</h1>
-        <p className="text-brand-muted mt-1">Manage courses and margin configurations for this university.</p>
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <Link 
+            href="/admin/universities" 
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-purple hover:underline mb-2 transition-all"
+          >
+            <ArrowLeft size={14} /> Back to Universities
+          </Link>
+          <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy">
+            {university.name}
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Manage academic programs, degree levels, and commission margins for this institution.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-brand-purple border border-purple-100 text-xs font-bold self-start sm:self-auto">
+          <BookOpen size={15} />
+          <span>{courses.length} Courses Active</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="lg:col-span-4">
           <AddCourseForm universityId={id} />
         </div>
 
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 text-brand-muted text-sm uppercase">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Course Name</th>
-                  <th className="px-6 py-4 font-medium">Category / Level</th>
-                  <th className="px-6 py-4 font-medium">Margin</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {courses.length > 0 ? (
-                  courses.map((course: any) => (
-                    <tr key={course.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-brand-navy/5 flex items-center justify-center text-brand-navy shrink-0">
-                            <BookOpen className="w-4 h-4" />
+        <div className="lg:col-span-8">
+          <div className="bg-white rounded-2xl border border-brand-border/80 overflow-hidden shadow-2xs">
+            <div className="p-4 md:p-5 border-b border-brand-border/60 flex items-center justify-between bg-slate-50/50">
+              <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wider">
+                Approved Courses ({courses.length})
+              </h2>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-slate-50/80 text-slate-400 text-[11px] font-bold uppercase tracking-wider border-b border-brand-border/60">
+                  <tr>
+                    <th className="px-5 py-3.5">Course Name</th>
+                    <th className="px-5 py-3.5">Category & Level</th>
+                    <th className="px-5 py-3.5">Margin</th>
+                    <th className="px-5 py-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-brand-border/40">
+                  {courses.length > 0 ? (
+                    courses.map((course: any) => (
+                      <tr key={course.id} className="hover:bg-purple-50/20 transition-colors">
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-purple-50 text-brand-purple flex items-center justify-center shrink-0 border border-purple-100">
+                              <BookOpen className="w-4 h-4" />
+                            </div>
+                            <span className="font-semibold text-brand-navy text-sm">{course.name}</span>
                           </div>
-                          <span className="font-semibold text-brand-navy text-sm">{course.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col gap-0.5 text-sm">
-                          <span className="font-medium text-brand-navy">{course.category}</span>
-                          <span className="text-xs text-brand-muted">{course.level}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 text-xs font-bold rounded-full inline-flex items-center gap-1 ${
-                          course.marginType === 'FIXED'
-                            ? 'bg-blue-50 text-blue-700'
-                            : 'bg-purple-50 text-purple-700'
-                        }`}>
-                          {course.marginType === 'FIXED' ? (
-                            <>₹{Number(course.marginValue).toLocaleString('en-IN')}</>
-                          ) : (
-                            <><Percent className="w-3 h-3" />{course.marginValue}%</>
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <form action={async () => {
-                          'use server';
-                          await deleteCourseAction(id, course.id);
-                        }}>
-                          <button
-                            type="submit"
-                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete Course"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </form>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex flex-col gap-0.5">
+                            <span className="font-medium text-brand-navy text-xs">{course.category}</span>
+                            <span className="text-[11px] text-slate-400 font-semibold">{course.level}</span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className={`px-2.5 py-1 text-xs font-bold rounded-full inline-flex items-center gap-1 border ${
+                            course.marginType === 'FIXED'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                              : 'bg-purple-50 text-brand-purple border-purple-200/80'
+                          }`}>
+                            {course.marginType === 'FIXED' ? (
+                              <>₹{Number(course.marginValue).toLocaleString('en-IN')}</>
+                            ) : (
+                              <><Percent className="w-3 h-3" />{course.marginValue}%</>
+                            )}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 text-right">
+                          <DeleteCourseButton
+                            universityId={id}
+                            courseId={course.id}
+                            courseName={course.name}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
+                        <BookOpen className="w-10 h-10 mx-auto mb-2.5 text-slate-300" />
+                        <p className="text-sm font-bold text-brand-navy">No Courses Configured</p>
+                        <p className="text-xs text-slate-400 mt-0.5">Use the form on the left to add programs for this university.</p>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-brand-muted">
-                      <BookOpen className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p className="text-lg font-medium text-brand-navy mb-1">No Courses Found</p>
-                      <p className="text-sm">Use the form to add a course for this university.</p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

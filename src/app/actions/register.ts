@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import prisma from '@/lib/prisma';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 const registrationSchema = z.object({
   eventId: z.string(),
@@ -31,18 +32,9 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
     const validatedData = registrationSchema.parse(formData);
 
     // Verify Turnstile Token
-    const verifyFormData = new FormData();
-    verifyFormData.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
-    verifyFormData.append('response', validatedData.turnstileToken);
-
-    const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body: verifyFormData,
-    });
-    
-    const turnstileData = await turnstileRes.json();
-    if (!turnstileData.success) {
-      return { success: false, error: "Security check failed. Please try again." };
+    const turnstileCheck = await verifyTurnstileToken(validatedData.turnstileToken);
+    if (!turnstileCheck.success) {
+      return { success: false, error: turnstileCheck.error || "Security check failed. Please try again." };
     }
 
     // 1. Find or create organization (School)

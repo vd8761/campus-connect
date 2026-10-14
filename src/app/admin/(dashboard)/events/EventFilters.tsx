@@ -35,9 +35,11 @@ export function EventFilters({ eventTypes }: { eventTypes: { id: string, name: s
   ];
 
   return (
-    <div className="bg-white p-4 rounded-xl border border-brand-border shadow-sm mb-6 flex flex-wrap gap-4 items-center">
-      <div className="flex-1 min-w-[200px] z-20">
-        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Filter by Type</label>
+    <div className="bg-white p-4 md:p-5 rounded-2xl border border-brand-border/80 shadow-2xs mb-6 flex flex-wrap gap-4 items-end">
+      <div className="flex-1 min-w-[220px] z-20">
+        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+          Filter by Type
+        </label>
         <SearchableDropdown 
           options={typeOptions}
           value={currentType}
@@ -46,8 +48,10 @@ export function EventFilters({ eventTypes }: { eventTypes: { id: string, name: s
         />
       </div>
 
-      <div className="flex-1 min-w-[200px] z-10">
-        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Filter by Status</label>
+      <div className="flex-1 min-w-[220px] z-10">
+        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+          Filter by Status
+        </label>
         <SearchableDropdown 
           options={statusOptions}
           value={currentStatus}
@@ -57,10 +61,10 @@ export function EventFilters({ eventTypes }: { eventTypes: { id: string, name: s
       </div>
 
       {(currentType || currentStatus) && (
-        <div className="pt-5">
+        <div className="shrink-0 pb-1">
           <button 
             onClick={() => router.push('/admin/events')}
-            className="text-brand-purple text-sm font-semibold hover:underline"
+            className="px-3 py-2 rounded-xl text-xs font-bold text-brand-purple hover:bg-brand-light border border-brand-purple/20 transition-all cursor-pointer"
           >
             Clear Filters
           </button>

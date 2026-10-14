@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { updateEventAction } from './actions';
 import { getActiveEventTypesAction } from '../../event-types/actions';
 import { Button } from '@/components/ui/Button';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ImageUpload } from '@/components/ui/ImageUpload';
@@ -11,13 +12,15 @@ import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { SearchableDropdown } from '@/components/ui/SearchableDropdown';
 import { ValidatedForm } from '@/components/ui/ValidatedForm';
 import { InputError } from '@/components/ui/InputError';
+import { ParticipatingUniversitiesSelector } from '../ParticipatingUniversitiesSelector';
+import { to24HourTime, formatDateToInput, parseInitialDate } from '@/lib/dateUtils';
 
 export function EditEventForm({ event }: { event: any }) {
   const [slug, setSlug] = useState(event.slug);
-  const [startDate, setStartDate] = useState<Date | null>(event.startDate ? new Date(event.startDate) : null);
-  const [endDate, setEndDate] = useState<Date | null>(event.endDate ? new Date(event.endDate) : null);
-  const [regOpenDate, setRegOpenDate] = useState<Date | null>(event.registrationOpen ? new Date(event.registrationOpen) : null);
-  const [regCloseDate, setRegCloseDate] = useState<Date | null>(event.registrationClose ? new Date(event.registrationClose) : null);
+  const [startDate, setStartDate] = useState<Date | null>(parseInitialDate(event.startDate));
+  const [endDate, setEndDate] = useState<Date | null>(parseInitialDate(event.endDate));
+  const [regOpenDate, setRegOpenDate] = useState<Date | null>(parseInitialDate(event.registrationOpen));
+  const [regCloseDate, setRegCloseDate] = useState<Date | null>(parseInitialDate(event.registrationClose));
   const [eventTypes, setEventTypes] = useState<{id: string, name: string}[]>([]);
 
   useEffect(() => {
@@ -58,7 +61,7 @@ export function EditEventForm({ event }: { event: any }) {
                 required 
                 onChange={(e) => generateSlug(e.target.value)}
                 placeholder="e.g. School Leaders Conclave 2026"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-gray-400"
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400"
               />
               <InputError message="Event Title is required." />
             </div>
@@ -78,7 +81,7 @@ export function EditEventForm({ event }: { event: any }) {
             <div className="md:col-span-2 form-field">
               <label className="block text-sm font-bold text-brand-navy mb-2">URL Slug <span className="text-red-500">*</span></label>
               <div className="flex">
-                <span className="inline-flex items-center px-4 py-3 rounded-l-lg border border-r-0 border-gray-200 bg-gray-50 text-gray-500 text-sm">
+                <span className="inline-flex items-center h-11 px-4 rounded-l-xl border border-r-0 border-brand-border/80 bg-gray-50 text-gray-500 text-sm select-none">
                   campusconnect.com/events/
                 </span>
                 <input 
@@ -88,7 +91,7 @@ export function EditEventForm({ event }: { event: any }) {
                   onChange={(e) => setSlug(e.target.value)}
                   required 
                   placeholder="school-leaders-conclave-2026"
-                  className="flex-1 px-4 py-3 rounded-r-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all"
+                  className="flex-1 h-11 px-4 rounded-r-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                 />
               </div>
               <InputError message="URL Slug is required." />
@@ -112,7 +115,7 @@ export function EditEventForm({ event }: { event: any }) {
                 defaultValue={event.city}
                 required 
                 placeholder="e.g. Trichy"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-gray-400"
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400"
               />
               <InputError message="City is required." />
             </div>
@@ -124,7 +127,7 @@ export function EditEventForm({ event }: { event: any }) {
                 name="venue" 
                 defaultValue={event.venue || ''}
                 placeholder="e.g. SRM Hotel, Trichy"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-gray-400"
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -142,22 +145,22 @@ export function EditEventForm({ event }: { event: any }) {
               <label className="block text-sm font-bold text-brand-navy mb-2">Event Start Date <span className="text-red-500">*</span></label>
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <input type="hidden" name="startDate" value={startDate ? startDate.toISOString() : ''} />
+                  <input type="hidden" name="startDate" value={formatDateToInput(startDate)} />
                   <DatePicker 
                     selected={startDate}
                     onChange={(date: Date | null) => setStartDate(date)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Select date"
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all"
+                    className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                     wrapperClassName="w-full"
                   />
                 </div>
                 <input 
                   type="time" 
                   name="startTime" 
-                  defaultValue={event.startTime || ''}
-                  className="w-full sm:w-auto flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all" 
+                  defaultValue={to24HourTime(event.startTime)}
+                  className="w-full sm:w-auto flex-1 h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all" 
                 />
               </div>
               <InputError message="Start Date is required." />
@@ -167,22 +170,22 @@ export function EditEventForm({ event }: { event: any }) {
               <label className="block text-sm font-bold text-brand-navy mb-2">Event End Date <span className="text-red-500">*</span></label>
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <input type="hidden" name="endDate" value={endDate ? endDate.toISOString() : ''} />
+                  <input type="hidden" name="endDate" value={formatDateToInput(endDate)} />
                   <DatePicker 
                     selected={endDate}
                     onChange={(date: Date | null) => setEndDate(date)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Select date"
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all"
+                    className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                     wrapperClassName="w-full"
                   />
                 </div>
                 <input 
                   type="time" 
                   name="endTime" 
-                  defaultValue={event.endTime || ''}
-                  className="w-full sm:w-auto flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all" 
+                  defaultValue={to24HourTime(event.endTime)}
+                  className="w-full sm:w-auto flex-1 h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all" 
                 />
               </div>
               <InputError message="End Date is required." />
@@ -192,26 +195,26 @@ export function EditEventForm({ event }: { event: any }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-bold text-brand-navy mb-2">Registration Opens</label>
-              <input type="hidden" name="registrationOpen" value={regOpenDate ? regOpenDate.toISOString() : ''} />
+              <input type="hidden" name="registrationOpen" value={formatDateToInput(regOpenDate)} />
               <DatePicker 
                 selected={regOpenDate}
                 onChange={(date: Date | null) => setRegOpenDate(date)}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="Select date"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all"
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                 wrapperClassName="w-full"
               />
             </div>
             
             <div>
               <label className="block text-sm font-bold text-brand-navy mb-2">Registration Closes</label>
-              <input type="hidden" name="registrationClose" value={regCloseDate ? regCloseDate.toISOString() : ''} />
+              <input type="hidden" name="registrationClose" value={formatDateToInput(regCloseDate)} />
               <DatePicker 
                 selected={regCloseDate}
                 onChange={(date: Date | null) => setRegCloseDate(date)}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="Select date"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all"
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                 wrapperClassName="w-full"
               />
             </div>
@@ -223,11 +226,14 @@ export function EditEventForm({ event }: { event: any }) {
                 name="maxCapacity"
                 defaultValue={event.maxCapacity || ''}
                 placeholder="e.g. 500"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-gray-400"
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400"
               />
             </div>
           </div>
         </div>
+
+        {/* Participating Universities Section */}
+        <ParticipatingUniversitiesSelector initialSelectedIds={event.universityIds || []} />
 
         {/* Media & Content Section */}
         <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
@@ -271,9 +277,12 @@ export function EditEventForm({ event }: { event: any }) {
 
         {/* Submit Button */}
         <div className="pt-4 flex justify-end gap-4">
-          <Button type="submit" className="bg-gradient-to-r from-brand-purple to-brand-turquoise hover:from-brand-navy hover:to-brand-purple text-white px-12 py-3 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transition-all">
+          <SubmitButton
+            loadingText="Saving Changes..."
+            className="bg-gradient-to-r from-brand-purple to-brand-turquoise hover:from-brand-navy hover:to-brand-purple text-white px-12 py-3 rounded-xl text-base font-bold shadow-lg hover:shadow-xl transition-all h-12"
+          >
             Save Changes
-          </Button>
+          </SubmitButton>
         </div>
       </ValidatedForm>
     </div>

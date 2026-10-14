@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,19 +27,10 @@ export async function GET(request: NextRequest) {
 
   try {
     // Verify Turnstile Token
-    const verifyFormData = new FormData();
-    verifyFormData.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
-    verifyFormData.append('response', token);
-
-    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body: verifyFormData,
-    });
-    
-    const verifyOutcome = await verifyRes.json();
-    if (!verifyOutcome.success) {
+    const turnstileCheck = await verifyTurnstileToken(token);
+    if (!turnstileCheck.success) {
       return NextResponse.json(
-        { error: 'Security check failed' },
+        { error: turnstileCheck.error || 'Security check failed' },
         { status: 403 }
       );
     }

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/Button";
 import prisma from "@/lib/prisma";
 import { MapPin, Calendar, Clock, Users, GraduationCap, Building2, CheckCircle2 } from "lucide-react";
 import { getEventStatus } from "@/lib/event-utils";
+import { to12HourTime } from "@/lib/dateUtils";
+import { UniversityPartnersSection } from "@/components/UniversityPartnersSection";
 
 export const dynamic = 'force-dynamic';
 
@@ -45,7 +47,7 @@ export default async function Home() {
       {/* Announcement Bar */}
       <div className="bg-brand-navy text-white text-sm py-2 px-4 text-center">
         <p className="flex items-center justify-center gap-2">
-          <span className="font-semibold text-brand-turquoise">New</span> 
+          <span className="font-semibold text-brand-turquoise">New</span>
           Registrations are now open for the School Leaders Conclave 2026 – Trichy Edition.
           <Link href="/events/school-leaders-conclave-trichy-2026" className="underline underline-offset-2 hover:text-brand-turquoise">View Event</Link>
         </p>
@@ -103,7 +105,7 @@ export default async function Home() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-navy mb-4">Upcoming Events</h2>
             <p className="text-brand-muted max-w-2xl mx-auto">Discover and register for our upcoming city editions designed to foster collaboration and future-readiness.</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event, i) => {
               const eventImages: Record<string, string> = {
@@ -112,57 +114,57 @@ export default async function Home() {
                 'international-education-fair-chennai-2027': '/images/event-3.jpg',
               };
               const imageSrc = event.bannerUrl || eventImages[event.slug] || `/images/event-${(i % 3) + 1}.jpg`;
-              
+
               return (
-              <div key={event.id} className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                <div className="h-48 relative bg-gray-200">
-                  <Image
-                    src={imageSrc}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-brand-navy/10 mix-blend-multiply"></div>
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full z-10">
-                    {event.displayStatus === 'OPEN' ? 'Registration Open' : 
-                     event.displayStatus === 'LIMITED_SEATS' ? 'Limited Seats' : 
-                     event.displayStatus === 'OPENING_SOON' ? 'Opening Soon' : 
-                     event.displayStatus === 'CLOSED' ? 'Registration Closed' : event.displayStatus}
+                <div key={event.id} className="bg-white rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                  <div className="h-48 relative bg-gray-200">
+                    <Image
+                      src={imageSrc}
+                      alt={event.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-brand-navy/10 mix-blend-multiply"></div>
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-brand-navy text-xs font-bold px-3 py-1 rounded-full z-10">
+                      {event.displayStatus === 'OPEN' ? 'Registration Open' :
+                        event.displayStatus === 'LIMITED_SEATS' ? 'Limited Seats' :
+                          event.displayStatus === 'OPENING_SOON' ? 'Opening Soon' :
+                            event.displayStatus === 'CLOSED' ? 'Registration Closed' : event.displayStatus}
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="text-sm text-brand-purple font-semibold mb-2">{event.type} • {event.city}</div>
+                    <h3 className="text-xl font-heading font-bold text-brand-navy mb-4">{event.title}</h3>
+                    <div className="space-y-2 text-[15px] text-brand-muted mb-6 flex-1">
+                      <div className="flex items-center gap-2">
+                        <Calendar size={18} className="text-brand-turquoise shrink-0" />
+                        {new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock size={18} className="text-brand-turquoise shrink-0" />
+                        {to12HourTime(event.startTime) || '10:00 AM'} - {to12HourTime(event.endTime) || '07:00 PM'}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin size={18} className="text-brand-turquoise shrink-0" />
+                        {event.venue || event.city}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 mt-auto">
+                      <Link href={`/events/${event.slug}`} className="w-full">
+                        <Button variant="outline" className="w-full">View Details</Button>
+                      </Link>
+                      <Link href={`/events/${event.slug}`} className="w-full">
+                        <Button variant="default" className="w-full" disabled={event.displayStatus !== 'OPEN' && event.displayStatus !== 'LIMITED_SEATS'}>
+                          {['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus) ? 'Register' : event.displayStatus === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-                <div className="p-6 flex-1 flex flex-col">
-                  <div className="text-sm text-brand-purple font-semibold mb-2">{event.type} • {event.city}</div>
-                  <h3 className="text-xl font-heading font-bold text-brand-navy mb-4">{event.title}</h3>
-                  <div className="space-y-2 text-[15px] text-brand-muted mb-6 flex-1">
-                    <div className="flex items-center gap-2">
-                      <Calendar size={18} className="text-brand-turquoise shrink-0" /> 
-                      {new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={18} className="text-brand-turquoise shrink-0" /> 
-                      {event.startTime || '10:00'} - {event.endTime || '19:00'}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin size={18} className="text-brand-turquoise shrink-0" /> 
-                      {event.venue || event.city}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 mt-auto">
-                    <Link href={`/events/${event.slug}`} className="w-full">
-                      <Button variant="outline" className="w-full">View Details</Button>
-                    </Link>
-                    <Link href={`/events/${event.slug}`} className="w-full">
-                      <Button variant="default" className="w-full" disabled={event.displayStatus !== 'OPEN' && event.displayStatus !== 'LIMITED_SEATS'}>
-                        {['OPEN', 'LIMITED_SEATS'].includes(event.displayStatus) ? 'Register' : event.displayStatus === 'OPENING_SOON' ? 'Coming Soon' : 'Closed'}
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
               );
             })}
           </div>
-          
+
           <div className="text-center mt-12">
             <Link href="/events">
               <Button variant="ghost">View All Events</Button>
@@ -181,7 +183,7 @@ export default async function Home() {
                 <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-navy mb-6">
                   {featuredEvent.title}
                 </h2>
-                <div 
+                <div
                   className="text-lg text-brand-muted mb-8 text-balance [&_p]:inline [&_*]:max-w-full break-words"
                   dangerouslySetInnerHTML={{ __html: featuredEvent.shortDescription || '' }}
                 />
@@ -190,7 +192,7 @@ export default async function Home() {
                     <div className="w-10 h-10 rounded-full bg-brand-navy/5 flex items-center justify-center text-brand-navy"><Calendar size={20} /></div>
                     <div>
                       <div className="text-sm text-brand-muted font-medium">Date & Time</div>
-                      <div className="font-semibold text-brand-navy">{new Date(featuredEvent.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • {featuredEvent.startTime}</div>
+                      <div className="font-semibold text-brand-navy">{new Date(featuredEvent.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • {to12HourTime(featuredEvent.startTime)}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -222,31 +224,36 @@ export default async function Home() {
       <section className="py-20 bg-[image:var(--secondary-gradient)] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="uppercase tracking-widest text-sm font-semibold mb-10 text-white/80">Future Readiness Partner</div>
-          
+          <div className="uppercase tracking-widest text-sm font-semibold mb-10 text-white/80">
+            A Joint Collaboration by
+          </div>
+
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-12">
-            <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 transform hover:-translate-y-1 transition-transform">
-              <Image src="/atom-logo.png" alt="Atom Logo" fill sizes="(max-width: 768px) 14rem, 16rem" className="object-contain p-4" />
+            <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-3 transform hover:-translate-y-1 transition-transform">
+              <Image src="/atom-logo.png" alt="Atom Infinity Logo" fill unoptimized sizes="(max-width: 768px) 14rem, 16rem" className="object-contain p-2" />
             </div>
-            
+
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur text-white font-bold text-xl">
               ✕
             </div>
-            
-            <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 transform hover:-translate-y-1 transition-transform">
-              <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill sizes="(max-width: 768px) 14rem, 16rem" className="object-contain p-4" />
+
+            <div className="relative h-20 w-56 md:h-24 md:w-64 bg-white rounded-2xl shadow-xl flex items-center justify-center p-3 transform hover:-translate-y-1 transition-transform">
+              <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized sizes="(max-width: 768px) 14rem, 16rem" className="object-contain p-2" />
             </div>
           </div>
 
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">Empowering Education Leaders</h2>
           <p className="max-w-3xl mx-auto text-lg text-white/90 mb-10 leading-relaxed">
-            We are delighted to announce <span className="font-bold text-white">OriginBI Mindworks</span> as the Future Readiness Partner for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
+            We are delighted to present a joint collaboration by <span className="font-bold text-white">Atom Infinity</span> and <span className="font-bold text-white">OriginBI Mindworks</span> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
           </p>
           <Button variant="outline" className="border-white text-brand-navy bg-white hover:bg-white/90 px-8 py-6 text-base rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
-            Learn More About the Partnership
+            Learn More About the Collaboration
           </Button>
         </div>
       </section>
+
+      {/* University Partners Section */}
+      <UniversityPartnersSection />
 
       {/* Why Attend */}
       <section className="py-20 bg-brand-light">

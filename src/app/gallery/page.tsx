@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const galleryImages = [
   "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1523580494112-071d16940a18?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=2070&auto=format&fit=crop",
@@ -68,7 +68,7 @@ export default function GalleryPage() {
               </div>
             </div>
             <Image 
-              src="https://images.unsplash.com/photo-1475721028070-2051152cbc82?q=80&w=2070&auto=format&fit=crop" 
+              src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2070&auto=format&fit=crop" 
               alt="Video thumbnail" 
               fill 
               className="object-cover opacity-50 mix-blend-overlay" 

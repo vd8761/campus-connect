@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/Button';
-import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
+import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight, Building2 } from 'lucide-react';
 import { getEventStatus } from '@/lib/event-utils';
+import { to12HourTime } from '@/lib/dateUtils';
 import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
@@ -14,7 +15,18 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   let event: any = null;
   try {
     event = await prisma.event.findUnique({
-      where: { slug }
+      where: { slug },
+      include: {
+        universityEvents: {
+          include: {
+            university: {
+              include: {
+                courses: true
+              }
+            }
+          }
+        }
+      }
     });
   } catch (error) {
     console.warn("Database connection failed on Event details page (Network blocked).");
@@ -35,6 +47,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   const isRegistrationOpen = ['OPEN', 'LIMITED_SEATS'].includes(displayStatus);
 
   const imageSrc = event.bannerUrl || '/images/event-1.jpg';
+
+  const sortedInstitutions = [...(event.universityEvents || [])].sort((a: any, b: any) => {
+    const isWoxsenA = a.university?.name?.toLowerCase().includes('woxsen');
+    const isWoxsenB = b.university?.name?.toLowerCase().includes('woxsen');
+    if (isWoxsenA && !isWoxsenB) return -1;
+    if (!isWoxsenA && isWoxsenB) return 1;
+    return (a.university?.name || '').localeCompare(b.university?.name || '');
+  });
 
   return (
     <div className="bg-brand-light min-h-screen pb-20">
@@ -104,7 +124,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   <div>
                     <div className="text-sm text-white/70">Time</div>
                     <div className="font-medium">
-                      {event.startTime || '10:00 AM'} - {event.endTime || '5:00 PM'}
+                      {to12HourTime(event.startTime) || '10:00 AM'} - {to12HourTime(event.endTime) || '5:00 PM'}
                     </div>
                   </div>
                 </li>
@@ -130,17 +150,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <FileText className="text-brand-purple" /> About The Event
             </h2>
             <div 
-              className={`text-brand-muted leading-relaxed space-y-4 max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-4 [&_p]:mb-4 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:my-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:my-3 [&_a]:text-brand-purple [&_a]:underline [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-6 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:mb-5 [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:min-w-8 [&_ul_li::before]:min-h-8 [&_ul_li::before]:w-8 [&_ul_li::before]:h-8 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:border-[12px] [&_ul_li::before]:border-brand-light [&_ul_li::before]:mr-4 [&_ul_li::before]:-mt-1`}
+              className="text-slate-600 text-sm leading-normal max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_p]:mb-2.5 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:my-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:my-2.5 [&_h3]:text-base [&_h3]:font-heading [&_h3]:font-bold [&_h3]:text-brand-navy [&_h3]:mt-4 [&_h3]:mb-2.5 [&_a]:text-brand-purple [&_a]:underline [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-2.5 [&_ul]:space-y-2.5 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:leading-snug [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:w-1.5 [&_ul_li::before]:h-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:ring-2 [&_ul_li::before]:ring-purple-100/80 [&_ul_li::before]:mt-1.5 [&_ul_li::before]:mr-2.5"
               dangerouslySetInnerHTML={{ __html: event.fullDescription || 'Detailed description coming soon.' }}
             />
 
             {event.whatToExpect && (
               <>
-                <h2 className="text-2xl font-heading font-bold text-brand-navy mt-12 mb-6 flex items-center gap-2">
-                  <CheckCircle2 className="text-brand-purple" /> What to Expect
+                <h2 className="text-xl font-heading font-bold text-brand-navy mt-8 mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="text-brand-purple" size={20} /> What to Expect
                 </h2>
                 <div 
-                  className={`text-brand-muted max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:mb-4 [&_p]:mb-2 [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-6 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:mb-5 [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:min-w-8 [&_ul_li::before]:min-h-8 [&_ul_li::before]:w-8 [&_ul_li::before]:h-8 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:border-[12px] [&_ul_li::before]:border-brand-light [&_ul_li::before]:mr-4 [&_ul_li::before]:-mt-1`}
+                  className="text-slate-600 text-sm leading-normal max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:mb-2 [&_p]:mb-2.5 [&_p]:leading-relaxed [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-2.5 [&_ul]:space-y-2.5 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:leading-snug [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:w-1.5 [&_ul_li::before]:h-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:ring-2 [&_ul_li::before]:ring-purple-100/80 [&_ul_li::before]:mt-1.5 [&_ul_li::before]:mr-2.5"
                   dangerouslySetInnerHTML={{ __html: event.whatToExpect }}
                 />
               </>
@@ -167,6 +187,73 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           </div>
         </div>
       </div>
+
+      {/* Confirmed Participating Universities Section */}
+      {event.universityEvents && event.universityEvents.length > 0 && (
+        <div className="container mx-auto px-4 mt-12">
+          <div className="bg-white rounded-2xl shadow-sm border border-brand-border p-8 md:p-12">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-bold mb-2">
+                  <GraduationCap size={14} />
+                  <span>Approved Academic Partner Booths</span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy">
+                  Confirmed Participating Institutions ({event.universityEvents.length})
+                </h2>
+                <p className="text-sm text-brand-muted mt-1">
+                  Meet directly with admissions officers and explore undergraduate & postgraduate courses at these verified booths.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {sortedInstitutions.map(({ university }: any) => (
+                <div 
+                  key={university.id} 
+                  className="rounded-2xl border border-brand-border/80 hover:border-brand-purple/40 bg-white hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
+                >
+                  {/* Logo Showcase Area */}
+                  <div className="h-24 w-full bg-slate-50/70 p-3.5 flex items-center justify-center border-b border-slate-100 group-hover:bg-purple-50/20 transition-colors">
+                    {university.logoUrl ? (
+                      <img 
+                        src={university.logoUrl} 
+                        alt={university.name} 
+                        className="max-h-full max-w-[90%] object-contain group-hover:scale-105 transition-transform duration-300" 
+                      />
+                    ) : (
+                      <Building2 className="w-8 h-8 text-brand-purple/60" />
+                    )}
+                  </div>
+
+                  {/* Institution Details */}
+                  <div className="p-4 flex flex-col justify-between flex-1">
+                    <div>
+                      <h3 className="font-heading font-bold text-brand-navy text-xs leading-snug group-hover:text-brand-purple transition-colors line-clamp-2 min-h-[32px]">
+                        {university.name}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1.5">
+                        <MapPin size={12} className="text-brand-purple shrink-0" />
+                        <span className="truncate">{university.city ? `${university.city}, ${university.country}` : university.country}</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                      <span className="inline-flex items-center gap-1 font-semibold text-brand-purple">
+                        <GraduationCap size={13} />
+                        {university.courses?.length || 0} Programs
+                      </span>
+                      <span className="text-[10px] font-semibold text-slate-400 group-hover:text-brand-purple transition-colors">
+                        Verified Booth
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

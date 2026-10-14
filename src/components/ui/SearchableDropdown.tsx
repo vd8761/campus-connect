@@ -10,20 +10,40 @@ interface SearchableDropdownProps {
   value?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
+  searchPlaceholder?: string;
+  noOptionsMessage?: string;
   className?: string;
+  buttonClassName?: string;
+  menuClassName?: string;
+  align?: 'left' | 'right';
   required?: boolean;
   icon?: ElementType;
 }
 
-export function SearchableDropdown({ name, options, defaultValue, value, onChange, placeholder = 'Select an option', className = '', required, icon: Icon }: SearchableDropdownProps) {
+export function SearchableDropdown({ 
+  name, 
+  options, 
+  defaultValue, 
+  value, 
+  onChange, 
+  placeholder = 'Select an option', 
+  searchPlaceholder = 'Search...',
+  noOptionsMessage = 'No matching options found',
+  className = '', 
+  buttonClassName = '',
+  menuClassName = '',
+  align = 'left',
+  required, 
+  icon: Icon 
+}: SearchableDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   
   // Determine selected value from props or state
-  const controlledValue = value !== undefined ? options.find(opt => opt.name === value || opt.id === value) : null;
+  const controlledValue = value !== undefined ? (options.find(opt => opt.name === value || opt.id === value) || null) : null;
   const [internalSelected, setInternalSelected] = useState<{ id: string; name: string } | null>(null);
   
-  // Update internal selected if defaultValue exists and options change (e.g. async load)
+  // Update internal selected if defaultValue exists and options change
   useEffect(() => {
     if (defaultValue && !internalSelected && options.length > 0) {
       const match = options.find(opt => opt.name === defaultValue || opt.id === defaultValue);
@@ -32,7 +52,6 @@ export function SearchableDropdown({ name, options, defaultValue, value, onChang
   }, [defaultValue, options, internalSelected]);
   
   const selected = value !== undefined ? controlledValue : internalSelected;
-  
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -52,7 +71,7 @@ export function SearchableDropdown({ name, options, defaultValue, value, onChang
 
   return (
     <div className={`relative ${className}`} ref={containerRef}>
-      {/* Hidden input for form submission - we submit the 'name' as that's what the schema expects currently */}
+      {/* Hidden input for form submission */}
       <input 
         type="text" 
         name={name} 
@@ -64,56 +83,87 @@ export function SearchableDropdown({ name, options, defaultValue, value, onChang
       
       {/* Main trigger button */}
       <div 
-        className="flex items-center justify-between w-full px-4 py-3 rounded-lg border border-gray-200 bg-white cursor-pointer hover:border-brand-purple focus-within:border-brand-purple focus-within:ring-1 focus-within:ring-brand-purple transition-all"
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }
+        }}
+        className={`flex items-center justify-between w-full h-11 px-4 rounded-xl border border-brand-border/80 bg-white cursor-pointer hover:border-brand-purple/60 focus:outline-none focus:ring-2 focus:ring-brand-purple/15 focus:border-brand-purple transition-all select-none shadow-sm ${buttonClassName}`}
       >
-        <div className="flex items-center overflow-hidden mr-2">
-          {Icon && <Icon size={18} className="text-gray-400 mr-2 shrink-0" />}
-          <span className={`truncate ${selected ? 'text-brand-navy' : 'text-gray-400'}`}>
+        <div className="flex items-center overflow-hidden mr-2 min-w-0">
+          {Icon && <Icon size={18} className="text-brand-purple shrink-0 mr-2.5" />}
+          <span className={`truncate text-sm font-medium ${selected ? 'text-brand-navy' : 'text-brand-muted'}`}>
             {selected ? selected.name : placeholder}
           </span>
         </div>
-        <ChevronDown size={18} className="text-gray-400 shrink-0 mt-0.5" />
+        <ChevronDown 
+          size={16} 
+          className={`text-brand-muted shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-brand-purple' : ''}`} 
+        />
       </div>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          <div className="p-2 border-b border-gray-100 bg-gray-50/50">
+        <div className={`absolute z-50 min-w-full sm:min-w-[280px] max-w-sm mt-2 bg-white border border-brand-border rounded-2xl shadow-xl shadow-brand-navy/10 overflow-hidden animate-in fade-in zoom-in-95 duration-150 ${
+          align === 'right' ? 'right-0' : 'left-0'
+        } ${menuClassName}`}>
+          <div className="p-2 border-b border-brand-border/60 bg-brand-light/40">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted" />
               <input 
                 type="text"
-                placeholder="Search types..."
+                placeholder={searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all"
+                className="w-full pl-9 pr-7 py-2 bg-white border border-brand-border rounded-xl text-xs text-brand-navy placeholder:text-brand-muted focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all"
                 autoFocus
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-navy text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center bg-brand-border/40 hover:bg-brand-border"
+                >
+                  ×
+                </button>
+              )}
             </div>
           </div>
-          <div className="max-h-60 overflow-y-auto p-1">
+          <div className="max-h-60 overflow-y-auto p-1.5 space-y-0.5">
             {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => (
-                <div 
-                  key={option.id}
-                  onClick={() => {
-                    if (onChange) {
-                      onChange(option.id);
-                    }
-                    setInternalSelected(option);
-                    setIsOpen(false);
-                    setSearchTerm('');
-                  }}
-                  className="flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer hover:bg-brand-light text-brand-navy text-sm transition-colors"
-                >
-                  {option.name}
-                  {selected?.id === option.id && <Check size={16} className="text-brand-purple" />}
-                </div>
-              ))
+              filteredOptions.map((option) => {
+                const isSelected = selected?.id === option.id || selected?.name === option.name;
+                return (
+                  <button 
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      if (onChange) {
+                        onChange(option.id);
+                      }
+                      setInternalSelected(option);
+                      setIsOpen(false);
+                      setSearchTerm('');
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-sm transition-colors ${
+                      isSelected 
+                        ? 'bg-brand-purple/10 text-brand-purple font-semibold' 
+                        : 'text-brand-navy hover:bg-brand-light'
+                    }`}
+                  >
+                    <span className="leading-snug">{option.name}</span>
+                    {isSelected && <Check size={16} className="text-brand-purple shrink-0 ml-2" />}
+                  </button>
+                );
+              })
             ) : (
-              <div className="px-4 py-3 text-sm text-brand-muted text-center">
-                No matching event types
+              <div className="px-4 py-6 text-xs text-brand-muted text-center font-medium">
+                {noOptionsMessage}
               </div>
             )}
           </div>

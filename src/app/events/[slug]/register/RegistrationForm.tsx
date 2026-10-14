@@ -565,7 +565,7 @@ export function RegistrationForm({ eventId, eventSlug, initialData }: { eventId:
       <div className="pt-8">
         <div className="mb-6 flex flex-col items-center justify-center">
           <Turnstile 
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+            siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAFWnYtjSIMm6bFZC'}
             onSuccess={(token) => setValue('turnstileToken', token)}
             onError={() => setError("Security check failed. Please refresh and try again.")}
             options={{

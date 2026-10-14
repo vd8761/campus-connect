@@ -80,14 +80,14 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
           <input
             type="text"
             placeholder="Search by name, email, or phone..."
-            className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all"
+            className="w-full h-11 pl-9 pr-3 text-sm border border-brand-border/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple/15 focus:border-brand-purple transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         
         <div className="flex items-center gap-2 shrink-0">
-          <div className="relative z-10">
+          <div className="relative z-10 w-48 sm:w-52">
             <SearchableDropdown
               options={[
                 { id: 'all', name: 'All Events' },
@@ -97,9 +97,11 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
               onChange={(val) => setEventFilter(val)}
               placeholder="All Events"
               icon={Filter}
+              align="right"
+              className="w-full"
             />
           </div>
-          <Button variant="outline" onClick={exportCSV} className="flex items-center gap-1.5 shrink-0 text-sm py-1.5 px-3">
+          <Button variant="outline" onClick={exportCSV} className="h-11 flex items-center gap-1.5 shrink-0 text-sm px-4 rounded-xl border-brand-border/80">
             <Download size={14} />
             Export CSV
             {filteredRegistrations.length < registrations.length && (
@@ -126,12 +128,12 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
               {filteredRegistrations.length > 0 ? (
                 filteredRegistrations.map(reg => (
                   <tr key={reg.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-brand-navy max-w-[130px] truncate">
+                    <td className="px-4 py-3 font-semibold text-brand-navy max-w-[240px] truncate" title={reg.participant.fullName}>
                       {reg.participant.fullName}
                     </td>
-                    <td className="px-4 py-3 text-brand-muted max-w-[160px] truncate" title={reg.participant.email || ''}>{reg.participant.email}</td>
+                    <td className="px-4 py-3 text-brand-muted max-w-[280px] truncate" title={reg.participant.email || ''}>{reg.participant.email}</td>
                     <td className="px-4 py-3 text-brand-muted">{reg.participant.mobile}</td>
-                    <td className="px-4 py-3 text-brand-muted max-w-[160px] truncate" title={reg.event.title}>{reg.event.title}</td>
+                    <td className="px-4 py-3 text-brand-muted max-w-[240px] truncate" title={reg.event.title}>{reg.event.title}</td>
                     <td className="px-4 py-3 text-brand-muted">{new Date(reg.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                     <td className="px-4 py-3 text-right">
                       <button 

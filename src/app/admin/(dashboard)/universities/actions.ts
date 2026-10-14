@@ -26,8 +26,24 @@ export async function createUniversityAction(formData: FormData) {
 
 export async function deleteUniversityAction(id: string) {
   try {
+    // 1. Delete associated courses
+    await sql`DELETE FROM "Course" WHERE "universityId" = ${id}`;
+    
+    // 2. Delete booth visits
+    await sql`DELETE FROM "BoothVisit" WHERE "universityId" = ${id}`;
+    
+    // 3. Delete event links
+    await sql`DELETE FROM "UniversityEvent" WHERE "universityId" = ${id}`;
+    
+    // 4. Delete admin accounts linked to this university
+    await sql`DELETE FROM "Admin" WHERE "universityId" = ${id}`;
+
+    // 5. Delete University
     await sql`DELETE FROM "University" WHERE id = ${id}`;
+
     revalidatePath('/admin/universities');
+    revalidatePath('/admin');
+    revalidatePath('/partners');
     return { success: true };
   } catch (error: any) {
     console.error("Delete University Error:", error);

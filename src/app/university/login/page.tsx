@@ -114,8 +114,8 @@ export default function UniversityLogin() {
       
       <div className="mt-10 text-center flex flex-col items-center text-sm font-medium text-brand-muted/70">
         <div className="flex items-center gap-2">
-          <Lock size={14} />
-          <span>Protected by Campus Connect Security</span>
+          <Lock size={14} className="text-brand-purple" />
+          <span>Protected by Campus Square Security</span>
         </div>
       </div>
     </div>

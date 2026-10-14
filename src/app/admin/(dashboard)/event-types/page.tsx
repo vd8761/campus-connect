@@ -1,7 +1,6 @@
 import prisma from '@/lib/prisma';
-import { toggleEventTypeAction, deleteEventTypeAction } from './actions';
-import { Check, Ban, Trash2 } from 'lucide-react';
 import { AddEventTypeForm } from './AddEventTypeForm';
+import { EventTypeActions } from './EventTypeActions';
 
 export default async function EventTypesPage() {
   let eventTypes: any[] = [];
@@ -14,76 +13,67 @@ export default async function EventTypesPage() {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8 flex justify-between items-center">
+    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-brand-navy">Event Types</h1>
-          <p className="text-brand-muted mt-1">Manage the types of events available in the system.</p>
+          <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
+            Event Types
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Manage the categories and classification of educational summits and university fairs.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-brand-purple border border-purple-100 text-xs font-bold">
+          <span>{eventTypes.length} Types Configured</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-1">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        <div className="md:col-span-4">
           <AddEventTypeForm />
         </div>
 
-        <div className="md:col-span-2">
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 text-brand-muted text-sm uppercase">
+        <div className="md:col-span-8">
+          <div className="bg-white rounded-2xl border border-brand-border/80 overflow-hidden shadow-2xs">
+            <div className="p-4 md:p-5 border-b border-brand-border/60 bg-brand-light/30 flex items-center justify-between">
+              <h2 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
+                Configured Classifications ({eventTypes.length})
+              </h2>
+            </div>
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead className="bg-brand-light/50 text-[10px] font-bold text-brand-muted uppercase tracking-wider border-b border-brand-border/40">
                 <tr>
-                  <th className="px-6 py-4 font-medium">Name</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
+                  <th className="px-5 py-3">Classification Name</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-5 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-brand-border/40">
                 {eventTypes.length > 0 ? (
                   eventTypes.map(type => (
-                    <tr key={type.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-brand-navy">
+                    <tr key={type.id} className="hover:bg-brand-light/40 transition-colors">
+                      <td className="px-5 py-4 font-bold text-brand-navy">
                         {type.name}
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${type.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                          type.isActive 
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}>
                           {type.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <form action={toggleEventTypeAction.bind(null, type.id, type.isActive)}>
-                            <div className="relative group">
-                              <button 
-                                type="submit"
-                                className={`p-2 rounded-lg transition-colors ${type.isActive ? 'text-orange-500 hover:bg-orange-50' : 'text-green-500 hover:bg-green-50'}`}
-                              >
-                                {type.isActive ? <Ban size={18} /> : <Check size={18} />}
-                              </button>
-                              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-max px-2 py-1 text-xs font-medium text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                {type.isActive ? 'Deactivate' : 'Activate'}
-                              </span>
-                            </div>
-                          </form>
-                          <form action={deleteEventTypeAction.bind(null, type.id)}>
-                            <div className="relative group">
-                              <button 
-                                type="submit"
-                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-max px-2 py-1 text-xs font-medium text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Delete
-                              </span>
-                            </div>
-                          </form>
-                        </div>
+                      <td className="px-5 py-4 text-right">
+                        <EventTypeActions id={type.id} name={type.name} isActive={type.isActive} />
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={3} className="px-6 py-8 text-center text-brand-muted">No event types found.</td>
+                    <td colSpan={3} className="px-6 py-8 text-center text-brand-muted text-xs">
+                      No event types found. Add your first type using the form.
+                    </td>
                   </tr>
                 )}
               </tbody>

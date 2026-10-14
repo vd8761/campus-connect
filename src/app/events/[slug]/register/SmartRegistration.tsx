@@ -144,12 +144,15 @@ export function SmartRegistration({ eventId, eventSlug }: { eventId: string, eve
         )}
 
         <div className="flex justify-center my-6">
-          {/* Using Cloudflare's official testing Site Key (always passes) */}
           <Turnstile 
-            siteKey="1x00000000000000000000AA"
+            siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAFWnYtjSIMm6bFZC'}
             onSuccess={(token) => setTurnstileToken(token)}
-            onError={() => setError('Security check failed. Please try again.')}
+            onError={() => setError('Security check failed. Please refresh and try again.')}
             onExpire={() => setTurnstileToken(null)}
+            options={{
+              theme: 'light',
+              size: 'normal',
+            }}
           />
         </div>
 

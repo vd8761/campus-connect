@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
+import { parseInputDateToUtcNoon, to12HourTime } from '@/lib/dateUtils';
+
 export async function updateEventAction(id: string, formData: FormData) {
   const title = formData.get('title') as string;
   const slug = formData.get('slug') as string;
@@ -22,27 +24,42 @@ export async function updateEventAction(id: string, formData: FormData) {
   const whatToExpect = formData.get('whatToExpect') as string;
   const bannerUrl = formData.get('bannerUrl') as string;
 
-  await prisma.event.update({
-    where: { id },
-    data: {
-      title,
-      slug,
-      type,
-      city,
-      venue: venue || null,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      startTime: startTime || null,
-      endTime: endTime || null,
-      shortDescription: shortDescription || null,
-      fullDescription: fullDescription || null,
-      whatToExpect: whatToExpect || null,
-      bannerUrl: bannerUrl || null,
-      registrationOpen: registrationOpen ? new Date(registrationOpen) : null,
-      registrationClose: registrationClose ? new Date(registrationClose) : null,
-      maxCapacity: maxCapacity ? parseInt(maxCapacity) : 0,
-    }
-  });
+  const universityIds = formData.getAll('universityIds') as string[];
+
+  const parsedStartDate = parseInputDateToUtcNoon(startDate) || new Date();
+  const parsedEndDate = parseInputDateToUtcNoon(endDate) || parsedStartDate;
+
+  await prisma.$transaction([
+    prisma.universityEvent.deleteMany({
+      where: { eventId: id }
+    }),
+    prisma.event.update({
+      where: { id },
+      data: {
+        title,
+        slug,
+        type,
+        city,
+        venue: venue || null,
+        startDate: parsedStartDate,
+        endDate: parsedEndDate,
+        startTime: startTime ? to12HourTime(startTime) : null,
+        endTime: endTime ? to12HourTime(endTime) : null,
+        shortDescription: shortDescription || null,
+        fullDescription: fullDescription || null,
+        whatToExpect: whatToExpect || null,
+        bannerUrl: bannerUrl || null,
+        registrationOpen: parseInputDateToUtcNoon(registrationOpen),
+        registrationClose: parseInputDateToUtcNoon(registrationClose),
+        maxCapacity: maxCapacity ? parseInt(maxCapacity) : 0,
+        universityEvents: {
+          create: universityIds.map(uid => ({
+            universityId: uid
+          }))
+        }
+      }
+    })
+  ]);
 
   revalidatePath('/admin/events');
   revalidatePath('/');

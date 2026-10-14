@@ -67,7 +67,7 @@ export default async function AdminLogin(props: { searchParams: Promise<{ error?
                   name="username"
                   required
                   className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 transition-all outline-none text-brand-navy font-medium"
-                  placeholder="admin@campusconnect.com"
+                  placeholder="admin or email"
                 />
               </div>
               <InputError message="Please enter your email or username." />
@@ -92,8 +92,8 @@ export default async function AdminLogin(props: { searchParams: Promise<{ error?
       {/* Footer Text */}
       <div className="mt-10 text-center flex flex-col items-center text-sm font-medium text-brand-muted/70">
         <div className="flex items-center gap-2">
-          <Lock size={14} />
-          <span>Protected by Campus Connect Security</span>
+          <Lock size={14} className="text-brand-purple" />
+          <span>Protected by Campus Square Security</span>
         </div>
       </div>
     </div>
