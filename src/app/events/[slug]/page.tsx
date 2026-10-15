@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cache } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
@@ -14,22 +14,32 @@ import { AboutOriginBISection } from '@/components/AboutOriginBISection';
 
 export const dynamic = 'force-dynamic';
 
+const getEvent = cache(async (slug: string) => {
+  try {
+    return await prisma.event.findUnique({
+      where: { slug },
+      include: {
+        universityEvents: {
+          include: {
+            university: {
+              include: {
+                courses: true
+              }
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.warn("Database connection issue fetching event:", error);
+    return null;
+  }
+});
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const event = await prisma.event.findUnique({
-      where: { slug },
-      select: {
-        title: true,
-        edition: true,
-        shortDescription: true,
-        seoTitle: true,
-        seoDescription: true,
-        city: true,
-        state: true,
-        bannerUrl: true,
-      }
-    });
+    const event = await getEvent(slug);
 
     if (!event) {
       return {
@@ -79,25 +89,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  let event: any = null;
-  try {
-    event = await prisma.event.findUnique({
-      where: { slug },
-      include: {
-        universityEvents: {
-          include: {
-            university: {
-              include: {
-                courses: true
-              }
-            }
-          }
-        }
-      }
-    });
-  } catch (error) {
-    console.warn("Database connection failed on Event details page (Network blocked).");
-  }
+  const event = await getEvent(slug);
 
   if (!event) {
     notFound();
@@ -127,7 +119,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     '@context': 'https://schema.org',
     '@type': 'Event',
     name: event.title,
-    description: event.subtitle || event.title,
+    description: (event as any).subtitle || event.shortDescription || event.title,
     startDate: event.startDate ? new Date(event.startDate).toISOString() : undefined,
     endDate: event.endDate ? new Date(event.endDate).toISOString() : undefined,
     eventStatus: 'https://schema.org/EventScheduled',

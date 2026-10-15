@@ -129,6 +129,38 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
       });
     }
 
+    // Register student in OriginBI for Complimentary School Assessment (Level 1 Behavioral)
+    try {
+      const originBiBaseUrl = process.env.ORIGINBI_API_URL || 'http://localhost:4003';
+      const originBiRes = await fetch(`${originBiBaseUrl}/campus-square/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(8000),
+        body: JSON.stringify({
+          fullName: validatedData.studentName,
+          email: validatedData.email,
+          mobile: validatedData.phone,
+          gender: validatedData.gender,
+          studentBoard: validatedData.board,
+          schoolLevel: validatedData.schoolLevel,
+          schoolStream: validatedData.stream,
+          eventSlug: eventDetails?.slug,
+          eventName: eventDetails?.title,
+          sendEmail: true,
+        }),
+      });
+
+      if (!originBiRes.ok) {
+        const errText = await originBiRes.text();
+        console.warn(`[OriginBI] Registration response status ${originBiRes.status}:`, errText);
+      } else {
+        const originBiData = await originBiRes.json();
+        console.log('[OriginBI] Student successfully registered in OriginBI:', originBiData);
+      }
+    } catch (originBiErr) {
+      console.error('[OriginBI] Error calling OriginBI registration endpoint:', originBiErr);
+    }
+
     revalidatePath(`/events/[slug]`, 'page');
     revalidatePath(`/events/[slug]/register`, 'page');
 
