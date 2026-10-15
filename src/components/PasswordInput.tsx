@@ -23,9 +23,11 @@ export function PasswordInput() {
         <button 
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-purple transition-colors"
+          className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-purple transition-colors cursor-pointer"
+          title={showPassword ? "Hide password" : "Show password"}
+          aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
         </button>
       </div>
       <InputError message="Please enter your password." />

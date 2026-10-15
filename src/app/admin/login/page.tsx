@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import { Logo } from '@/components/Logo';
 import { PasswordInput } from '@/components/PasswordInput';
 import { ValidatedForm } from '@/components/ui/ValidatedForm';
@@ -86,9 +87,13 @@ export default async function AdminLogin(props: { searchParams: Promise<{ error?
           </div>
           
           <div className="pt-2">
-            <Button type="submit" variant="gradient" className="w-full py-6 text-base rounded-xl flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all">
+            <SubmitButton 
+              variant="gradient" 
+              loadingText="Authenticating..." 
+              className="w-full py-6 text-base rounded-xl flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all"
+            >
               Secure Login <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </Button>
+            </SubmitButton>
           </div>
         </ValidatedForm>
       </div>

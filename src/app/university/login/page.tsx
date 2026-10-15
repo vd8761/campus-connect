@@ -92,10 +92,10 @@ function UniversityLoginForm() {
             type="submit" 
             variant="gradient" 
             className="w-full py-6 text-base rounded-xl flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all"
-            disabled={isLoading}
+            isLoading={isLoading}
+            loadingText="Authenticating..."
           >
-            {isLoading ? 'Authenticating...' : 'Secure Login'} 
-            {!isLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
+            Secure Login <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </form>

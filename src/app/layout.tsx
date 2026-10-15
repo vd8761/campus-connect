@@ -16,10 +16,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://campussquare.org';
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: {
     template: '%s | Campus Square',
     default: 'Campus Square | Conclaves & University Fair Series',
@@ -94,8 +94,7 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'EducationalOrganization',
   name: 'Campus Square',
-  url: siteUrl,
-  logo: `${siteUrl}/campus-square-logo-main.jpg`,
+  ...(siteUrl ? { url: siteUrl, logo: `${siteUrl}/campus-square-logo-main.jpg` } : { logo: '/campus-square-logo-main.jpg' }),
   description: 'Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students across India.',
   sameAs: [
     'https://www.facebook.com',

@@ -138,14 +138,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     organizer: {
       '@type': 'Organization',
       name: 'Campus Square',
-      url: 'https://campussquare.org',
+      url: process.env.NEXT_PUBLIC_APP_URL || '/',
     },
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'INR',
       availability: isRegistrationOpen ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-      url: `https://campussquare.org/events/${event.slug}/register`,
+      url: `/events/${event.slug}/register`,
     },
   };
 

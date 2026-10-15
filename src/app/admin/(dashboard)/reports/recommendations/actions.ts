@@ -2,9 +2,135 @@
 
 import prisma from '@/lib/prisma';
 
+export async function matchCoursesToProfile(participant: any) {
+  const result = participant?.assessmentResult;
+  if (!result) return [];
+
+  const { scoreD = 0, scoreI = 0, scoreS = 0, scoreC = 0, primaryTrait = 'General' } = result;
+
+  // Flatten all courses from visited booths
+  const visitedCourses: any[] = [];
+  (participant.boothVisits || []).forEach((visit: any) => {
+    if (visit.status === 'PRESENT' || !visit.status) {
+      const uni = visit.university;
+      (uni?.courses || []).forEach((course: any) => {
+        visitedCourses.push({
+          ...course,
+          universityName: uni.name,
+          universityLogo: uni.logoUrl,
+          universityCity: uni.city,
+        });
+      });
+    }
+  });
+
+  if (visitedCourses.length === 0) return [];
+
+  const trait = (primaryTrait || '').toLowerCase();
+
+  const scored = visitedCourses.map((course) => {
+    const cat = (course.category || '').toLowerCase();
+    const name = (course.name || '').toLowerCase();
+    let score = 55;
+    let matchReason = '';
+
+    if (trait === 'influence') {
+      if (cat.includes('design') || name.includes('design') || name.includes('media') || name.includes('film')) {
+        score += 40;
+        matchReason = `Exceptional fit for high Influence (${Math.round(scoreI)}%). Expressive, creative, and communicative strengths align seamlessly with design thinking, media, and creative direction.`;
+      } else if (cat.includes('management') || cat.includes('business') || name.includes('bba') || name.includes('marketing')) {
+        score += 34;
+        matchReason = `Strong match for your collaborative and communicative strengths. Roles in business and marketing leverage natural persuasive flair and team synergy.`;
+      } else if (cat.includes('law')) {
+        score += 26;
+        matchReason = `Good alignment with verbal communication, persuasion, and public advocacy strengths.`;
+      } else {
+        score += 15;
+        matchReason = `Multidisciplinary program benefiting from strong interpersonal communication and collaborative aptitude.`;
+      }
+    } else if (trait === 'dominance') {
+      if (cat.includes('engineering') || name.includes('robotics') || name.includes('computer')) {
+        score += 41;
+        matchReason = `Outstanding fit for high Dominance (${Math.round(scoreD)}%). Decisive problem solving and high-impact engineering match a results-driven, goal-oriented mindset.`;
+      } else if (cat.includes('management') || name.includes('mba') || name.includes('international')) {
+        score += 36;
+        matchReason = `Strong executive fit. Drive for leadership, strategy, and measurable outcomes aligns directly with modern management disciplines.`;
+      } else if (cat.includes('law')) {
+        score += 30;
+        matchReason = `Excellent match for assertive argumentation, strategic debate, and high-stakes advocacy.`;
+      } else {
+        score += 15;
+        matchReason = `Action-oriented program complementing fast execution and decisive leadership capabilities.`;
+      }
+    } else if (trait === 'conscientiousness') {
+      if (name.includes('data') || name.includes('cyber') || name.includes('cloud') || name.includes('ai') || name.includes('analytics')) {
+        score += 43;
+        matchReason = `Top-tier fit for high Conscientiousness (${Math.round(scoreC)}%). High precision, algorithmic rigor, and systematic investigation thrive in advanced data and cloud domains.`;
+      } else if (cat.includes('computer') || cat.includes('engineering')) {
+        score += 36;
+        matchReason = `High-affinity program where structured logic, methodical problem solving, and architecture design are fundamental.`;
+      } else if (cat.includes('law') || cat.includes('science')) {
+        score += 28;
+        matchReason = `Strong alignment with evidence-based reasoning, regulatory standards, and thorough analytical research.`;
+      } else {
+        score += 15;
+        matchReason = `Methodical discipline matching structured thinking and quality-focused execution.`;
+      }
+    } else {
+      // Steadiness
+      if (cat.includes('science') || name.includes('biotech') || name.includes('pharm') || name.includes('psychology')) {
+        score += 40;
+        matchReason = `Exceptional fit for high Steadiness (${Math.round(scoreS)}%). Patient research, methodical inquiry, and empathetic orientation excel in life sciences and healthcare.`;
+      } else if (cat.includes('engineering') || cat.includes('architecture')) {
+        score += 32;
+        matchReason = `Reliable track where steady project progression, teamwork, and sustainable execution produce dependable outcomes.`;
+      } else {
+        score += 18;
+        matchReason = `Collaborative, supportive professional track aligning with steady execution and reliable teamwork.`;
+      }
+    }
+
+    const stream = (participant.stream || '').toLowerCase();
+    if (stream.includes('computer') && (cat.includes('engineering') || cat.includes('computer'))) {
+      score += 4;
+    } else if (stream.includes('science') && (cat.includes('science') || cat.includes('engineering'))) {
+      score += 4;
+    }
+
+    const matchPercent = Math.min(98, Math.max(74, score));
+
+    return {
+      courseId: course.id,
+      courseName: course.name,
+      universityName: course.universityName,
+      universityCity: course.universityCity,
+      category: course.category,
+      level: course.level,
+      marginType: course.marginType,
+      marginValue: course.marginValue,
+      matchPercent,
+      matchReason,
+    };
+  });
+
+  scored.sort((a, b) => b.matchPercent - a.matchPercent);
+
+  const uniqueRecommendations: any[] = [];
+  const seenNames = new Set<string>();
+
+  for (const c of scored) {
+    if (!seenNames.has(c.courseName)) {
+      seenNames.add(c.courseName);
+      uniqueRecommendations.push(c);
+      if (uniqueRecommendations.length >= 4) break;
+    }
+  }
+
+  return uniqueRecommendations;
+}
+
 export async function generateAiCourseMapping(participantId: string) {
   try {
-    // 1. Fetch Participant and their Assessment Result
     const participant = await prisma.participant.findUnique({
       where: { id: participantId },
       include: {
@@ -13,67 +139,39 @@ export async function generateAiCourseMapping(participantId: string) {
           include: {
             university: {
               include: {
-                courses: true
-              }
-            }
-          }
-        }
-      }
+                courses: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!participant || !participant.assessmentResult) {
-      return { error: "Participant or Assessment Result not found." };
+      return { error: 'Participant or Assessment Result not found.' };
     }
 
     if (!participant.boothVisits || participant.boothVisits.length === 0) {
-      return { error: "Student has not visited any university booths." };
+      return { error: 'Student has not visited any university booths.' };
     }
 
-    // --- CLAUDE AI INTEGRATION PLACEHOLDER ---
-    // In production, we would send the participant.assessmentResult and all visited university courses to Claude API here.
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Brief animation delay for interactive feel
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // Mock Response generated based on their D,I,S,C scores and available courses
-    const primaryTrait = participant.assessmentResult.primaryTrait;
-    
-    // Flatten all visited courses
-    let allCourses: any[] = [];
-    participant.boothVisits.forEach(visit => {
-      if (visit.status === 'PRESENT') {
-        const uni = visit.university;
-        uni.courses.forEach(c => {
-          allCourses.push({
-            ...c,
-            universityName: uni.name
-          });
-        });
-      }
-    });
+    const recommendedCourses = await matchCoursesToProfile(participant);
 
-    // Mock matching logic: 
-    // Just select 2-3 random courses from the ones they visited to simulate an AI decision
-    const recommendedCourses = allCourses.slice(0, 3).map(course => ({
-      courseId: course.id,
-      courseName: course.name,
-      universityName: course.universityName,
-      category: course.category,
-      level: course.level,
-      marginType: course.marginType,
-      marginValue: course.marginValue,
-      matchReason: `This ${course.category} program strongly aligns with the student's high ${primaryTrait} trait, indicating they will thrive in this environment.`
-    }));
+    if (recommendedCourses.length === 0) {
+      return { error: 'No matching courses found in the university booths visited.' };
+    }
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       profileType: participant.assessmentResult.profileType,
       primaryTrait: participant.assessmentResult.primaryTrait,
-      recommendations: recommendedCourses
+      recommendations: recommendedCourses,
     };
-
   } catch (error: any) {
-    console.error("AI Generation Error:", error);
-    return { error: error.message || "Failed to generate AI recommendations." };
+    console.error('AI Generation Error:', error);
+    return { error: error.message || 'Failed to generate AI recommendations.' };
   }
 }

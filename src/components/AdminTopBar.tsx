@@ -21,7 +21,7 @@ export function AdminTopBar({ onLogout }: AdminTopBarProps) {
     if (pathname.includes('/event-types')) return 'Event Categories';
     if (pathname.includes('/universities')) return 'Universities';
     if (pathname.includes('/participants')) return 'Registered Delegates';
-    if (pathname.includes('/recommendations')) return 'AI Course Recommendations';
+    if (pathname.includes('/recommendations')) return 'DISC Behavioral Profiles';
     return 'Admin';
   };
 

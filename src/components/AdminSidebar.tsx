@@ -12,7 +12,8 @@ import {
   Building2, 
   Sparkles,
   ExternalLink,
-  ShieldCheck
+  ShieldCheck,
+  BrainCircuit
 } from 'lucide-react';
 
 export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
@@ -25,12 +26,19 @@ export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
     return pathname.startsWith(path);
   };
 
-  const navSections = [
+  interface NavItem {
+    href: string;
+    label: string;
+    icon: React.ElementType;
+    badge?: string;
+  }
+
+  const navSections: { title: string; items: NavItem[] }[] = [
     {
       title: 'Overview',
       items: [
         { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/admin/reports/recommendations', label: 'AI Course Mapping', icon: Sparkles, badge: 'AI' },
+        { href: '/admin/reports/recommendations', label: 'DISC Profiles', icon: BrainCircuit },
       ],
     },
     {

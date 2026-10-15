@@ -17,7 +17,17 @@ export async function POST(req: Request) {
       }
     }
 
-    const body = await req.json();
+    let body: any;
+    try {
+      body = await req.json();
+    } catch (parseError: any) {
+      console.warn('Webhook received invalid or malformed JSON:', parseError?.message);
+      return NextResponse.json(
+        { success: false, error: `Invalid JSON payload: ${parseError?.message}` },
+        { status: 400 }
+      );
+    }
+
     const {
       email,
       mobile,
@@ -28,7 +38,7 @@ export async function POST(req: Request) {
       primaryTrait,
       profileType,
       skillDocumentUrl,
-    } = body;
+    } = body || {};
 
     const normalizedEmail = email ? String(email).trim().toLowerCase() : null;
     const normalizedMobile = mobile ? String(mobile).replace(/\D/g, '') : null;
@@ -40,21 +50,41 @@ export async function POST(req: Request) {
       );
     }
 
-    // Find the participant in Campus Connect
-    let participant = null;
-    if (normalizedEmail) {
-      participant = await prisma.participant.findFirst({
-        where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
-      });
-    }
+    // Helper for Neon DB retry on P1017
+    const executeWithRetry = async <T>(operation: () => Promise<T>): Promise<T> => {
+      try {
+        return await operation();
+      } catch (dbErr: any) {
+        if (dbErr.code === 'P1017' || dbErr?.message?.includes('closed the connection')) {
+          console.warn('Neon connection dropped (P1017). Reconnecting and retrying...');
+          try {
+            await prisma.$disconnect();
+          } catch (_) {}
+          await prisma.$connect();
+          return await operation();
+        }
+        throw dbErr;
+      }
+    };
 
-    if (!participant && normalizedMobile) {
-      participant = await prisma.participant.findFirst({
-        where: {
-          mobile: { contains: normalizedMobile.slice(-10) },
-        },
-      });
-    }
+    // Find the participant in Campus Connect
+    const participant = await executeWithRetry(async () => {
+      if (normalizedEmail) {
+        const found = await prisma.participant.findFirst({
+          where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
+        });
+        if (found) return found;
+      }
+
+      if (normalizedMobile) {
+        return await prisma.participant.findFirst({
+          where: {
+            mobile: { contains: normalizedMobile.slice(-10) },
+          },
+        });
+      }
+      return null;
+    });
 
     if (!participant) {
       return NextResponse.json(
@@ -63,30 +93,27 @@ export async function POST(req: Request) {
       );
     }
 
-    // Upsert into AssessmentResult
-    const assessmentResult = await prisma.assessmentResult.upsert({
-      where: { participantId: participant.id },
-      create: {
-        participantId: participant.id,
-        scoreD: Number(scoreD) || 0,
-        scoreI: Number(scoreI) || 0,
-        scoreS: Number(scoreS) || 0,
-        scoreC: Number(scoreC) || 0,
-        primaryTrait: String(primaryTrait || 'Unknown'),
-        profileType: String(profileType || 'General Style'),
-        skillDocumentUrl: skillDocumentUrl || null,
-        completedAt: new Date(),
-      },
-      update: {
-        scoreD: Number(scoreD) || 0,
-        scoreI: Number(scoreI) || 0,
-        scoreS: Number(scoreS) || 0,
-        scoreC: Number(scoreC) || 0,
-        primaryTrait: String(primaryTrait || 'Unknown'),
-        profileType: String(profileType || 'General Style'),
-        skillDocumentUrl: skillDocumentUrl || null,
-        completedAt: new Date(),
-      },
+    // Upsert into AssessmentResult with retry on P1017 connection dropped
+    const upsertData = {
+      scoreD: Number(scoreD) || 0,
+      scoreI: Number(scoreI) || 0,
+      scoreS: Number(scoreS) || 0,
+      scoreC: Number(scoreC) || 0,
+      primaryTrait: String(primaryTrait || 'Unknown'),
+      profileType: String(profileType || 'General Style'),
+      skillDocumentUrl: skillDocumentUrl || null,
+      completedAt: new Date(),
+    };
+
+    const assessmentResult = await executeWithRetry(async () => {
+      return await prisma.assessmentResult.upsert({
+        where: { participantId: participant.id },
+        create: {
+          participantId: participant.id,
+          ...upsertData,
+        },
+        update: upsertData,
+      });
     });
 
     return NextResponse.json({
