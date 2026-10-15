@@ -251,4 +251,21 @@ button:not(:disabled):active,
   transition: transform 0.08s ease;
 }
 
-
+/* Optimized Print Styles for Event Passes */
+@media print {
+  header, footer, nav, .OriginBIHighlightBox, .no-print, button, a {
+    display: none !important;
+  }
+  body, html {
+    background: #ffffff !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #registration-card {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+}

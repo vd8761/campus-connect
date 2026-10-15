@@ -6,7 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/Button';
 import { registerForEvent } from '@/app/actions/register';
-import { CheckCircle2, ChevronDown, AlertCircle } from 'lucide-react';
+import { CheckCircle2, ChevronDown, AlertCircle, Printer, Copy, Check } from 'lucide-react';
+import Link from 'next/link';
 import QRCode from 'react-qr-code';
 import PhoneInput, { isValidPhoneNumber, getCountryCallingCode } from 'react-phone-number-input';
 import 'react-phone-number-input/style.css'; 
@@ -141,12 +142,59 @@ const PhoneInputAdapter = React.forwardRef<HTMLInputElement, any>(
 );
 PhoneInputAdapter.displayName = 'PhoneInputAdapter';
 
-export function RegistrationForm({ eventId, eventSlug, initialData }: { eventId: string, eventSlug: string, initialData?: any }) {
+export function RegistrationForm({ 
+  eventId, 
+  eventSlug, 
+  eventTitle, 
+  initialData 
+}: { 
+  eventId: string; 
+  eventSlug: string; 
+  eventTitle?: string; 
+  initialData?: any; 
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [successData, setSuccessData] = useState<{ticketCode: string} | null>(null);
+  const [successData, setSuccessData] = useState<{
+    ticketCode: string;
+    studentName?: string;
+    email?: string;
+    phone?: string;
+  } | null>(null);
+  const [copied, setCopied] = useState(false);
   const [phoneCountry, setPhoneCountry] = useState<any>('IN');
   const countryChangeFlag = useRef(false);
+
+  useEffect(() => {
+    if (successData) {
+      const scrollToCard = () => {
+        const cardElement = document.getElementById('registration-card');
+        if (cardElement) {
+          const headerOffset = 85;
+          const elementPosition = cardElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+
+      // Run on next tick after React DOM commit and resize
+      const timer = setTimeout(scrollToCard, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [successData]);
+
+  const handleCopyCode = (code: string) => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const { register, handleSubmit, watch, setValue, control, formState: { errors } } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -239,7 +287,12 @@ export function RegistrationForm({ eventId, eventSlug, initialData }: { eventId:
     const result = await registerForEvent({ ...values, eventId });
     
     if (result.success && result.ticketCode) {
-      setSuccessData({ ticketCode: result.ticketCode });
+      setSuccessData({ 
+        ticketCode: result.ticketCode,
+        studentName: values.studentName,
+        email: values.email,
+        phone: values.phone
+      });
     } else {
       setError(result.error || 'Something went wrong.');
     }
@@ -249,26 +302,97 @@ export function RegistrationForm({ eventId, eventSlug, initialData }: { eventId:
 
   if (successData) {
     return (
-      <div className="text-center py-10 flex flex-col items-center bg-white rounded-xl shadow-sm border border-brand-border p-8 animate-in fade-in zoom-in-95 duration-500">
-        <div className="w-20 h-20 bg-status-success/10 text-status-success rounded-full flex items-center justify-center mb-6 ring-8 ring-status-success/5">
-          <CheckCircle2 size={40} className="drop-shadow-sm" />
+      <div className="text-center py-6 sm:py-10 flex flex-col items-center bg-white rounded-xl shadow-xs border border-brand-border/80 p-4 sm:p-8 animate-in fade-in zoom-in-95 duration-500 w-full">
+        {/* Animated Checkmark Circle */}
+        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4 sm:mb-6 ring-8 ring-emerald-50/60 shadow-xs">
+          <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600 drop-shadow-sm" />
         </div>
-        <h3 className="text-3xl font-heading font-extrabold text-brand-navy mb-3">Registration Confirmed!</h3>
-        <p className="text-brand-muted mb-8 max-w-md mx-auto text-lg">
+        
+        <h3 className="text-2xl sm:text-3xl font-heading font-extrabold text-brand-navy mb-2 sm:mb-3">
+          Registration Confirmed!
+        </h3>
+        
+        <p className="text-brand-muted mb-6 sm:mb-8 max-w-md mx-auto text-sm sm:text-base leading-relaxed px-2">
           You have successfully registered for the event. Please save the QR code below for check-in at the venue.
         </p>
+
+        {/* Attendee & Event Details Summary */}
+        {(eventTitle || successData.studentName) && (
+          <div className="w-full max-w-md bg-brand-light/60 border border-brand-border/80 rounded-xl p-3.5 sm:p-4 mb-6 text-left text-xs sm:text-sm">
+            {eventTitle && (
+              <div className="flex items-center justify-between py-1.5 border-b border-brand-border/40 gap-3">
+                <span className="text-brand-muted font-medium shrink-0">Event</span>
+                <span className="font-bold text-brand-navy text-right truncate">{eventTitle}</span>
+              </div>
+            )}
+            {successData.studentName && (
+              <div className="flex items-center justify-between py-1.5 border-b border-brand-border/40 gap-3">
+                <span className="text-brand-muted font-medium shrink-0">Attendee</span>
+                <span className="font-semibold text-brand-navy text-right truncate">{successData.studentName}</span>
+              </div>
+            )}
+            {successData.email && (
+              <div className="flex items-center justify-between py-1.5 gap-3">
+                <span className="text-brand-muted font-medium shrink-0">Sent To</span>
+                <span className="text-brand-navy text-right truncate font-medium">{successData.email}</span>
+              </div>
+            )}
+          </div>
+        )}
         
-        <div className="bg-white p-6 rounded-2xl border border-brand-border inline-block mb-8 shadow-md relative overflow-hidden group">
-          <div className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
-          <QRCode value={successData.ticketCode} size={220} />
-          <div className="mt-5 text-sm font-mono text-brand-navy font-bold uppercase tracking-widest bg-gray-50 py-2 rounded-lg border border-gray-100">
-            {successData.ticketCode.substring(0, 8)}
+        {/* Responsive QR Code Container */}
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-brand-border inline-flex flex-col items-center mb-6 sm:mb-8 shadow-md relative overflow-hidden group max-w-full">
+          <div className="absolute inset-0 bg-[image:var(--primary-gradient)] opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none"></div>
+          
+          <div className="p-3 bg-white rounded-xl shadow-xs flex items-center justify-center">
+            <QRCode 
+              value={successData.ticketCode} 
+              size={180}
+              style={{ height: "auto", maxWidth: "100%", width: "100%", maxHeight: "180px" }}
+              viewBox="0 0 256 256"
+            />
+          </div>
+
+          <div className="mt-4 flex items-center justify-center gap-2 bg-gray-50 py-2 px-3 sm:px-4 rounded-lg border border-gray-100 max-w-full">
+            <span className="text-xs font-mono text-brand-muted uppercase">Pass ID:</span>
+            <span className="text-xs sm:text-sm font-mono text-brand-purple font-extrabold tracking-wider">
+              {successData.ticketCode.substring(0, 8).toUpperCase()}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleCopyCode(successData.ticketCode)}
+              className="ml-1 p-1 text-gray-400 hover:text-brand-purple transition-colors rounded cursor-pointer"
+              title="Copy Full Pass ID"
+            >
+              {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+            </button>
           </div>
         </div>
         
-        <Button variant="gradient" size="lg" onClick={() => window.print()} className="cursor-pointer px-10 shadow-lg shadow-brand-purple/20">
-          Save & Print Pass
-        </Button>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
+          <Button 
+            type="button"
+            variant="gradient" 
+            size="lg" 
+            onClick={() => window.print()} 
+            className="w-full sm:w-auto cursor-pointer px-6 sm:px-8 shadow-lg shadow-brand-purple/20 flex items-center justify-center gap-2 text-sm sm:text-base h-12"
+          >
+            <Printer size={18} />
+            Save & Print Pass
+          </Button>
+          
+          <Link
+            href={`/events/${eventSlug}`}
+            className="w-full sm:w-auto text-center px-6 h-12 flex items-center justify-center rounded-lg border border-brand-border text-brand-navy font-semibold text-sm hover:bg-gray-50 transition-colors"
+          >
+            View Event Details
+          </Link>
+        </div>
+
+        <p className="text-xs text-brand-muted mt-5 text-center max-w-sm leading-relaxed">
+          Please keep this pass or take a screenshot to present at the registration desk for quick check-in.
+        </p>
       </div>
     );
   }

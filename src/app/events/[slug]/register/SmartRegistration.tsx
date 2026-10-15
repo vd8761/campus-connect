@@ -20,7 +20,15 @@ const FlagIcon = ({ country, label, className }: any) => {
   );
 };
 
-export function SmartRegistration({ eventId, eventSlug }: { eventId: string, eventSlug: string }) {
+export function SmartRegistration({ 
+  eventId, 
+  eventSlug, 
+  eventTitle 
+}: { 
+  eventId: string; 
+  eventSlug: string; 
+  eventTitle?: string;
+}) {
   const [step, setStep] = useState<1 | 2>(1);
   const [identifier, setIdentifier] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -76,6 +84,18 @@ export function SmartRegistration({ eventId, eventSlug }: { eventId: string, eve
       }
       
       setStep(2);
+      setTimeout(() => {
+        const cardElement = document.getElementById('registration-card');
+        if (cardElement) {
+          const headerOffset = 85;
+          const elementPosition = cardElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          });
+        }
+      }, 50);
     } catch (e) {
       console.error('Failed to verify', e);
       setError('An error occurred during verification. Please try again.');
@@ -87,7 +107,7 @@ export function SmartRegistration({ eventId, eventSlug }: { eventId: string, eve
   if (step === 2) {
     return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <RegistrationForm eventId={eventId} eventSlug={eventSlug} initialData={prefillData} />
+        <RegistrationForm eventId={eventId} eventSlug={eventSlug} eventTitle={eventTitle} initialData={prefillData} />
       </div>
     );
   }

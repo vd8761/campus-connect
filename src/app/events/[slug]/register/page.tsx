@@ -61,14 +61,14 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
         {/* OriginBI Assessment Highlight Box */}
         <OriginBIHighlightBox className="mb-8" />
 
-        <div className="bg-white rounded-2xl shadow-sm border border-brand-border overflow-hidden">
-          <div className="bg-[image:var(--secondary-gradient)] p-6 text-white">
-            <h2 className="text-xl font-heading font-bold">Participant Details</h2>
-            <p className="text-white/80 text-sm mt-1">Please provide accurate information for your event pass.</p>
+        <div id="registration-card" className="bg-white rounded-2xl shadow-sm border border-brand-border overflow-hidden scroll-mt-24 transition-all duration-300">
+          <div className="bg-[image:var(--secondary-gradient)] p-4 sm:p-6 text-white">
+            <h2 className="text-lg sm:text-xl font-heading font-bold">Participant Details</h2>
+            <p className="text-white/80 text-xs sm:text-sm mt-1">Please provide accurate information for your event pass.</p>
           </div>
           
-          <div className="p-8">
-            <SmartRegistration eventId={event.id} eventSlug={event.slug} />
+          <div className="p-4 sm:p-6 md:p-8">
+            <SmartRegistration eventId={event.id} eventSlug={event.slug} eventTitle={event.title} />
           </div>
         </div>
       </div>
