@@ -160,10 +160,27 @@ export const sendRegistrationEmail = async ({
     <!-- Hero Header Banner (Matches Website Hero Conclave Theme) -->
     <div class="hero">
       <!-- Joint Initiative Credential (Matches Website Hero Pill) -->
-      <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 16px auto; width: auto !important; border-collapse: separate;">
+      <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 18px auto; width: auto !important; border-collapse: separate; text-align: center;">
         <tr>
-          <td style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 6px 18px; font-size: 11px; color: #FAF7FC; font-family: 'Inter', sans-serif;">
-            <span style="color: #D8C3E5;">A joint education initiative of</span> <strong style="color: #ffffff; font-weight: 700;">Atom Infinity</strong> <span style="color: #B58BD7; font-weight: 800; margin: 0 4px;">✕</span> <strong style="color: #ffffff; font-weight: 700;">OriginBI Mindworks</strong>
+          <td align="center" style="font-size: 10px; font-weight: 700; color: #D8C3E5; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">
+            A JOINT EDUCATION INITIATIVE OF
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; padding: 6px 14px; width: auto !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);">
+              <tr>
+                <td style="vertical-align: middle; padding-right: 8px;">
+                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
+                </td>
+                <td style="vertical-align: middle; padding: 0 6px; font-size: 14px; font-weight: 800; color: #22052C;">
+                  ✕
+                </td>
+                <td style="vertical-align: middle; padding-left: 8px;">
+                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
       </table>
@@ -327,8 +344,16 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
         </tr>
       `).join('');
 
-    const cc = process.env.ENQUIRY_NOTIFICATION_CC?.trim();
-    const bcc = process.env.ENQUIRY_NOTIFICATION_BCC?.trim();
+    const parseEmailList = (value?: string): string[] => {
+      if (!value) return [];
+      return value
+        .split(/[,;]+/)
+        .map(e => e.trim())
+        .filter(e => e.length > 0);
+    };
+
+    const ccList = parseEmailList(process.env.ENQUIRY_NOTIFICATION_CC);
+    const bccList = parseEmailList(process.env.ENQUIRY_NOTIFICATION_BCC);
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://campussquare.originbi.com';
     const currentYear = new Date().getFullYear();
@@ -353,8 +378,8 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
 
     const footerRouting = [
       `To: <strong>${recipient}</strong>`,
-      cc ? `CC: <strong>${cc}</strong>` : null,
-      bcc ? `BCC: <strong>${bcc}</strong>` : null,
+      ccList.length > 0 ? `CC: <strong>${ccList.join(', ')}</strong>` : null,
+      bccList.length > 0 ? `BCC: <strong>${bccList.join(', ')}</strong>` : null,
     ].filter(Boolean).join(' • ');
 
     const htmlTemplate = `
@@ -440,10 +465,27 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
     <!-- Hero Header Banner (Matches Website Hero Dark Conclave Theme) -->
     <div class="hero">
       <!-- Joint Initiative Credential (Matches Website Hero Pill) -->
-      <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 16px; border-collapse: separate; width: auto !important;">
+      <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 18px; border-collapse: separate; width: auto !important;">
         <tr>
-          <td style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 6px 18px; font-size: 11px; color: #FAF7FC; font-family: 'Inter', sans-serif;">
-            <span style="color: #D8C3E5;">A joint education initiative of</span> <strong style="color: #ffffff; font-weight: 700;">Atom Infinity</strong> <span style="color: #B58BD7; font-weight: 800; margin: 0 4px;">✕</span> <strong style="color: #ffffff; font-weight: 700;">OriginBI Mindworks</strong>
+          <td style="font-size: 10px; font-weight: 700; color: #D8C3E5; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">
+            A JOINT EDUCATION INITIATIVE OF
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; padding: 6px 14px; width: auto !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);">
+              <tr>
+                <td style="vertical-align: middle; padding-right: 8px;">
+                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
+                </td>
+                <td style="vertical-align: middle; padding: 0 6px; font-size: 14px; font-weight: 800; color: #22052C;">
+                  ✕
+                </td>
+                <td style="vertical-align: middle; padding-left: 8px;">
+                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
       </table>
@@ -628,17 +670,17 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
       attachments: getBrandLogoAttachments(),
     };
 
-    if (cc && cc.length > 0) {
-      mailOptions.cc = cc;
+    if (ccList.length > 0) {
+      mailOptions.cc = ccList;
     }
 
-    if (bcc && bcc.length > 0) {
-      mailOptions.bcc = bcc;
+    if (bccList.length > 0) {
+      mailOptions.bcc = bccList;
     }
 
     const info = await transporter.sendMail(mailOptions);
 
-    console.log(`[Email] Enquiry notification sent to ${recipient} (CC: ${cc || 'none'}, BCC: ${bcc || 'none'}) (messageId: ${info.messageId})`);
+    console.log(`[Email] Enquiry notification sent to ${recipient} (CC: ${ccList.join(', ') || 'none'}, BCC: ${bccList.join(', ') || 'none'}) (messageId: ${info.messageId})`);
     return { success: true, messageId: info.messageId };
   } catch (err) {
     console.error(`[Email] Failed to send enquiry notification to ${recipient}:`, err);
@@ -761,10 +803,27 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
 
     <!-- Hero Header Banner -->
     <div class="hero">
-      <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 16px auto; width: auto !important; border-collapse: separate;">
+      <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 18px auto; width: auto !important; border-collapse: separate; text-align: center;">
         <tr>
-          <td style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 6px 18px; font-size: 11px; color: #FAF7FC; font-family: 'Inter', sans-serif;">
-            <span style="color: #D8C3E5;">A joint education initiative of</span> <strong style="color: #ffffff; font-weight: 700;">Atom Infinity</strong> <span style="color: #B58BD7; font-weight: 800; margin: 0 4px;">✕</span> <strong style="color: #ffffff; font-weight: 700;">OriginBI Mindworks</strong>
+          <td align="center" style="font-size: 10px; font-weight: 700; color: #D8C3E5; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">
+            A JOINT EDUCATION INITIATIVE OF
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; padding: 6px 14px; width: auto !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);">
+              <tr>
+                <td style="vertical-align: middle; padding-right: 8px;">
+                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
+                </td>
+                <td style="vertical-align: middle; padding: 0 6px; font-size: 14px; font-weight: 800; color: #22052C;">
+                  ✕
+                </td>
+                <td style="vertical-align: middle; padding-left: 8px;">
+                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
       </table>

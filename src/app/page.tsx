@@ -76,11 +76,31 @@ export default async function Home() {
 
         <div className="container mx-auto px-4 relative z-10 max-w-5xl text-center">
           {/* Joint Initiative Credential */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm font-medium text-slate-300 mb-6 backdrop-blur-sm">
-            <span className="text-slate-400">A joint education initiative of</span>
-            <span className="font-semibold text-white">Atom Infinity</span>
-            <span className="text-brand-turquoise font-bold">✕</span>
-            <span className="font-semibold text-white">OriginBI Mindworks</span>
+          <div className="flex flex-col items-center justify-center gap-2.5 mb-8">
+            <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-slate-300">
+              A joint education initiative of
+            </span>
+            <div className="inline-flex items-center gap-4 sm:gap-6 bg-white px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl border border-white/20">
+              <div className="relative h-8 w-28 sm:h-10 sm:w-36 md:h-11 md:w-40">
+                <Image
+                  src="/atom-logo.png"
+                  alt="Atom Infinity"
+                  fill
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-brand-navy font-bold text-base sm:text-xl">✕</span>
+              <div className="relative h-8 w-28 sm:h-10 sm:w-36 md:h-11 md:w-40">
+                <Image
+                  src="/Origin-BI-Logo-01.png"
+                  alt="OriginBI Mindworks"
+                  fill
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Main Hero Typography */}
