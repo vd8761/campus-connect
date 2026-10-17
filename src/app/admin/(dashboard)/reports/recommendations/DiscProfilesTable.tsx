@@ -762,17 +762,17 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
                       </td>
 
                       {/* Origin BI Database Trait with exact color_rgb */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-3 px-4">
                         {styleInfo ? (
                           <div
-                            className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition-all"
+                            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg border transition-all"
                             style={{
                               backgroundColor: `rgba(${styleInfo.colorRgb}, 0.08)`,
                               borderColor: `rgba(${styleInfo.colorRgb}, 0.28)`,
                             }}
                           >
                             <span
-                              className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 shadow-2xs"
+                              className="w-6 h-6 rounded-md flex items-center justify-center font-bold text-[11px] shrink-0 shadow-2xs"
                               style={{
                                 backgroundColor: `rgb(${styleInfo.colorRgb})`,
                                 color: getContrastTextColor(styleInfo.colorRgb),
@@ -781,11 +781,11 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
                               {styleInfo.code}
                             </span>
                             <div className="min-w-0">
-                              <span className="font-bold text-xs sm:text-sm text-slate-900 block truncate leading-tight">
+                              <span className="font-bold text-xs text-slate-900 block truncate leading-tight">
                                 {styleInfo.name}
                               </span>
                               <span
-                                className="text-[10px] font-semibold block truncate leading-tight mt-0.5"
+                                className="text-[9.5px] font-semibold block truncate leading-tight mt-0.5"
                                 style={{ color: `rgb(${styleInfo.colorRgb})` }}
                               >
                                 {styleInfo.trait}

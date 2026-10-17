@@ -312,9 +312,20 @@ export function RegistrationForm({
           Registration Confirmed!
         </h3>
         
-        <p className="text-brand-muted mb-6 sm:mb-8 max-w-md mx-auto text-sm sm:text-base leading-relaxed px-2">
-          You have successfully registered for the event. Please save the QR code below for check-in at the venue.
+        <p className="text-brand-muted mb-4 max-w-md mx-auto text-sm sm:text-base leading-relaxed px-2">
+          You have successfully registered for the event. Please save or print the QR pass below for fast check-in at the venue.
         </p>
+
+        {/* Complimentary OriginBI Assessment Delivery Box */}
+        <div className="w-full max-w-md bg-purple-50/80 border border-brand-purple/30 rounded-xl p-3.5 mb-5 text-left text-xs leading-relaxed">
+          <div className="flex items-center gap-2 font-bold text-brand-purple mb-1">
+            <CheckCircle2 size={15} />
+            <span>Complimentary OriginBI Assessment Included</span>
+          </div>
+          <p className="text-slate-600 text-[11px]">
+            An invitation link has been dispatched to your email. Take the short assessment at your convenience and visit the OriginBI desk on fair day at the venue to collect your printed single-page behavioral insight snapshot!
+          </p>
+        </div>
 
         {/* Attendee & Event Details Summary */}
         {(eventTitle || successData.studentName) && (

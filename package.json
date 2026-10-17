@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:email": "npx tsx scripts/test-email.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.1152.0",
+    "@aws-sdk/client-sesv2": "^3.1152.0",
     "@hookform/resolvers": "^5.4.0",
     "@marsidev/react-turnstile": "^1.5.3",
     "@neondatabase/serverless": "^1.1.0",

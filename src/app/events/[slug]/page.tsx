@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/Button';
-import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight, Building2 } from 'lucide-react';
+import { MapPin, Calendar, Clock, GraduationCap, FileText, CheckCircle2, ChevronRight, Building2, ExternalLink } from 'lucide-react';
 import { getEventStatus } from '@/lib/event-utils';
 import { to12HourTime } from '@/lib/dateUtils';
 import Image from 'next/image';
@@ -170,8 +170,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       <div className="relative text-white pt-8 md:pt-12 pb-12 md:pb-16 overflow-hidden">
         {/* Background Image with Premium Overlay */}
         <div className="absolute inset-0 z-0">
-          <Image 
-            src={imageSrc} 
+          <Image
+            src={imageSrc}
             alt={event.title}
             fill
             className="object-cover"
@@ -189,7 +189,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <h1 className="text-3xl md:text-5xl font-heading font-extrabold mb-4 leading-tight">
               {event.title}
             </h1>
-            <div 
+            <div
               className="text-lg text-white/80 max-w-2xl mb-8 text-balance [&_p]:inline"
               dangerouslySetInnerHTML={{ __html: event.shortDescription || '' }}
             />
@@ -249,7 +249,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <h2 className="text-2xl font-heading font-bold text-brand-navy mb-6 flex items-center gap-2">
               <FileText className="text-brand-purple" /> About The Event
             </h2>
-            <div 
+            <div
               className="text-slate-600 text-sm leading-normal max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_p]:mb-2.5 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:my-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:my-2.5 [&_h3]:text-base [&_h3]:font-heading [&_h3]:font-bold [&_h3]:text-brand-navy [&_h3]:mt-4 [&_h3]:mb-2.5 [&_a]:text-brand-purple [&_a]:underline [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-2.5 [&_ul]:space-y-2.5 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:leading-snug [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:w-1.5 [&_ul_li::before]:h-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:ring-2 [&_ul_li::before]:ring-purple-100/80 [&_ul_li::before]:mt-1.5 [&_ul_li::before]:mr-2.5"
               dangerouslySetInnerHTML={{ __html: event.fullDescription || 'Detailed description coming soon.' }}
             />
@@ -259,14 +259,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <h2 className="text-xl font-heading font-bold text-brand-navy mt-8 mb-4 flex items-center gap-2">
                   <CheckCircle2 className="text-brand-purple" size={20} /> What to Expect
                 </h2>
-                <div 
+                <div
                   className="text-slate-600 text-sm leading-normal max-w-none break-words [&_*]:!max-w-full [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:mb-2 [&_p]:mb-2.5 [&_p]:leading-relaxed [&_ul]:list-none [&_ul]:p-0 [&_ul]:my-2.5 [&_ul]:space-y-2.5 [&_ul_li]:flex [&_ul_li]:items-start [&_ul_li]:leading-snug [&_ul_li::before]:content-[''] [&_ul_li::before]:flex-none [&_ul_li::before]:w-1.5 [&_ul_li::before]:h-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-brand-purple [&_ul_li::before]:ring-2 [&_ul_li::before]:ring-purple-100/80 [&_ul_li::before]:mt-1.5 [&_ul_li::before]:mr-2.5"
                   dangerouslySetInnerHTML={{ __html: event.whatToExpect }}
                 />
               </>
             )}
           </div>
-          
+
           <div className="md:w-1/3 bg-brand-light p-8 md:p-12 flex flex-col justify-center">
             <div className="text-center">
               <GraduationCap className="w-16 h-16 text-brand-turquoise mx-auto mb-6 opacity-80" />
@@ -312,17 +312,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {sortedInstitutions.map(({ university }: any) => (
-                <div 
-                  key={university.id} 
+                <div
+                  key={university.id}
                   className="rounded-2xl border border-brand-border/80 hover:border-brand-purple/40 bg-white hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
                 >
                   {/* Logo Showcase Area */}
                   <div className="h-24 w-full bg-slate-50/70 p-3.5 flex items-center justify-center border-b border-slate-100 group-hover:bg-purple-50/20 transition-colors">
                     {university.logoUrl ? (
-                      <img 
-                        src={university.logoUrl} 
-                        alt={university.name} 
-                        className="max-h-full max-w-[90%] object-contain group-hover:scale-105 transition-transform duration-300" 
+                      <img
+                        src={university.logoUrl}
+                        alt={university.name}
+                        className="max-h-full max-w-[90%] object-contain group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
                       <Building2 className="w-8 h-8 text-brand-purple/60" />
@@ -358,6 +358,83 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         </div>
       )}
 
+      {/* Venue Information & Directions Section (Step 5) */}
+      <div className="container mx-auto px-4 mt-12">
+        <div className="bg-white rounded-2xl shadow-sm border border-brand-border p-8 md:p-12">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
+            <div className="flex-1 space-y-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-turquoise/20 text-brand-navy text-xs font-bold uppercase tracking-wider">
+                <MapPin size={14} className="text-brand-purple" />
+                <span>Venue & Location Guide</span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy">
+                Venue Information & Directions
+              </h2>
+              <div className="space-y-3 text-sm text-slate-600 leading-relaxed max-w-xl">
+                <p>
+                  <strong>Host Institution:</strong> {event.venue || 'The Little Kingdom School, Theni'}
+                </p>
+                <p>
+                  <strong>City & Region:</strong> {event.city}, {event.state || 'Tamil Nadu'}
+                </p>
+                <p>
+                  <strong>Campus Facilities:</strong> Spacious auditorium & designated air-conditioned exhibition halls for university admissions booths, counseling desks, and live on-spot OriginBI assessment result stations.
+                </p>
+                <p>
+                  <strong>Parking & Accessibility:</strong> Dedicated attendee parking is available at the school premises. Please present your digital or printed QR code entry pass at the welcome gate.
+                </p>
+              </div>
+
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.venue || 'The Little Kingdom School'}, ${event.city || 'Theni'}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-brand-navy text-white text-xs sm:text-sm font-bold shadow-md hover:bg-brand-navy/90 transition-all cursor-pointer"
+                >
+                  <MapPin size={16} />
+                  <span>Open in Google Maps</span>
+                  <ExternalLink size={14} />
+                </a>
+                <a
+                  href="https://wa.me/918056134455"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-md hover:bg-emerald-700 transition-all cursor-pointer"
+                >
+                  <span>Need Help with Directions? WhatsApp 8056134455</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-96 shrink-0 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+              <h4 className="font-heading font-bold text-brand-navy text-base mb-3 flex items-center gap-2">
+                <Clock size={16} className="text-brand-purple" />
+                <span>Event Schedule Snapshot</span>
+              </h4>
+              <ul className="space-y-3 text-xs text-slate-600">
+                <li className="flex items-start justify-between py-1.5 border-b border-slate-200/60">
+                  <span className="font-semibold text-brand-navy">1:00 PM</span>
+                  <span>Doors Open & Registration Check-in</span>
+                </li>
+                <li className="flex items-start justify-between py-1.5 border-b border-slate-200/60">
+                  <span className="font-semibold text-brand-navy">1:15 PM – 3:45 PM</span>
+                  <span>University Booth Interactions & Counseling</span>
+                </li>
+                <li className="flex items-start justify-between py-1.5 border-b border-slate-200/60">
+                  <span className="font-semibold text-brand-navy">On-Spot</span>
+                  <span>Free OriginBI Assessment Results Desk</span>
+                </li>
+                <li className="flex items-start justify-between py-1.5">
+                  <span className="font-semibold text-brand-navy">4:00 PM</span>
+                  <span>Fair Concludes</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* How Students Benefit Section */}
       <div className="mt-14">
         <OriginBIBenefitsSection eventSlug={event.slug} isRegistrationOpen={isRegistrationOpen} />
@@ -366,6 +443,73 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       {/* About OriginBI Mindworks Section */}
       <div className="mt-4">
         <AboutOriginBISection />
+      </div>
+
+      {/* Event FAQs and Contact Information */}
+      <div className="container mx-auto px-4 mt-14">
+        <div className="bg-white rounded-3xl shadow-sm border border-brand-border p-8 md:p-12">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <h3 className="text-2xl md:text-3xl font-heading font-bold text-brand-navy mb-2">
+              Event FAQs & Official Support
+            </h3>
+            <p className="text-sm text-brand-muted">
+              Everything you need to know about attending {event.title} in {event.city}.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <h4 className="font-heading font-bold text-sm text-brand-navy mb-1.5">
+                Is registration mandatory for entry?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Yes. Online registration is 100% free and ensures you receive your entry QR pass along with access to the complimentary OriginBI behavioral assessment.
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <h4 className="font-heading font-bold text-sm text-brand-navy mb-1.5">
+                Can parents and siblings accompany the student?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Absolutely. Parents and guardians are strongly encouraged to attend together to discuss course offerings and scholarship opportunities directly with admissions officers.
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <h4 className="font-heading font-bold text-sm text-brand-navy mb-1.5">
+                How do I collect my OriginBI assessment report?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                After taking your short assessment online, visit the dedicated OriginBI desk at the venue on fair day to collect your single-page profile summary and expert career interpretation.
+              </p>
+            </div>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <h4 className="font-heading font-bold text-sm text-brand-navy mb-1.5">
+                Who should I contact for special requests or directions?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Reach out to our event coordination team directly via WhatsApp at <strong>8056134455</strong> or email <strong>interact@atom-infinity.com</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-brand-navy text-white rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+            <div>
+              <h4 className="text-lg font-heading font-bold text-white mb-1">
+                Ready to Join Us at {event.city}?
+              </h4>
+              <p className="text-xs text-gray-300">
+                Register now to secure your attendee entry pass and unlock your free OriginBI assessment.
+              </p>
+            </div>
+            {isRegistrationOpen && (
+              <Link href={`/events/${event.slug}/register`} className="shrink-0">
+                <Button variant="gradient" size="lg" className="rounded-xl px-8 shadow-lg">
+                  Register Now — FREE
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

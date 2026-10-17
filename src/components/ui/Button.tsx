@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react"
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "outline" | "ghost" | "link" | "gradient"
+  variant?: "default" | "outline" | "ghost" | "link" | "gradient" | "white" | "outlineWhite"
   size?: "default" | "sm" | "lg" | "icon"
   isLoading?: boolean
   loadingText?: string
@@ -19,7 +19,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       outline: "border border-brand-border bg-white hover:bg-brand-light text-brand-navy",
       ghost: "hover:bg-brand-light hover:text-brand-navy text-brand-muted",
       link: "text-brand-purple underline-offset-4 hover:underline",
-      gradient: "bg-[image:var(--primary-gradient)] text-white shadow hover:opacity-90"
+      gradient: "bg-[image:var(--primary-gradient)] text-white shadow hover:opacity-90",
+      white: "bg-white text-brand-navy hover:bg-slate-100 shadow font-bold",
+      outlineWhite: "border border-white/40 bg-white/5 hover:bg-white hover:text-brand-navy text-white shadow-sm font-semibold transition-all"
     }
 
     const sizes = {

@@ -75,7 +75,7 @@ export default function NewEventPage() {
               <label className="block text-sm font-bold text-brand-navy mb-2">URL Slug <span className="text-red-500">*</span></label>
               <div className="flex">
                 <span className="inline-flex items-center h-11 px-4 rounded-l-xl border border-r-0 border-brand-border/80 bg-gray-50 text-gray-500 text-sm select-none">
-                  campusconnect.com/events/
+                  campussquare.originbi.com/events/
                 </span>
                 <input 
                   type="text" 

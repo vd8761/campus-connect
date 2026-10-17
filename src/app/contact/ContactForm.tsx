@@ -9,17 +9,20 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Send, AlertCircle } from 'lucide-react';
 
+import { submitContactUsMessage } from '@/app/actions/enquiries';
+
 const contactSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
   lastName: z.string().min(2, "Last name is required"),
   email: z.string().email("Valid email is required"),
-  subject: z.string().min(5, "Subject is required"),
+  subject: z.string().min(3, "Subject is required"),
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema)
@@ -27,12 +30,21 @@ export function ContactForm() {
 
   const onSubmit = async (values: z.infer<typeof contactSchema>) => {
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+    setServerError(null);
+
+    try {
+      const res = await submitContactUsMessage(values);
+      if (res.success) {
+        setSubmitted(true);
+        reset();
+      } else {
+        setServerError(res.error || "Failed to submit message. Please try again.");
+      }
+    } catch (err: any) {
+      setServerError("An unexpected error occurred. Please contact us via WhatsApp.");
+    } finally {
       setIsSubmitting(false);
-      setSubmitted(true);
-      reset();
-    }, 1500);
+    }
   };
 
   return (
@@ -45,9 +57,12 @@ export function ContactForm() {
             <Send size={32} />
           </div>
           <h4 className="text-2xl font-bold mb-2">Message Sent!</h4>
-          <p className="text-green-700">Thank you for reaching out. We will get back to you within 24 hours.</p>
+          <p className="text-green-700 text-sm mb-3">Thank you for reaching out. Our team will get back to you promptly.</p>
+          <div className="text-xs text-slate-600 bg-white/80 p-3 rounded-lg border border-green-200 mb-4 max-w-sm">
+            For urgent coordination, WhatsApp us at <strong>8056134455</strong> or email <strong>interact@atom-infinity.com</strong>.
+          </div>
           <Button 
-            className="mt-6" 
+            className="mt-2" 
             variant="outline" 
             onClick={() => setSubmitted(false)}
           >
@@ -56,6 +71,12 @@ export function ContactForm() {
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {serverError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+              <AlertCircle size={16} className="shrink-0" />
+              <span>{serverError}</span>
+            </div>
+          )}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">First Name <span className="text-status-error">*</span></label>

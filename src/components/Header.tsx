@@ -14,9 +14,10 @@ export function Header() {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
-    { name: 'Events', href: '/events' },
-    { name: 'Partners', href: '/partners' },
-    { name: 'Gallery', href: '/gallery' },
+    { name: 'Editions', href: '/events' },
+    { name: 'University Partners', href: '/partnerships' },
+    { name: 'Host an Edition', href: '/host' },
+    { name: 'FAQs', href: '/faq' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -31,18 +32,17 @@ export function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-6">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
             return (
-              <Link 
-                key={link.name} 
+              <Link
+                key={link.name}
                 href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  isActive 
-                    ? 'text-brand-primary font-bold' 
-                    : 'text-brand-muted hover:text-brand-navy'
-                }`}
+                className={`text-sm font-medium transition-colors ${isActive
+                  ? 'text-brand-primary font-bold'
+                  : 'text-brand-muted hover:text-brand-navy'
+                  }`}
               >
                 {link.name}
               </Link>
@@ -51,15 +51,15 @@ export function Header() {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-4">
-          <Link href="/events">
-            <Button variant="gradient">Register Now</Button>
+        <div className="hidden lg:flex items-center gap-4">
+          <Link href="/events/university-fair-2026-theni/register">
+            <Button variant="gradient" className="shadow-md">Register Now</Button>
           </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden p-2 text-brand-navy cursor-pointer"
+        <button
+          className="lg:hidden p-2 text-brand-navy cursor-pointer"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle Menu"
         >
@@ -69,24 +69,23 @@ export function Header() {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-brand-border py-4 px-4 flex flex-col gap-4 shadow-lg">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-brand-border py-4 px-4 flex flex-col gap-3 shadow-xl z-50">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
             return (
-              <Link 
-                key={link.name} 
+              <Link
+                key={link.name}
                 href={link.href}
-                className={`text-base font-medium py-2 border-b border-brand-light last:border-0 ${
-                  isActive ? 'text-brand-primary font-bold' : 'text-brand-navy'
-                }`}
+                className={`text-base font-medium py-2.5 border-b border-brand-light last:border-0 ${isActive ? 'text-brand-primary font-bold' : 'text-brand-navy'
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
               </Link>
             );
           })}
-          <Link href="/events" onClick={() => setIsMobileMenuOpen(false)}>
-            <Button variant="gradient" className="w-full mt-2">Register Now</Button>
+          <Link href="/events/university-fair-2026-theni/register" onClick={() => setIsMobileMenuOpen(false)}>
+            <Button variant="gradient" className="w-full mt-2 shadow-md">Register Now</Button>
           </Link>
         </div>
       )}

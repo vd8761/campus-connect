@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       }
     };
 
-    // Find the participant in Campus Connect
+    // Find the participant in Campus Square
     const participant = await executeWithRetry(async () => {
       if (normalizedEmail) {
         const found = await prisma.participant.findFirst({

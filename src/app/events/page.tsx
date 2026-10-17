@@ -8,8 +8,8 @@ import { Sparkles, MapPin, Building2, Users } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Conclaves & University Fairs | Campus Square',
-  description: 'Browse and register for upcoming university fairs and educational conclaves connecting school leaders and universities.',
+  title: 'Editions & University Fairs | Campus Square',
+  description: 'Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.',
 };
 
 export default async function EventsPage() {
@@ -29,7 +29,6 @@ export default async function EventsPage() {
     if (e.status === 'LIMITED_SEATS') {
       displayStatus = 'LIMITED_SEATS';
     } else if (e.status === 'OPEN') {
-      // If admin explicitly marked it open, consider it open
       displayStatus = 'OPEN';
     } else {
       const dynamicStatus = getEventStatus(
@@ -65,30 +64,34 @@ export default async function EventsPage() {
   return (
     <div className="bg-brand-light min-h-screen pb-24">
       {/* Premium Hero Banner */}
-      <section className="bg-brand-navy text-white pt-20 pb-20 px-4 relative overflow-hidden">
+      <section className="bg-brand-navy text-white pt-10 sm:pt-14 pb-16 px-4 relative overflow-hidden">
         {/* Ambient Glows */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-brand-turquoise/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container mx-auto max-w-5xl text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-purple/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-6 border border-white/10">
-            <Sparkles size={14} className="text-brand-turquoise" />
-            <span>Conclaves & University Fairs</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-purple/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-5 border border-white/10">
+            <Building2 size={14} className="text-brand-turquoise" />
+            <span>Campus Square Editions</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight mb-6">
-            Connecting Leaders Across <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Every City</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight mb-4">
+            Where Education <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Meets Opportunity</span>
           </h1>
 
+          <p className="text-sm font-semibold text-brand-turquoise mb-4 uppercase tracking-wider">
+            Connect Campuses. Schools. Universities. Students. Opportunities.
+          </p>
+
           <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed mb-8">
-            Explore our curated city editions uniting school principals, university chancellors, admission directors, and education innovators across India.
+            Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
           </p>
 
           {/* Quick Metrics */}
           <div className="flex flex-wrap items-center justify-center gap-6 pt-4 border-t border-white/10 max-w-2xl mx-auto">
             <div className="flex items-center gap-2 text-sm text-white/90">
               <MapPin size={16} className="text-brand-turquoise" />
-              <span className="font-bold text-white">3</span> City Editions
+              <span className="font-bold text-white">First Edition:</span> Theni (Oct 24, 2026)
             </div>
             <div className="h-4 w-px bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-sm text-white/90">
@@ -98,7 +101,7 @@ export default async function EventsPage() {
             <div className="h-4 w-px bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-sm text-white/90">
               <Users size={16} className="text-brand-turquoise" />
-              <span className="font-bold text-white">5,000+</span> Academic Leaders
+              <span className="font-bold text-white">Free</span> OriginBI Assessment
             </div>
           </div>
         </div>

@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Gallery',
-  description: 'Explore moments from our past university fairs and educational events.',
+  title: 'Event Gallery | Campus Square',
+  description: 'Explore moments from Campus Square school-hosted university fairs, student admissions interactions, and OriginBI assessment sessions.',
 };
 
 const galleryImages = [
@@ -21,13 +21,19 @@ const galleryImages = [
 
 export default function GalleryPage() {
   return (
-    <main className="min-h-screen bg-gray-50 pb-20">
+    <main className="min-h-screen bg-slate-50 pb-20">
       {/* Hero Section */}
-      <section className="bg-brand-navy text-white pt-32 pb-20 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">Moments in Focus</h1>
-          <p className="text-xl text-gray-300">
-            Explore highlights from our past events, connecting students, educators, and university leaders globally.
+      <section className="bg-brand-navy text-white pt-28 pb-20 px-4 relative overflow-hidden">
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-brand-turquoise text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur">
+            <span>Connect Campuses.</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-4">Moments in Focus</h1>
+          <p className="text-sm font-semibold text-brand-turquoise mb-4 uppercase tracking-wider">
+            Schools. Universities. Students. Opportunities.
+          </p>
+          <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            Highlights from Campus Square university fairs, student admissions interactions, school leadership discussions, and on-spot OriginBI assessment result sessions.
           </p>
         </div>
       </section>

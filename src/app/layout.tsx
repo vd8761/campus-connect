@@ -22,19 +22,20 @@ export const metadata: Metadata = {
   ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: {
     template: '%s | Campus Square',
-    default: 'Campus Square | Conclaves & University Fair Series',
+    default: 'Campus Square | Connect Campuses',
   },
-  description: "Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students across India.",
+  description: "Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.",
   keywords: [
     "Campus Square",
+    "Connect Campuses",
     "University Fair India",
+    "School Hosted University Fair",
     "Higher Education Conclave",
-    "School Leaders Summit",
     "Student Career Opportunities",
-    "University Admissions Fair",
+    "OriginBI Assessment",
     "Top Universities in India"
   ],
-  authors: [{ name: "Campus Square" }],
+  authors: [{ name: "Campus Square - Atom Infinity & OriginBI" }],
   creator: "Campus Square",
   publisher: "Campus Square",
   formatDetection: {
@@ -46,8 +47,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Campus Square | Conclaves & University Fair Series',
-    description: 'Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students.',
+    title: 'Campus Square | Connect Campuses',
+    description: 'Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.',
     url: siteUrl,
     siteName: 'Campus Square',
     locale: 'en_IN',
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
         url: '/campus-square-logo-main.jpg',
         width: 1200,
         height: 630,
-        alt: 'Campus Square - Conclaves & University Fair Series',
+        alt: 'Campus Square - Connect Campuses',
       },
     ],
   },
@@ -96,6 +97,16 @@ const organizationJsonLd = {
   name: 'Campus Square',
   ...(siteUrl ? { url: siteUrl, logo: `${siteUrl}/campus-square-logo-main.jpg` } : { logo: '/campus-square-logo-main.jpg' }),
   description: 'Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students across India.',
+  telephone: '+91-8056134455',
+  email: 'interact@atom-infinity.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy',
+    addressLocality: 'Chennai',
+    addressRegion: 'Tamil Nadu',
+    postalCode: '600032',
+    addressCountry: 'IN'
+  },
   sameAs: [
     'https://www.facebook.com',
     'https://www.instagram.com',

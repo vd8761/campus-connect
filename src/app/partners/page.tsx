@@ -8,8 +8,8 @@ import { MapPin, Sparkles, Building2, ExternalLink } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Our University Partners | Campus Connect',
-  description: 'Explore our prestigious network of university and higher education partners across India and worldwide.',
+  title: 'Our University Partners | Campus Square',
+  description: 'We are proud to collaborate with universities and higher education institutions to connect schools, students and families with meaningful academic opportunities.',
 };
 
 export default function PartnersPage() {
@@ -21,14 +21,24 @@ export default function PartnersPage() {
         <div className="container mx-auto max-w-4xl text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-turquoise text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur">
             <Sparkles size={14} />
-            <span>Higher Education Ecosystem</span>
+            <span>Campus Square University Network</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-6 tracking-tight">
-            Our Prestigious <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">University Partners</span>
+            Our University <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Partners</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            We collaborate with premier national and international universities, deemed institutions, and innovative academic hubs to bring high-impact pathways to students.
+          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-6">
+            We are proud to collaborate with universities and higher education institutions to connect schools, students and families with meaningful academic opportunities.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link href="/partnerships#enquiry-form">
+              <Button variant="gradient" size="lg">Become a University Partner</Button>
+            </Link>
+            <a href="https://wa.me/918056134455" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-navy">
+                WhatsApp Us: 8056134455
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -38,9 +48,11 @@ export default function PartnersPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
             <div>
               <h2 className="text-2xl md:text-3xl font-heading font-bold text-brand-navy">All Participating Institutions</h2>
-              <p className="text-sm text-brand-muted mt-1">Represented across our conclaves, education fairs, and academic summits ({UNIVERSITY_PARTNERS.length} Partners)</p>
+              <p className="text-sm text-brand-muted mt-1">
+                Associated across our school-hosted university fairs and academic editions ({UNIVERSITY_PARTNERS.length} Partners)
+              </p>
             </div>
-            <Link href="/contact">
+            <Link href="/partnerships#enquiry-form">
               <Button variant="default" size="sm">Partner With Us</Button>
             </Link>
           </div>
