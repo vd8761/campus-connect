@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { submitUniversityPartnershipEnquiry } from '@/app/actions/enquiries';
 import { CheckCircle2, AlertCircle, Building2, User, Mail, Phone, Globe, MapPin, Send, ArrowRight } from 'lucide-react';
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 
 interface FormState {
   universityName: string;
@@ -14,9 +15,12 @@ interface FormState {
   website: string;
   preferredLocations: string;
   partnershipInterests: string;
+  turnstileToken: string;
 }
 
 export function UniversityPartnershipForm() {
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
+
   const [formData, setFormData] = useState<FormState>({
     universityName: '',
     contactPerson: '',
@@ -26,6 +30,7 @@ export function UniversityPartnershipForm() {
     website: '',
     preferredLocations: '',
     partnershipInterests: '',
+    turnstileToken: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -70,6 +75,9 @@ export function UniversityPartnershipForm() {
       case 'partnershipInterests':
         if (!value.trim()) return 'Please tell us about your courses or partnership interests.';
         if (value.trim().length < 5) return 'Please provide more details on your courses/interests.';
+        return '';
+      case 'turnstileToken':
+        if (!value.trim()) return 'Please complete the Cloudflare human verification check.';
         return '';
       default:
         return '';
@@ -156,17 +164,25 @@ export function UniversityPartnershipForm() {
           website: '',
           preferredLocations: '',
           partnershipInterests: '',
+          turnstileToken: '',
         });
+        turnstileRef.current?.reset();
         setErrors({});
         setTouched({});
       } else {
         if (res.fieldErrors) {
           setErrors(res.fieldErrors);
         }
+        if (res.error?.includes('verification') || res.error?.includes('Security')) {
+          setFormData(prev => ({ ...prev, turnstileToken: '' }));
+          turnstileRef.current?.reset();
+        }
         setErrorMessage(res.error || "Failed to submit enquiry. Please check your inputs.");
       }
     } catch (err: any) {
-      setErrorMessage("An unexpected error occurred. Please try again or reach out on WhatsApp at 8056134455.");
+      turnstileRef.current?.reset();
+      setFormData(prev => ({ ...prev, turnstileToken: '' }));
+      setErrorMessage("An unexpected error occurred. Please try again or reach out on WhatsApp at +91 80561 34455.");
     } finally {
       setLoading(false);
     }
@@ -175,8 +191,20 @@ export function UniversityPartnershipForm() {
   const resetForm = () => {
     setSuccessData(null);
     setErrorMessage(null);
+    setFormData({
+      universityName: '',
+      contactPerson: '',
+      designation: '',
+      officialEmail: '',
+      phoneNumber: '',
+      website: '',
+      preferredLocations: '',
+      partnershipInterests: '',
+      turnstileToken: '',
+    });
     setErrors({});
     setTouched({});
+    setTimeout(() => turnstileRef.current?.reset(), 100);
   };
 
   const getInputClass = (fieldName: string, hasIcon: boolean = false) => {
@@ -467,6 +495,38 @@ export function UniversityPartnershipForm() {
               <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1 font-medium animate-in fade-in slide-in-from-top-1">
                 <AlertCircle size={13} className="shrink-0" />
                 <span>{errors.partnershipInterests}</span>
+              </p>
+            )}
+          </div>
+
+          {/* Cloudflare Turnstile Human Verification */}
+          <div className="flex flex-col items-center justify-center my-5">
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAFWnYtjSIMm6bFZC'}
+              onSuccess={(token) => {
+                setFormData(prev => ({ ...prev, turnstileToken: token }));
+                setErrors(prev => {
+                  const next = { ...prev };
+                  delete next.turnstileToken;
+                  return next;
+                });
+              }}
+              onExpire={() => {
+                setFormData(prev => ({ ...prev, turnstileToken: '' }));
+              }}
+              onError={() => {
+                setErrorMessage('Human security verification encountered an issue. Please try refreshing.');
+              }}
+              options={{
+                theme: 'light',
+                size: 'normal',
+              }}
+            />
+            {errors.turnstileToken && (
+              <p className="text-red-500 text-xs mt-2 flex items-center gap-1 font-medium animate-in fade-in slide-in-from-top-1">
+                <AlertCircle size={13} className="shrink-0" />
+                <span>{errors.turnstileToken}</span>
               </p>
             )}
           </div>

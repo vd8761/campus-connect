@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { UNIVERSITY_PARTNERS } from '@/data/university-partners';
 import { MapPin, Sparkles, Building2, ExternalLink } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -34,8 +35,9 @@ export default function PartnersPage() {
               <Button variant="gradient" size="lg">Become a University Partner</Button>
             </Link>
             <a href="https://wa.me/918056134455" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-navy">
-                WhatsApp Us: 8056134455
+              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-navy flex items-center gap-2">
+                <WhatsAppIcon className="w-5 h-5 shrink-0" />
+                <span>WhatsApp: +91 80561 34455</span>
               </Button>
             </a>
           </div>

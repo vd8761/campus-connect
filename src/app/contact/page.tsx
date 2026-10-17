@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { ContactForm } from './ContactForm';
 
 export const metadata: Metadata = {
@@ -45,16 +46,16 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-3xl font-heading font-bold mb-4">Contact Information</h3>
                 <p className="text-gray-300 text-xs sm:text-sm mb-8 leading-relaxed">
-                  Campus Square — A Collaborative Initiative by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong>.
+                  Campus Square - A Collaborative Initiative by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong>.
                 </p>
 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <Phone className="w-6 h-6 text-brand-turquoise mt-1 shrink-0" />
+                    <WhatsAppIcon className="w-6 h-6 text-brand-turquoise mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-base mb-1">WhatsApp & Call</h4>
                       <a href="https://wa.me/918056134455" target="_blank" rel="noopener noreferrer" className="text-brand-turquoise hover:underline text-sm font-semibold block">
-                        8056134455 (WhatsApp)
+                        +91 80561 34455 (WhatsApp)
                       </a>
                       <p className="text-gray-400 text-xs mt-0.5">Quick inquiries & event coordination</p>
                     </div>
@@ -91,7 +92,7 @@ export default function ContactPage() {
                       <p className="text-gray-300 text-xs leading-relaxed">
                         The Little Kingdom School,<br />
                         Theni, Tamil Nadu, India<br />
-                        Saturday, 24 October 2026 (1:00 PM – 4:00 PM)
+                        Saturday, 24 October 2026 (1:00 PM - 4:00 PM)
                       </p>
                     </div>
                   </div>

@@ -85,17 +85,18 @@ export function OriginBIBenefitsSection({ eventSlug, isRegistrationOpen = true }
         
         {/* Main Section Header with Premium Brand-Integrated Badge */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-brand-border/90 shadow-xs mb-5 hover:border-brand-purple/40 transition-colors">
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-purple">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-brand-border/90 shadow-xs mb-5 hover:border-brand-purple/40 transition-colors text-xs">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-brand-purple">
               <Sparkles size={13} className="text-brand-purple" />
               OriginBI Assessment
             </span>
-            <span className="h-3 w-px bg-brand-border"></span>
-            <span className="text-xs font-bold text-brand-navy">
+            <span className="text-slate-300">•</span>
+            <span className="font-semibold text-brand-navy">
               Worth ₹{ORIGINBI_ASSESSMENT_AMOUNT}
             </span>
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
-              Free with Registration
+            <span className="text-slate-300">•</span>
+            <span className="font-bold text-brand-purple">
+              100% Free with Registration
             </span>
           </div>
 
@@ -200,13 +201,13 @@ export function OriginBIBenefitsSection({ eventSlug, isRegistrationOpen = true }
             {/* Price & Summary Box */}
             <div className="p-5 rounded-2xl bg-gradient-to-br from-brand-navy to-[#261047] text-white flex flex-col justify-between shadow-md sm:col-span-2 lg:col-span-1">
               <div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-turquoise mb-2">
                   <ShieldCheck size={16} />
                   <span>100% Free for Attendees</span>
                 </div>
                 <div className="text-2xl font-heading font-extrabold mb-1">
                   Value: <span className="line-through text-white/50 text-xl mr-1.5">₹{ORIGINBI_ASSESSMENT_AMOUNT}</span>
-                  <span className="text-emerald-400">FREE</span>
+                  <span className="text-brand-turquoise">FREE</span>
                 </div>
                 <p className="text-xs text-white/80 leading-relaxed mt-2">
                   Combined with direct interactions with universities and education leaders at Campus Square, the assessment gives students both external opportunities and internal clarity.
@@ -229,17 +230,19 @@ export function OriginBIBenefitsSection({ eventSlug, isRegistrationOpen = true }
             </div>
           </div>
 
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/80 text-xs sm:text-sm text-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <span className="text-base shrink-0">💡</span>
-              <span className="font-medium leading-relaxed">
-                <strong>Joint Collaboration:</strong> Atom Infinity & OriginBI Mindworks deliver this behavioural clarity assessment at zero extra cost to every registered attendee.
-              </span>
+          <div className="p-4 sm:p-5 rounded-2xl bg-white border border-brand-border/80 shadow-xs text-xs sm:text-sm text-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-brand-purple/10 flex items-center justify-center shrink-0">
+                <Sparkles size={16} className="text-brand-purple" />
+              </div>
+              <p className="font-medium leading-relaxed text-slate-700">
+                <strong className="text-brand-navy font-bold">Joint Collaboration:</strong> Atom Infinity & OriginBI Mindworks deliver this behavioural clarity assessment at zero extra cost to every registered attendee.
+              </p>
             </div>
-            <div className="shrink-0 self-start sm:self-auto">
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 whitespace-nowrap shadow-xs">
-                <ShieldCheck size={13} className="text-emerald-600" />
-                No Hidden Charges
+            <div className="shrink-0 flex items-center self-start sm:self-auto">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-full bg-brand-purple/10 text-brand-purple border border-brand-purple/20 whitespace-nowrap shadow-2xs">
+                <ShieldCheck size={14} className="text-brand-purple" />
+                <span>No Hidden Charges</span>
               </span>
             </div>
           </div>

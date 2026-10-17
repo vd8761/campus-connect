@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { submitSchoolHostingEnquiry } from '@/app/actions/enquiries';
 import { CheckCircle2, AlertCircle, School, User, Mail, Phone, MapPin, Calendar, Users, Send, ChevronDown } from 'lucide-react';
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 
 interface FormState {
   schoolName: string;
@@ -15,9 +16,12 @@ interface FormState {
   expectedStudentAudience: string;
   preferredDates: string;
   notes: string;
+  turnstileToken: string;
 }
 
 export function SchoolHostingForm() {
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
+
   const [formData, setFormData] = useState<FormState>({
     schoolName: '',
     location: '',
@@ -28,6 +32,7 @@ export function SchoolHostingForm() {
     expectedStudentAudience: '250-500 Students',
     preferredDates: '',
     notes: '',
+    turnstileToken: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -69,6 +74,9 @@ export function SchoolHostingForm() {
         return '';
       case 'preferredDates':
         if (!value.trim()) return 'Please specify preferred month, term, or tentative dates.';
+        return '';
+      case 'turnstileToken':
+        if (!value.trim()) return 'Please complete the Cloudflare human verification check.';
         return '';
       default:
         return '';
@@ -152,17 +160,25 @@ export function SchoolHostingForm() {
           expectedStudentAudience: '250-500 Students',
           preferredDates: '',
           notes: '',
+          turnstileToken: '',
         });
+        turnstileRef.current?.reset();
         setErrors({});
         setTouched({});
       } else {
         if (res.fieldErrors) {
           setErrors(res.fieldErrors);
         }
+        if (res.error?.includes('verification') || res.error?.includes('Security')) {
+          setFormData(prev => ({ ...prev, turnstileToken: '' }));
+          turnstileRef.current?.reset();
+        }
         setErrorMessage(res.error || "Failed to submit enquiry. Please check your inputs.");
       }
     } catch (err: any) {
-      setErrorMessage("An unexpected error occurred. Please try again or reach out on WhatsApp at 8056134455.");
+      turnstileRef.current?.reset();
+      setFormData(prev => ({ ...prev, turnstileToken: '' }));
+      setErrorMessage("An unexpected error occurred. Please try again or reach out on WhatsApp at +91 80561 34455.");
     } finally {
       setLoading(false);
     }
@@ -171,8 +187,21 @@ export function SchoolHostingForm() {
   const resetForm = () => {
     setSuccessData(null);
     setErrorMessage(null);
+    setFormData({
+      schoolName: '',
+      location: '',
+      contactPerson: '',
+      designation: '',
+      officialEmail: '',
+      phoneNumber: '',
+      expectedStudentAudience: '250-500 Students',
+      preferredDates: '',
+      notes: '',
+      turnstileToken: '',
+    });
     setErrors({});
     setTouched({});
+    setTimeout(() => turnstileRef.current?.reset(), 100);
   };
 
   const getInputClass = (fieldName: string, hasIcon: boolean = false) => {
@@ -424,7 +453,7 @@ export function SchoolHostingForm() {
             {/* Expected Student Audience */}
             <div>
               <label className="block text-xs font-bold text-brand-navy uppercase tracking-wider mb-2">
-                Expected Student Audience (Grades 9–12) <span className="text-red-500">*</span>
+                Expected Student Audience (Grades 9-12) <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <select
@@ -434,9 +463,9 @@ export function SchoolHostingForm() {
                   onBlur={handleBlur}
                   className={`${getInputClass('expectedStudentAudience', true)} !pr-10 appearance-none cursor-pointer bg-white`}
                 >
-                  <option value="100-250 Students">100–250 Students</option>
-                  <option value="250-500 Students">250–500 Students (Recommended)</option>
-                  <option value="500-1000 Students">500–1,000 Students</option>
+                  <option value="100-250 Students">100-250 Students</option>
+                  <option value="250-500 Students">250-500 Students (Recommended)</option>
+                  <option value="500-1000 Students">500-1,000 Students</option>
                   <option value="1000+ Students">1,000+ Students (Mega Edition)</option>
                 </select>
                 <Users size={16} className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors pointer-events-none ${errors.expectedStudentAudience ? 'text-red-400' : 'text-brand-muted'}`} />
@@ -464,7 +493,7 @@ export function SchoolHostingForm() {
                   value={formData.preferredDates}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  placeholder="e.g. October–November 2026, or Weekends"
+                  placeholder="e.g. October-November 2026, or Weekends"
                   className={getInputClass('preferredDates', true)}
                 />
                 <Calendar size={16} className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors ${errors.preferredDates ? 'text-red-400' : 'text-brand-muted'}`} />
@@ -491,6 +520,38 @@ export function SchoolHostingForm() {
               placeholder="Tell us about your campus auditorium, sports hall, or any specific clusters of neighboring schools to invite..."
               className={getTextareaClass('notes')}
             ></textarea>
+          </div>
+
+          {/* Cloudflare Turnstile Human Verification */}
+          <div className="flex flex-col items-center justify-center my-5">
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAFWnYtjSIMm6bFZC'}
+              onSuccess={(token) => {
+                setFormData(prev => ({ ...prev, turnstileToken: token }));
+                setErrors(prev => {
+                  const next = { ...prev };
+                  delete next.turnstileToken;
+                  return next;
+                });
+              }}
+              onExpire={() => {
+                setFormData(prev => ({ ...prev, turnstileToken: '' }));
+              }}
+              onError={() => {
+                setErrorMessage('Human security verification encountered an issue. Please try refreshing.');
+              }}
+              options={{
+                theme: 'light',
+                size: 'normal',
+              }}
+            />
+            {errors.turnstileToken && (
+              <p className="text-red-500 text-xs mt-2 flex items-center gap-1 font-medium animate-in fade-in slide-in-from-top-1">
+                <AlertCircle size={13} className="shrink-0" />
+                <span>{errors.turnstileToken}</span>
+              </p>
+            )}
           </div>
 
           <Button

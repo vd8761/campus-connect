@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Logo } from './Logo';
 import { Mail, Phone, MessageSquare, MapPin } from 'lucide-react';
+import { WhatsAppIcon } from './ui/WhatsAppIcon';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,24 +12,27 @@ export function Footer() {
     <footer className="bg-brand-navy text-white pt-16 pb-8 border-t border-white/10">
       <div className="container mx-auto px-4">
         {/* Joint Collaboration Banner */}
-        <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-white/5 border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex-1 text-center md:text-left">
+        <div className="mb-12 p-7 sm:p-9 rounded-3xl bg-gradient-to-r from-white/[0.08] via-white/[0.04] to-white/[0.08] border border-white/15 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -left-20 -top-20 w-64 h-64 bg-brand-turquoise/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div className="relative z-10 flex-1 text-center md:text-left">
             <div className="inline-block px-3 py-1 rounded-full bg-brand-turquoise/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-2">
               Collaborative Initiative
             </div>
-            <h4 className="text-lg font-heading font-bold text-white mb-1">
-              Campus Square — A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
+            <h4 className="text-xl sm:text-2xl font-heading font-bold text-white mb-2">
+              Atom Infinity ✕ OriginBI Mindworks
             </h4>
-            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed max-w-2xl">
-              We are delighted to present a joint collaboration by Atom Infinity and OriginBI Mindworks for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
+            <p className="text-gray-200 text-xs sm:text-sm leading-relaxed max-w-2xl">
+              We are delighted to present a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
             </p>
           </div>
-          <div className="flex items-center gap-4 shrink-0 bg-white/90 p-3 rounded-xl shadow-md">
-            <div className="relative h-10 w-28">
+          <div className="relative z-10 flex items-center gap-4 shrink-0 bg-white px-5 sm:px-6 py-3.5 rounded-2xl shadow-2xl border border-white/20">
+            <div className="relative h-10 w-28 sm:h-11 sm:w-32">
               <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
             </div>
-            <span className="text-brand-navy font-bold text-sm">✕</span>
-            <div className="relative h-10 w-28">
+            <span className="text-brand-navy font-bold text-base sm:text-lg">✕</span>
+            <div className="relative h-10 w-28 sm:h-11 sm:w-32">
               <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized className="object-contain" />
             </div>
           </div>
@@ -76,9 +80,9 @@ export function Footer() {
             <h4 className="font-heading font-semibold text-base mb-4 text-white">Official Contact</h4>
             <ul className="space-y-3 text-sm text-gray-300">
               <li className="flex items-center gap-2.5">
-                <MessageSquare className="w-4 h-4 text-brand-turquoise shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 text-brand-turquoise shrink-0" />
                 <a href="https://wa.me/918056134455" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                  8056134455 (WhatsApp)
+                  +91 80561 34455 (WhatsApp)
                 </a>
               </li>
               <li className="flex items-center gap-2.5">

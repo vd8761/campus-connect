@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { sendEnquiryNotificationEmail, sendEnquiryAcknowledgementEmail } from "@/lib/email";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 const universityEnquirySchema = z.object({
   universityName: z.string().min(2, "University name is required"),
@@ -15,6 +16,7 @@ const universityEnquirySchema = z.object({
   preferredLocations: z.string().min(2, "Preferred locations are required"),
   partnershipInterests: z.string().min(3, "Partnership interests are required"),
   referralSource: z.string().optional(),
+  turnstileToken: z.string().min(1, "Please complete the human verification security check"),
 });
 
 const schoolHostingSchema = z.object({
@@ -28,6 +30,7 @@ const schoolHostingSchema = z.object({
   preferredDates: z.string().min(2, "Preferred dates are required"),
   notes: z.string().optional(),
   referralSource: z.string().optional(),
+  turnstileToken: z.string().min(1, "Please complete the human verification security check"),
 });
 
 const contactUsSchema = z.object({
@@ -36,11 +39,21 @@ const contactUsSchema = z.object({
   email: z.string().email("Valid email is required"),
   subject: z.string().min(3, "Subject is required"),
   message: z.string().min(10, "Message must be at least 10 characters"),
+  turnstileToken: z.string().min(1, "Please complete the human verification security check"),
 });
 
 export async function submitUniversityPartnershipEnquiry(rawData: unknown) {
   try {
     const data = universityEnquirySchema.parse(rawData);
+
+    // Verify Cloudflare Turnstile human verification
+    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken);
+    if (!turnstileCheck.success) {
+      return { 
+        success: false, 
+        error: turnstileCheck.error || "Human verification failed. Please try again." 
+      };
+    }
 
     const enquiry = await prisma.partnerEnquiry.create({
       data: {
@@ -123,13 +136,22 @@ export async function submitUniversityPartnershipEnquiry(rawData: unknown) {
       }
       return { success: false, error: error.issues[0]?.message || "Invalid input data.", fieldErrors };
     }
-    return { success: false, error: "Failed to submit partnership enquiry. Please try again or contact us on WhatsApp at 8056134455." };
+    return { success: false, error: "Failed to submit partnership enquiry. Please try again or contact us on WhatsApp at +91 80561 34455." };
   }
 }
 
 export async function submitSchoolHostingEnquiry(rawData: unknown) {
   try {
     const data = schoolHostingSchema.parse(rawData);
+
+    // Verify Cloudflare Turnstile human verification
+    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken);
+    if (!turnstileCheck.success) {
+      return { 
+        success: false, 
+        error: turnstileCheck.error || "Human verification failed. Please try again." 
+      };
+    }
 
     const enquiry = await prisma.partnerEnquiry.create({
       data: {
@@ -212,13 +234,23 @@ export async function submitSchoolHostingEnquiry(rawData: unknown) {
       }
       return { success: false, error: error.issues[0]?.message || "Invalid input data.", fieldErrors };
     }
-    return { success: false, error: "Failed to submit hosting enquiry. Please try again or contact us on WhatsApp at 8056134455." };
+    return { success: false, error: "Failed to submit hosting enquiry. Please try again or contact us on WhatsApp at +91 80561 34455." };
   }
 }
 
 export async function submitContactUsMessage(rawData: unknown) {
   try {
     const data = contactUsSchema.parse(rawData);
+
+    // Verify Cloudflare Turnstile human verification
+    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken);
+    if (!turnstileCheck.success) {
+      return { 
+        success: false, 
+        error: turnstileCheck.error || "Human verification failed. Please try again." 
+      };
+    }
+
     const fullName = `${data.firstName} ${data.lastName}`.trim();
 
     const enquiry = await prisma.partnerEnquiry.create({
@@ -284,7 +316,7 @@ export async function submitContactUsMessage(rawData: unknown) {
       }
       return { success: false, error: error.issues[0]?.message || "Invalid input data.", fieldErrors };
     }
-    return { success: false, error: "Failed to send your message. Please try again or reach out on WhatsApp at 8056134455." };
+    return { success: false, error: "Failed to send your message. Please try again or reach out on WhatsApp at +91 80561 34455." };
   }
 }
 

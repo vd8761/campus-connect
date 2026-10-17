@@ -32,48 +32,92 @@ export function UniversityPartnersSection() {
             We are proud to collaborate with universities and higher education institutions to connect schools, students and families with meaningful academic opportunities.
           </p>
 
-          {/* Network Distinction Note */}
-          <div className="mt-5 max-w-3xl mx-auto px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600 text-xs sm:text-sm text-left sm:text-center flex items-start sm:items-center justify-center gap-2.5 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 mt-1 sm:mt-0"></span>
-            <span className="leading-relaxed">
-              <strong className="text-slate-800 font-semibold">Overall Partner Network:</strong> Institutions associated with Campus Square across multiple cities. Check each edition page for confirmed local booths.
-            </span>
+        </div>
+
+        {/* Compact Infinite Logo Marquee (Small Height Scrolling Section) */}
+        <div className="relative w-full overflow-hidden py-3 space-y-4 mb-8">
+          {/* Gradient Edge Masks for Smooth Fading */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
+          {/* Marquee Row 1 - Leftward */}
+          <div className="animate-marquee flex items-center gap-4 sm:gap-6">
+            {[...row1, ...row1, ...row1].map((partner, index) => (
+              <a
+                key={`${partner.id}-r1-${index}`}
+                href={partner.website || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 w-48 sm:w-56 md:w-60 h-24 sm:h-26 px-5 py-3 rounded-2xl bg-white flex flex-col items-center justify-center border border-brand-border/80 shadow-[0_2px_8px_rgba(22,27,53,0.03)] hover:shadow-md hover:border-brand-purple/40 hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer text-center"
+                title={`Visit ${partner.name}`}
+              >
+                <div className="relative w-full h-14 flex items-center justify-center">
+                  <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    fill
+                    unoptimized
+                    className="object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                    sizes="240px"
+                  />
+                </div>
+                <span className="text-[11px] font-semibold text-brand-navy truncate max-w-full group-hover:text-brand-purple transition-colors mt-1">
+                  {partner.name}
+                </span>
+              </a>
+            ))}
+          </div>
+
+          {/* Marquee Row 2 - Rightward (Reverse) */}
+          <div className="animate-marquee-reverse flex items-center gap-4 sm:gap-6">
+            {[...row2, ...row2, ...row2].map((partner, index) => (
+              <a
+                key={`${partner.id}-r2-${index}`}
+                href={partner.website || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 w-48 sm:w-56 md:w-60 h-24 sm:h-26 px-5 py-3 rounded-2xl bg-white flex flex-col items-center justify-center border border-brand-border/80 shadow-[0_2px_8px_rgba(22,27,53,0.03)] hover:shadow-md hover:border-brand-purple/40 hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer text-center"
+                title={`Visit ${partner.name}`}
+              >
+                <div className="relative w-full h-14 flex items-center justify-center">
+                  <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    fill
+                    unoptimized
+                    className="object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                    sizes="240px"
+                  />
+                </div>
+                <span className="text-[11px] font-semibold text-brand-navy truncate max-w-full group-hover:text-brand-purple transition-colors mt-1">
+                  {partner.name}
+                </span>
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Responsive Grid with Direct Institutional Links */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 mb-12">
-          {UNIVERSITY_PARTNERS.map((partner) => (
-            <a
-              key={partner.id}
-              href={partner.website || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white rounded-2xl p-4 border border-brand-border/80 shadow-xs hover:shadow-md hover:border-brand-purple/40 hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-between text-center group cursor-pointer relative"
-              title={`Visit official website: ${partner.name}`}
+        {/* View All Partners & Partner Enquiry Action Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center mb-12">
+          <Link href="/partners">
+            <Button
+              variant="outline"
+              size="default"
+              className="rounded-xl px-5 py-2.5 gap-2 border-brand-border hover:border-brand-purple/50 font-semibold text-brand-navy hover:text-brand-purple text-xs sm:text-sm cursor-pointer shadow-xs"
             >
-              <div className="w-full h-20 relative flex items-center justify-center p-2">
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  fill
-                  unoptimized
-                  className="object-contain p-1 group-hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 640px) 150px, 200px"
-                />
-              </div>
-
-              <div className="w-full pt-2 border-t border-slate-100 mt-2 flex flex-col items-center">
-                <h4 className="font-heading font-bold text-xs text-brand-navy line-clamp-2 group-hover:text-brand-purple transition-colors">
-                  {partner.name}
-                </h4>
-                <div className="flex items-center gap-1 text-[11px] text-brand-muted mt-1">
-                  <span>{partner.location}</span>
-                  <ExternalLink size={10} className="text-slate-400 group-hover:text-brand-purple transition-colors shrink-0" />
-                </div>
-              </div>
-            </a>
-          ))}
+              <span>View All 19 University Partners & Profiles</span>
+              <ArrowRight size={15} />
+            </Button>
+          </Link>
+          <Link href="/partnerships">
+            <Button
+              variant="ghost"
+              size="default"
+              className="text-brand-purple hover:bg-brand-purple/10 font-semibold text-xs sm:text-sm cursor-pointer"
+            >
+              Partner with Campus Square
+            </Button>
+          </Link>
         </div>
 
         {/* Join Our Growing University Network Section */}

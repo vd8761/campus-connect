@@ -84,7 +84,7 @@ export function StakeholdersSection() {
           </h2>
 
           <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-            Campus Square unites the entire education journey — connecting forward-thinking schools, visionary universities, ambitious students, and dedicated parents under one purposeful initiative.
+            Campus Square unites the entire education journey - connecting forward-thinking schools, visionary universities, ambitious students, and dedicated parents under one purposeful initiative.
           </p>
         </div>
 

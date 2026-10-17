@@ -17,14 +17,17 @@ import {
   Mail,
   ShieldCheck,
   FileCheck2,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from "lucide-react";
 import { to12HourTime } from "@/lib/dateUtils";
+import { ORIGINBI_ASSESSMENT_AMOUNT } from "@/lib/constants";
 import { UniversityPartnersSection } from "@/components/UniversityPartnersSection";
 import { StakeholdersSection } from "@/components/StakeholdersSection";
 import { AboutOriginBISection } from "@/components/AboutOriginBISection";
 import { OriginBIBenefitsSection } from "@/components/OriginBIBenefitsSection";
 import { CampusSquareFaqSection } from "@/components/CampusSquareFaqSection";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 
 export const dynamic = 'force-dynamic';
 
@@ -67,7 +70,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* ------------------------------------------------------------------------- */}
-      {/* 1. HERO: CAMPUS SQUARE — REGISTRATION & ASSESSMENT FREE VISIBLE AT TOP  */}
+      {/* 1. HERO: CAMPUS SQUARE - REGISTRATION & ASSESSMENT FREE VISIBLE AT TOP  */}
       {/* ------------------------------------------------------------------------- */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-brand-navy to-slate-900 text-white pt-10 sm:pt-14 pb-20">
         {/* Glow gradients */}
@@ -136,27 +139,22 @@ export default async function Home() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-turquoise/10 rounded-full blur-2xl pointer-events-none"></div>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-white/15 pb-4">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-3 w-3 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
-                  Complimentary Assessment Offer
-                </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-turquoise/15 border border-brand-turquoise/30 text-brand-turquoise text-xs font-bold uppercase tracking-wider shadow-xs">
+                <Sparkles size={14} className="text-brand-turquoise shrink-0" />
+                <span>Special Fair Privilege</span>
               </div>
-              <span className="text-xs font-bold text-white/80 bg-white/10 px-3 py-1 rounded-full w-fit">
-                100% Free with Event Registration
+              <span className="text-xs font-semibold text-white/90 bg-white/10 px-3.5 py-1.5 rounded-full w-fit border border-white/15 shadow-xs">
+                Worth ₹{ORIGINBI_ASSESSMENT_AMOUNT} • 100% Free with Registration
               </span>
             </div>
 
             <h2 className="text-xl sm:text-2xl font-heading font-bold text-white mb-2.5 flex items-center gap-2.5">
               <GraduationCap size={22} className="text-brand-turquoise shrink-0" />
-              <span>Register & Get Your FREE OriginBI Assessment</span>
+              <span>Register Free & Unlock Your Personalised Career Roadmap</span>
             </h2>
 
             <p className="text-sm sm:text-base text-gray-200 leading-relaxed mb-6">
-              Explore universities, discover academic opportunities and help students understand their strengths and potential academic pathways through the complimentary OriginBI assessment.
+              Choosing the right college and course after school is a crucial decision for every family. Meet admissions teams from 19 reputed universities face-to-face, ask questions openly, and receive a free OriginBI psychometric assessment (Worth ₹750) revealing your child&apos;s natural talents and best-fit degrees.
             </p>
 
             {/* CTAs */}
@@ -170,7 +168,7 @@ export default async function Home() {
                   size="lg"
                   className="w-full rounded-xl py-6 text-base font-extrabold shadow-lg shadow-brand-purple/40 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>Register Now — Assessment FREE</span>
+                  <span>Register Now - Assessment FREE</span>
                   <ArrowRight size={18} />
                 </Button>
               </Link>
@@ -206,7 +204,7 @@ export default async function Home() {
                   <span className="hidden sm:inline text-white/30">•</span>
                   <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
                     <Clock size={15} className="text-brand-turquoise shrink-0" />
-                    <span>1:00 PM – 4:00 PM</span>
+                    <span>1:00 PM - 4:00 PM</span>
                   </div>
                 </div>
               </div>
@@ -214,7 +212,7 @@ export default async function Home() {
           </div>
 
           <p className="text-xs text-gray-400 max-w-xl mx-auto">
-            Note: OriginBI assessment eligibility and delivery process are coordinated directly with registered student attendees for fair-day on-spot report generation.
+            Once you register, you&apos;ll receive your online assessment link by email. Complete it before the event to collect your printed, detailed profile report directly at our registration desk!
           </p>
         </div>
       </section>
@@ -263,7 +261,7 @@ export default async function Home() {
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-heading font-extrabold text-brand-navy">
-                  Campus Square — The Little Kingdom School, Theni
+                  Campus Square - The Little Kingdom School, Theni
                 </h3>
 
                 <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -277,7 +275,7 @@ export default async function Home() {
                   </div>
                   <div className="flex items-center gap-2.5 text-xs sm:text-sm text-brand-navy font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <Clock size={18} className="text-brand-purple shrink-0" />
-                    <span>1:00 PM – 4:00 PM</span>
+                    <span>1:00 PM - 4:00 PM</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-xs sm:text-sm text-brand-navy font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <MapPin size={18} className="text-brand-purple shrink-0" />
@@ -358,7 +356,7 @@ export default async function Home() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-4 shrink-0 bg-white/95 p-4 rounded-2xl shadow-xl">
+              <div className="flex items-center gap-4 shrink-0 bg-white p-4 sm:px-6 sm:py-4 rounded-2xl shadow-xl">
                 <div className="relative h-12 w-32">
                   <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
                 </div>
@@ -415,8 +413,9 @@ export default async function Home() {
                 </Button>
               </Link>
               <a href="https://wa.me/918056134455" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button variant="outline" size="lg" className="w-full rounded-xl text-xs font-bold">
-                  Quick Query on WhatsApp: 8056134455
+                <Button variant="outline" size="lg" className="w-full rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2">
+                  <WhatsAppIcon className="w-5 h-5" />
+                  <span>Quick Query on WhatsApp: +91 80561 34455</span>
                 </Button>
               </a>
             </div>
@@ -449,8 +448,9 @@ export default async function Home() {
 
             <div className="shrink-0 relative z-10 w-full md:w-auto">
               <Link href="/host">
-                <Button size="lg" className="bg-brand-turquoise text-brand-navy hover:bg-white font-extrabold px-8 py-6 rounded-xl shadow-xl w-full cursor-pointer transition-colors">
-                  Discuss Hosting an Edition
+                <Button size="lg" className="bg-brand-turquoise hover:bg-white !text-brand-navy font-extrabold px-8 py-6 rounded-xl shadow-xl w-full cursor-pointer transition-all flex items-center justify-center gap-2 group">
+                  <span className="!text-brand-navy font-extrabold">Discuss Hosting an Edition</span>
+                  <ArrowRight size={18} className="!text-brand-navy shrink-0 group-hover:translate-x-0.5 transition-transform" />
                 </Button>
               </Link>
             </div>

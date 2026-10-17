@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, HelpCircle, MessageSquare, Mail, Sparkles } from 'lucide-react';
+import { ChevronDown, HelpCircle, MessageSquare, Mail, Sparkles, Send } from 'lucide-react';
 import { Button } from './ui/Button';
+import { WhatsAppIcon } from './ui/WhatsAppIcon';
 
 export interface FAQItem {
   id: number;
@@ -23,7 +24,7 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
       {
         id: 1,
         question: "What is Campus Square?",
-        answer: "Campus Square is a school–university fair initiative by Atom Infinity and OriginBI. It connects schools, universities, students, parents and education partners to explore higher education opportunities and build meaningful connections.",
+        answer: "Campus Square is a school-university fair initiative by Atom Infinity and OriginBI. It connects schools, universities, students, parents and education partners to explore higher education opportunities and build meaningful connections.",
       },
       {
         id: 2,
@@ -206,7 +207,7 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
           </h2>
 
           <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-            Campus Square — A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
+            Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
           </p>
           <p className="text-sm font-semibold text-brand-purple mt-1">
             Connect Campuses. Schools. Universities. Students. Opportunities.
@@ -305,8 +306,8 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-all cursor-pointer"
             >
-              <MessageSquare size={16} />
-              <span>WhatsApp: 8056134455</span>
+              <WhatsAppIcon className="w-5 h-5 shrink-0" />
+              <span>WhatsApp: +91 80561 34455</span>
             </a>
             <a
               href="mailto:interact@atom-infinity.com"
@@ -316,7 +317,10 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
               <span>interact@atom-infinity.com</span>
             </a>
             <Link href="/contact">
-              <Button variant="outline" className="px-5 py-3 rounded-xl">Contact Us Form</Button>
+              <Button variant="outline" className="px-5 py-3 rounded-xl inline-flex items-center gap-2">
+                <Send size={15} />
+                <span>Contact Us Form</span>
+              </Button>
             </Link>
           </div>
         </div>

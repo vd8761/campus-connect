@@ -21,8 +21,20 @@ function TopProgressBarInner() {
     }
   }, [pathname, searchParams]);
 
-  // Intercept all internal navigation clicks for immediate 0ms visual feedback
+  // Intercept all internal navigation clicks for immediate visual feedback with safety auto-completion
   useEffect(() => {
+    let t1: NodeJS.Timeout | null = null;
+    let t2: NodeJS.Timeout | null = null;
+    let t3: NodeJS.Timeout | null = null;
+    let t4: NodeJS.Timeout | null = null;
+
+    const clearTimers = () => {
+      if (t1) clearTimeout(t1);
+      if (t2) clearTimeout(t2);
+      if (t3) clearTimeout(t3);
+      if (t4) clearTimeout(t4);
+    };
+
     const handleClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('a');
       if (!target) return;
@@ -47,17 +59,28 @@ function TopProgressBarInner() {
       // Check if navigating to a different URL
       const currentUrl = window.location.pathname + window.location.search;
       if (href !== currentUrl) {
+        clearTimers();
         setLoading(true);
         setProgress(25);
 
         // Smooth artificial progression
-        setTimeout(() => setProgress(65), 100);
-        setTimeout(() => setProgress(85), 350);
+        t1 = setTimeout(() => setProgress(65), 120);
+        t2 = setTimeout(() => setProgress(85), 320);
+
+        // Safety fallback: auto-complete if navigation completes without route change or stalls
+        t3 = setTimeout(() => setProgress(100), 900);
+        t4 = setTimeout(() => {
+          setLoading(false);
+          setProgress(0);
+        }, 1150);
       }
     };
 
     document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+      clearTimers();
+    };
   }, []);
 
   if (!loading && progress === 0) return null;

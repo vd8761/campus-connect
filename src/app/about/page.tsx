@@ -34,26 +34,32 @@ export default function AboutPage() {
       </section>
 
       {/* Joint Collaboration Banner */}
-      <section className="container mx-auto px-4 -mt-8 relative z-20 max-w-5xl">
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-brand-border/80 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex-1 text-center md:text-left">
-            <div className="inline-block px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-bold uppercase tracking-wider mb-2">
-              Collaborative Initiative
+      <section className="container mx-auto px-4 -mt-10 relative z-20 max-w-5xl">
+        <div className="bg-gradient-to-r from-brand-navy via-[#320846] to-brand-navy rounded-3xl p-7 sm:p-10 text-white relative overflow-hidden shadow-2xl border border-white/10">
+          <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -left-20 -top-20 w-64 h-64 bg-brand-turquoise/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1 text-center md:text-left">
+              <div className="inline-block px-3 py-1 rounded-full bg-brand-turquoise/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-3">
+                Collaborative Initiative
+              </div>
+              <h4 className="text-xl sm:text-2xl font-heading font-bold text-white mb-2">
+                Atom Infinity ✕ OriginBI Mindworks
+              </h4>
+              <p className="text-gray-200 text-xs sm:text-sm leading-relaxed max-w-2xl">
+                We are delighted to present a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
+              </p>
             </div>
-            <h4 className="text-lg font-heading font-bold text-brand-navy mb-1">
-              Atom Infinity ✕ OriginBI Mindworks
-            </h4>
-            <p className="text-brand-muted text-xs sm:text-sm leading-relaxed">
-              We are delighted to present a joint collaboration by Atom Infinity and OriginBI Mindworks for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
-            </p>
-          </div>
-          <div className="flex items-center gap-4 shrink-0 bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <div className="relative h-10 w-28">
-              <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
-            </div>
-            <span className="text-slate-400 font-bold text-sm">✕</span>
-            <div className="relative h-10 w-28">
-              <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized className="object-contain" />
+
+            <div className="flex items-center gap-4 shrink-0 bg-white px-5 sm:px-6 py-3.5 rounded-2xl shadow-2xl border border-white/20">
+              <div className="relative h-10 w-28 sm:h-11 sm:w-32">
+                <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
+              </div>
+              <span className="text-brand-navy font-bold text-base sm:text-lg">✕</span>
+              <div className="relative h-10 w-28 sm:h-11 sm:w-32">
+                <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized className="object-contain" />
+              </div>
             </div>
           </div>
         </div>
@@ -69,7 +75,7 @@ export default function AboutPage() {
               </div>
               <h2 className="text-3xl font-heading font-bold text-brand-navy mb-6">Our Mission & Purpose</h2>
               <p className="text-slate-600 mb-6 text-base leading-relaxed">
-                Campus Square provides a high-touch, structured bridge between leading universities and school communities. Rather than impersonal convention halls, our editions take place directly in host schools — creating an intimate, trust-rich environment where students and parents can explore academic pathways with confidence.
+                Campus Square provides a high-touch, structured bridge between leading universities and school communities. Rather than impersonal convention halls, our editions take place directly in host schools - creating an intimate, trust-rich environment where students and parents can explore academic pathways with confidence.
               </p>
               <p className="text-slate-600 text-base mb-8 leading-relaxed">
                 Through our partnership with OriginBI, every registered student gains complimentary access to behavioral profile mapping, uncovering their inherent strengths before they finalize higher education streams or degree programs.

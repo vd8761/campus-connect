@@ -87,20 +87,20 @@ export function AboutOriginBISection() {
               </div>
               <ul className="space-y-2.5 text-xs text-brand-navy/90 font-medium">
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
                   Download on the university fair day spot
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
                   Actionable stream & career insights
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
                   Easy to share with parents & educators
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                  100% Free for Campus Square attendees
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
+                  <span className="font-semibold text-brand-purple">100% Free</span> for Campus Square attendees
                 </li>
               </ul>
             </div>
@@ -145,13 +145,13 @@ export function AboutOriginBISection() {
               </p>
             </div>
 
-            <div className="flex items-center gap-4 shrink-0 bg-white/10 backdrop-blur px-5 py-3.5 rounded-2xl border border-white/20">
-              <div className="relative h-10 w-28">
+            <div className="flex items-center gap-4 shrink-0 bg-white p-4 sm:px-6 sm:py-3.5 rounded-2xl shadow-xl border border-white/20">
+              <div className="relative h-10 w-28 sm:w-32">
                 <Image src="/atom-logo.png" alt="Atom Infinity" fill className="object-contain" unoptimized />
               </div>
-              <span className="text-white/60 font-bold">×</span>
-              <div className="relative h-10 w-28">
-                <Image src="/Origin-BI-white-Logo.png" alt="OriginBI Mindworks" fill className="object-contain" unoptimized />
+              <span className="text-brand-navy font-bold text-lg">✕</span>
+              <div className="relative h-10 w-28 sm:w-32">
+                <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill className="object-contain" unoptimized />
               </div>
             </div>
           </div>

@@ -300,7 +300,7 @@ function EventItemCard({ event, index = 0 }: { event: EventItem; index?: number 
           <div className="space-y-2 py-3 border-y border-brand-border/60 text-xs text-brand-muted mb-5">
             <div className="flex items-center gap-2">
               <Clock size={14} className="text-brand-purple shrink-0" />
-              <span>{to12HourTime(event.startTime) || '09:00 AM'} – {to12HourTime(event.endTime) || '05:00 PM'}</span>
+              <span>{to12HourTime(event.startTime) || '09:00 AM'} - {to12HourTime(event.endTime) || '05:00 PM'}</span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin size={14} className="text-brand-purple shrink-0" />

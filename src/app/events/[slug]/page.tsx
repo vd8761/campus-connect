@@ -11,6 +11,7 @@ import { Metadata } from 'next';
 import { OriginBIBenefitsSection } from '@/components/OriginBIBenefitsSection';
 import { OriginBIHighlightBox } from '@/components/OriginBIHighlightBox';
 import { AboutOriginBISection } from '@/components/AboutOriginBISection';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       };
     }
 
-    const title = event.seoTitle || `${event.title} – ${event.city} ${event.edition || 'Edition'}`.trim();
+    const title = (event.seoTitle || `${event.title} - ${event.city} ${event.edition || 'Edition'}`.trim()).replace(/[—–]/g, '-');
     const cleanDesc = event.shortDescription?.replace(/<[^>]+>/g, '').trim() || '';
     const description = event.seoDescription || cleanDesc || `Register for ${event.title} in ${event.city}. Connect with premier universities, school leaders, and explore undergraduate & postgraduate opportunities.`;
     const imageUrl = event.bannerUrl || '/images/event-1.jpg';
@@ -168,30 +169,39 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
       {/* Hero Section */}
       <div className="relative text-white pt-8 md:pt-12 pb-12 md:pb-16 overflow-hidden">
-        {/* Background Image with Premium Overlay */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={imageSrc}
-            alt={event.title}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-brand-navy/90 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/70 to-transparent"></div>
+        {/* Background with Ambient Glow */}
+        <div className="absolute inset-0 z-0 bg-brand-navy">
+          {imageSrc && !imageSrc.toLowerCase().includes('logo') && !imageSrc.toLowerCase().includes('little_kingdom') ? (
+            <Image
+              src={imageSrc}
+              alt={event.title}
+              fill
+              className="object-cover opacity-20"
+              priority
+            />
+          ) : (
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.25),rgba(255,255,255,0))]"></div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/85 to-brand-navy/95"></div>
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute top-1/2 -right-32 w-96 h-96 bg-brand-turquoise/15 rounded-full blur-3xl pointer-events-none"></div>
         </div>
 
-        <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row gap-10 items-center">
-          <div className="flex-1">
+        <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row gap-8 lg:gap-12 items-start justify-between">
+          <div className="flex-1 min-w-0">
             <div className="inline-block bg-white/10 backdrop-blur border border-white/20 text-brand-turquoise px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3.5">
               {event.type}
             </div>
-            <h1 className="text-3xl md:text-5xl font-heading font-extrabold mb-4 leading-tight">
-              {event.title}
+            <h1 className="text-3xl md:text-5xl font-heading font-extrabold mb-4 leading-tight break-words">
+              {event.title?.replace(/[—–]/g, '-')}
             </h1>
             <div
-              className="text-lg text-white/80 max-w-2xl mb-8 text-balance [&_p]:inline"
-              dangerouslySetInnerHTML={{ __html: event.shortDescription || '' }}
+              className="text-base sm:text-lg text-white/80 max-w-2xl mb-8 break-words leading-relaxed [&_p]:inline"
+              dangerouslySetInnerHTML={{
+                __html: (event.shortDescription || '')
+                  .replace(/&nbsp;/g, ' ')
+                  .replace(/[—–]/g, '-'),
+              }}
             />
             <div className="flex flex-col sm:flex-row gap-4">
               {isRegistrationOpen ? (
@@ -208,32 +218,34 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             {/* Short Version Highlight Box Near Registration Button */}
             <OriginBIHighlightBox variant="hero" className="mt-6 max-w-xl" />
           </div>
-          <div className="w-full md:w-1/3 space-y-4">
-            <div className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+          <div className="w-full md:w-80 lg:w-96 shrink-0 space-y-4">
+            <div className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20 shadow-xl">
               <h3 className="font-heading font-semibold text-xl mb-4">Event Details</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <Calendar className="text-brand-turquoise mt-1" size={20} />
+                  <Calendar className="text-brand-turquoise mt-1 shrink-0" size={20} />
                   <div>
                     <div className="text-sm text-white/70">Date</div>
                     <div className="font-medium">{new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Clock className="text-brand-turquoise mt-1" size={20} />
+                  <Clock className="text-brand-turquoise mt-1 shrink-0" size={20} />
                   <div>
                     <div className="text-sm text-white/70">Time</div>
                     <div className="font-medium">
-                      {to12HourTime(event.startTime) || '10:00 AM'} - {to12HourTime(event.endTime) || '5:00 PM'}
+                      {(to12HourTime(event.startTime) || '10:00 AM')?.replace(/[—–]/g, '-')} - {(to12HourTime(event.endTime) || '5:00 PM')?.replace(/[—–]/g, '-')}
                     </div>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <MapPin className="text-brand-turquoise mt-1" size={20} />
+                  <MapPin className="text-brand-turquoise mt-1 shrink-0" size={20} />
                   <div>
                     <div className="text-sm text-white/70">Venue</div>
                     <div className="font-medium">{event.venue}</div>
-                    <div className="text-sm text-white/80">{event.city}</div>
+                    {event.city && !event.venue?.toLowerCase().includes(event.city.toLowerCase()) && (
+                      <div className="text-sm text-white/80">{event.city}</div>
+                    )}
                   </div>
                 </li>
               </ul>
@@ -402,32 +414,33 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-md hover:bg-emerald-700 transition-all cursor-pointer"
                 >
-                  <span>Need Help with Directions? WhatsApp 8056134455</span>
+                  <WhatsAppIcon className="w-5 h-5 shrink-0" />
+                  <span>Need Help with Directions? WhatsApp: +91 80561 34455</span>
                 </a>
               </div>
             </div>
 
-            <div className="w-full lg:w-96 shrink-0 bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <h4 className="font-heading font-bold text-brand-navy text-base mb-3 flex items-center gap-2">
+            <div className="w-full lg:w-96 shrink-0 bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <h4 className="font-heading font-bold text-brand-navy text-base mb-4 flex items-center gap-2">
                 <Clock size={16} className="text-brand-purple" />
                 <span>Event Schedule Snapshot</span>
               </h4>
-              <ul className="space-y-3 text-xs text-slate-600">
-                <li className="flex items-start justify-between py-1.5 border-b border-slate-200/60">
-                  <span className="font-semibold text-brand-navy">1:00 PM</span>
-                  <span>Doors Open & Registration Check-in</span>
+              <ul className="space-y-3.5 text-xs text-slate-600">
+                <li className="flex items-start gap-4 py-2 border-b border-slate-200/70">
+                  <span className="font-semibold text-brand-navy w-32 shrink-0 whitespace-nowrap">1:00 PM</span>
+                  <span className="text-slate-700">Doors Open & Registration Check-in</span>
                 </li>
-                <li className="flex items-start justify-between py-1.5 border-b border-slate-200/60">
-                  <span className="font-semibold text-brand-navy">1:15 PM – 3:45 PM</span>
-                  <span>University Booth Interactions & Counseling</span>
+                <li className="flex items-start gap-4 py-2 border-b border-slate-200/70">
+                  <span className="font-semibold text-brand-navy w-32 shrink-0 whitespace-nowrap">1:15 PM - 3:45 PM</span>
+                  <span className="text-slate-700">University Booth Interactions & Counseling</span>
                 </li>
-                <li className="flex items-start justify-between py-1.5 border-b border-slate-200/60">
-                  <span className="font-semibold text-brand-navy">On-Spot</span>
-                  <span>Free OriginBI Assessment Results Desk</span>
+                <li className="flex items-start gap-4 py-2 border-b border-slate-200/70">
+                  <span className="font-semibold text-brand-navy w-32 shrink-0 whitespace-nowrap">On-Spot</span>
+                  <span className="text-slate-700">Free OriginBI Assessment Results Desk</span>
                 </li>
-                <li className="flex items-start justify-between py-1.5">
-                  <span className="font-semibold text-brand-navy">4:00 PM</span>
-                  <span>Fair Concludes</span>
+                <li className="flex items-start gap-4 py-2">
+                  <span className="font-semibold text-brand-navy w-32 shrink-0 whitespace-nowrap">4:00 PM</span>
+                  <span className="text-slate-700">Fair Concludes</span>
                 </li>
               </ul>
             </div>
@@ -487,7 +500,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 Who should I contact for special requests or directions?
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Reach out to our event coordination team directly via WhatsApp at <strong>8056134455</strong> or email <strong>interact@atom-infinity.com</strong>.
+                Reach out to our event coordination team directly via WhatsApp at <strong>+91 80561 34455</strong> or email <strong>interact@atom-infinity.com</strong>.
               </p>
             </div>
           </div>
@@ -504,7 +517,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             {isRegistrationOpen && (
               <Link href={`/events/${event.slug}/register`} className="shrink-0">
                 <Button variant="gradient" size="lg" className="rounded-xl px-8 shadow-lg">
-                  Register Now — FREE
+                  Register Now - FREE
                 </Button>
               </Link>
             )}

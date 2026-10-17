@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
             <span>Data Privacy & Security</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-4">Privacy Policy</h1>
-          <p className="text-gray-300 text-sm">Campus Square — A Collaborative Initiative by Atom Infinity and OriginBI Mindworks</p>
+          <p className="text-gray-300 text-sm">Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks</p>
         </div>
       </section>
 
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
               <div className="mt-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-brand-navy space-y-1.5">
                 <p><strong>Office Address:</strong> Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy, Chennai, Tamil Nadu 600032</p>
                 <p><strong>Email:</strong> interact@atom-infinity.com</p>
-                <p><strong>WhatsApp Support:</strong> +91 8056134455</p>
+                <p><strong>WhatsApp Support:</strong> +91 80561 34455</p>
                 <p><strong>Initiative:</strong> Atom Infinity & OriginBI Mindworks</p>
               </div>
             </div>

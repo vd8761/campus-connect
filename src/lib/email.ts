@@ -213,7 +213,7 @@ export const sendRegistrationEmail = async ({
         </div>
         <h3 style="margin: 0 0 8px 0; color: #22052C; font-size: 17px; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;">Discover Your Strengths with OriginBI</h3>
         <p style="margin: 0 0 10px 0; color: #4A3B52; font-size: 14px; line-height: 1.55; font-family: 'Inter', sans-serif;">
-          Your registration gives you <strong>free access</strong> to the OriginBI Assessment (Worth <strong>₹${ORIGINBI_ASSESSMENT_AMOUNT}</strong> — completely complimentary for attendees).
+          Your registration gives you <strong>free access</strong> to the OriginBI Assessment (Worth <strong>₹${ORIGINBI_ASSESSMENT_AMOUNT}</strong> - completely complimentary for attendees).
         </p>
         <p style="margin: 0 0 14px 0; color: #6B5677; font-size: 13px; line-height: 1.55; font-family: 'Inter', sans-serif;">
           You will receive an email invitation to complete the short profile test. Visit the dedicated OriginBI desk on fair day to collect your personalised single-page career snapshot.
@@ -261,7 +261,7 @@ export const sendRegistrationEmail = async ({
                 The Little Kingdom School,<br>
                 Theni, Tamil Nadu, India<br>
                 Saturday, 24 October 2026<br>
-                (1:00 PM – 4:00 PM)
+                (1:00 PM - 4:00 PM)
               </p>
             </td>
           </tr>
@@ -273,7 +273,7 @@ export const sendRegistrationEmail = async ({
         <tr>
           <td align="center" style="padding: 4px 6px;">
             <a href="https://wa.me/918056134455" style="display: inline-block; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 7px 14px; color: #FAF7FC; text-decoration: none; font-size: 12px; white-space: nowrap; font-family: 'Inter', sans-serif;">
-              <span style="color: #25D366; font-weight: 800;">💬 WhatsApp:</span> <span style="color: #ffffff; font-weight: 600;">+91 8056134455</span>
+              <span style="color: #25D366; font-weight: 800;">💬 WhatsApp:</span> <span style="color: #ffffff; font-weight: 600;">+91 80561 34455</span>
             </a>
           </td>
           <td align="center" style="padding: 4px 6px;">
@@ -563,7 +563,7 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
           Collaborative Initiative
         </div>
         <h4 style="font-size: 15px; font-weight: 800; color: #22052C; margin: 0 0 14px 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.4;">
-          Campus Square — A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
+          Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
         </h4>
 
         <!-- Perfectly Centered Compact Co-Branding Logo Card -->
@@ -620,7 +620,7 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
                 The Little Kingdom School,<br>
                 Theni, Tamil Nadu, India<br>
                 Saturday, 24 October 2026<br>
-                (1:00 PM – 4:00 PM)
+                (1:00 PM - 4:00 PM)
               </p>
             </td>
           </tr>
@@ -632,7 +632,7 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
         <tr>
           <td align="center" style="padding: 4px 6px;">
             <a href="https://wa.me/918056134455" style="display: inline-block; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 7px 14px; color: #FAF7FC; text-decoration: none; font-size: 12px; white-space: nowrap; font-family: 'Inter', sans-serif;">
-              <span style="color: #25D366; font-weight: 800;">💬 WhatsApp:</span> <span style="color: #ffffff; font-weight: 600;">+91 8056134455</span>
+              <span style="color: #25D366; font-weight: 800;">💬 WhatsApp:</span> <span style="color: #ffffff; font-weight: 600;">+91 80561 34455</span>
             </a>
           </td>
           <td align="center" style="padding: 4px 6px;">
@@ -720,11 +720,11 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
     let introText = `We have received your message and will get back to you shortly.`;
 
     if (payload.category === 'University Partnership') {
-      subject = `Thank you for partnering with Campus Square${payload.organizationName ? ` — ${payload.organizationName}` : ''}`;
+      subject = `Thank you for partnering with Campus Square${payload.organizationName ? ` - ${payload.organizationName}` : ''}`;
       headingText = `Thank you for your Partnership Inquiry!`;
       introText = `We are delighted by your interest in collaborating with <strong>Campus Square</strong> for ${payload.organizationName ? `<strong>${payload.organizationName}</strong>` : 'your institution'}. Our Higher Education & Conclave Directorate has received your proposal.`;
     } else if (payload.category === 'Host School Proposal') {
-      subject = `Thank you for your School Hosting Proposal — Campus Square`;
+      subject = `Thank you for your School Hosting Proposal - Campus Square`;
       headingText = `Thank you for your School Hosting Proposal!`;
       introText = `We have received your proposal to host a Campus Square Edition at ${payload.organizationName ? `<strong>${payload.organizationName}</strong>` : 'your esteemed school'}. Our School Conclave Coordination team is reviewing your submission.`;
     }
@@ -897,7 +897,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
             <td align="center" style="border-radius: 9999px; background-color: #16A66A; padding: 0;" bgcolor="#16A66A">
               <a href="https://wa.me/918056134455" target="_blank" style="display: inline-block; background-color: #16A66A; color: #ffffff !important; text-decoration: none !important; font-weight: 700; font-size: 13px; padding: 9px 20px; border-radius: 9999px; border: 1px solid #16A66A; -webkit-text-fill-color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">
                 <font color="#ffffff" style="color: #ffffff !important; text-decoration: none !important;">
-                  <span style="color: #ffffff !important; text-decoration: none !important; font-weight: 700;">💬 Chat on WhatsApp: +91 8056134455</span>
+                  <span style="color: #ffffff !important; text-decoration: none !important; font-weight: 700;">💬 Chat on WhatsApp: +91 80561 34455</span>
                 </font>
               </a>
             </td>
@@ -911,7 +911,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
           Collaborative Initiative
         </div>
         <h4 style="font-size: 14px; font-weight: 800; color: #22052C; margin: 0 0 12px 0; font-family: 'Plus Jakarta Sans', sans-serif;">
-          Campus Square — A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
+          Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
         </h4>
         <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 14px auto; width: auto !important; border-collapse: separate; background-color: #ffffff; border-radius: 12px; border: 1px solid #E8DCF0; box-shadow: 0 2px 8px rgba(34, 5, 44, 0.04);">
           <tr>
@@ -965,7 +965,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
                 The Little Kingdom School,<br>
                 Theni, Tamil Nadu, India<br>
                 Saturday, 24 October 2026<br>
-                (1:00 PM – 4:00 PM)
+                (1:00 PM - 4:00 PM)
               </p>
             </td>
           </tr>
@@ -977,7 +977,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
         <tr>
           <td align="center" style="padding: 4px 6px;">
             <a href="https://wa.me/918056134455" style="display: inline-block; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 7px 14px; color: #FAF7FC; text-decoration: none; font-size: 12px; white-space: nowrap; font-family: 'Inter', sans-serif;">
-              <span style="color: #25D366; font-weight: 800;">💬 WhatsApp:</span> <span style="color: #ffffff; font-weight: 600;">+91 8056134455</span>
+              <span style="color: #25D366; font-weight: 800;">💬 WhatsApp:</span> <span style="color: #ffffff; font-weight: 600;">+91 80561 34455</span>
             </a>
           </td>
           <td align="center" style="padding: 4px 6px;">

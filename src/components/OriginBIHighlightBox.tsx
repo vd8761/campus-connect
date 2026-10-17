@@ -18,7 +18,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
             <Sparkles size={12} className="text-brand-turquoise shrink-0" />
             <span>Worth ₹{ORIGINBI_ASSESSMENT_AMOUNT}</span>
             <span className="text-white/40">•</span>
-            <span className="text-emerald-300 font-bold">100% Free with Registration</span>
+            <span className="text-brand-turquoise font-bold">100% Free with Registration</span>
           </div>
           <span className="text-[10px] font-bold text-brand-turquoise uppercase tracking-wider whitespace-nowrap">
             Zero Extra Cost
@@ -36,7 +36,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
 
         <div className="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 text-[11px] text-white/70">
           <span className="truncate">A joint collaboration by <strong className="text-white">Atom Infinity</strong> & <strong className="text-white">OriginBI</strong></span>
-          <span className="shrink-0 text-emerald-300 font-bold bg-white/10 px-2 py-0.5 rounded text-[10px] whitespace-nowrap">100% Free</span>
+          <span className="shrink-0 text-brand-turquoise font-bold bg-white/10 border border-brand-turquoise/30 px-2 py-0.5 rounded text-[10px] whitespace-nowrap">100% Free</span>
         </div>
       </div>
     );
@@ -50,7 +50,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-purple-200/90 text-brand-navy text-[11px] font-semibold whitespace-nowrap shadow-xs">
             <Sparkles size={12} className="text-brand-purple shrink-0" />
             <span>Worth ₹{ORIGINBI_ASSESSMENT_AMOUNT}</span>
-            <span className="text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.2 rounded-full font-bold text-[10px]">Free</span>
+            <span className="text-brand-purple bg-brand-purple/10 border border-brand-purple/20 px-2 py-0.5 rounded-full font-bold text-[10px]">Free</span>
           </div>
           <span className="text-[10px] font-bold text-brand-purple uppercase tracking-wider whitespace-nowrap bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full shrink-0">
             Included
@@ -68,7 +68,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
 
         <div className="pt-2 border-t border-purple-100 flex items-center justify-between gap-2 text-[11px] text-brand-muted">
           <span className="truncate">Collaboration: <strong className="text-brand-navy">Atom Infinity</strong> & <strong className="text-brand-navy">OriginBI</strong></span>
-          <span className="shrink-0 text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded whitespace-nowrap text-[11px]">₹0 Free</span>
+          <span className="shrink-0 text-brand-purple font-bold bg-brand-purple/10 border border-brand-purple/20 px-2 py-0.5 rounded whitespace-nowrap text-[11px]">₹0 Free</span>
         </div>
       </div>
     );
@@ -86,7 +86,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
             <span className="font-semibold text-brand-navy">OriginBI Assessment</span>
             <span className="h-3 w-px bg-brand-border"></span>
             <span className="font-bold text-brand-navy">Worth ₹{ORIGINBI_ASSESSMENT_AMOUNT}</span>
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
+            <span className="text-[11px] font-bold text-brand-purple bg-brand-purple/10 px-2.5 py-0.5 rounded-full border border-brand-purple/20">
               100% Free
             </span>
           </div>
@@ -110,10 +110,9 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
 
         <div className="pt-3.5 border-t border-purple-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-brand-muted">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
             <span>A joint collaboration by <strong className="text-brand-navy">Atom Infinity</strong> and <strong className="text-brand-navy">OriginBI Mindworks</strong>.</span>
           </div>
-          <span className="font-semibold text-emerald-600 text-xs sm:text-right whitespace-nowrap">Automatic registration upon signup</span>
+          <span className="font-semibold text-brand-purple text-xs sm:text-right whitespace-nowrap">Automatic registration upon signup</span>
         </div>
       </div>
     </div>
