@@ -19,13 +19,40 @@ import {
   Mail
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
+import prisma from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Host an Edition | Bring Campus Square™ to Your School',
   description: 'Give your students and parents an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives. Discuss hosting a Campus Square™ edition.',
 };
 
-export default function HostPage() {
+export default async function HostPage() {
+  let hostEvent: any = null;
+  try {
+    hostEvent = await prisma.event.findFirst({
+      where: {
+        status: { in: ['OPEN', 'LIMITED_SEATS', 'COMPLETED', 'OPENING_SOON'] }
+      },
+      orderBy: { startDate: 'desc' }
+    });
+  } catch (error) {
+    console.warn("Could not query host school event:", error);
+  }
+
+  const schoolName = hostEvent?.venue || 'The Little Kingdom School, Theni';
+  const cityName = hostEvent?.city || 'Theni';
+  const stateName = hostEvent?.state || 'Tamil Nadu';
+  const eventSlug = hostEvent?.slug || 'university-fair-2026-theni';
+  const eventDate = hostEvent?.startDate
+    ? new Date(hostEvent.startDate).toLocaleDateString('en-US', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      })
+    : 'Saturday, 24 October 2026';
   const hostBenefits = [
     {
       title: "Direct Access to Premier Universities",
@@ -74,7 +101,7 @@ export default function HostPage() {
 
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a href="#host-form">
-              <Button variant="gradient" size="lg" className="rounded-xl px-8 shadow-xl cursor-pointer">
+              <Button variant="white" size="lg" className="bg-white hover:bg-slate-100 text-brand-navy font-extrabold rounded-xl px-8 shadow-xl cursor-pointer">
                 Discuss Hosting an Edition
               </Button>
             </a>
@@ -97,26 +124,26 @@ export default function HostPage() {
                 Host School Showcase
               </span>
               <h2 className="text-2xl sm:text-3xl font-heading font-bold mt-2 mb-4">
-                The Little Kingdom School, Theni
+                {schoolName}
               </h2>
               <p className="text-gray-200 text-sm sm:text-base leading-relaxed mb-6">
-                Proud host of the debut Campus Square™ edition on Saturday, 24 October 2026. Bringing together premier university partners, hundreds of enthusiastic high schoolers, and complete behavioral profiling.
+                Proud host of the Campus Square™ {cityName} edition on {eventDate}. Bringing together premier university partners, hundreds of enthusiastic high schoolers, and complete behavioral profiling.
               </p>
               <div className="flex flex-wrap gap-4 text-xs font-medium text-white/80">
                 <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg">
                   <Calendar size={14} className="text-brand-turquoise" />
-                  <span>Saturday, 24 October 2026</span>
+                  <span>{eventDate}</span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg">
                   <MapPin size={14} className="text-brand-turquoise" />
-                  <span>Theni, Tamil Nadu</span>
+                  <span>{cityName}, {stateName}</span>
                 </div>
               </div>
             </div>
 
-            <Link href="/events/university-fair-2026-theni" className="shrink-0">
+            <Link href={`/events/${eventSlug}`} className="shrink-0">
               <Button variant="white" size="lg" className="px-6 rounded-xl shadow-lg hover:bg-slate-100 font-extrabold cursor-pointer">
-                View Theni Edition
+                View {cityName} Edition
               </Button>
             </Link>
           </div>

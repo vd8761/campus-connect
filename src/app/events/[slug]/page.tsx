@@ -489,10 +489,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
               <h4 className="font-heading font-bold text-sm text-brand-navy mb-1.5">
-                How do I collect my OriginBI assessment report?
+                How do I get my OriginBI assessment report?
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
-                After taking your short assessment online, visit the dedicated OriginBI desk at the venue on fair day to collect your single-page profile summary and expert career interpretation.
+                After taking your short assessment online, you can download your personalized single-page profile report on the spot with expert career interpretation and university pathway fitment.
               </p>
             </div>
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
@@ -508,16 +508,25 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           <div className="bg-brand-navy text-white rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
             <div>
               <h4 className="text-lg font-heading font-bold text-white mb-1">
-                Ready to Join Us at {event.city}?
+                {isRegistrationOpen ? `Ready to Join Us at ${event.city}?` : `Registrations for ${event.city} Have Closed`}
               </h4>
               <p className="text-xs text-gray-300">
-                Register now to secure your attendee entry pass and unlock your free OriginBI assessment.
+                {isRegistrationOpen 
+                  ? "Register now to secure your attendee entry pass and unlock your free OriginBI assessment."
+                  : "Online registration for this edition has concluded. Explore our upcoming fair series across other cities."
+                }
               </p>
             </div>
-            {isRegistrationOpen && (
+            {isRegistrationOpen ? (
               <Link href={`/events/${event.slug}/register`} className="shrink-0">
                 <Button variant="gradient" size="lg" className="rounded-xl px-8 shadow-lg">
                   Register Now - FREE
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/events" className="shrink-0">
+                <Button variant="outlineWhite" size="lg" className="rounded-xl px-8 shadow-lg">
+                  Explore Other Editions
                 </Button>
               </Link>
             )}

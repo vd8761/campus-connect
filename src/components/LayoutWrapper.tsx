@@ -6,12 +6,12 @@ import { Footer } from "@/components/Footer";
 
 export function HeaderWrapper() {
   const pathname = usePathname();
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/reports/disc-fitment')) return null;
   return <Header />;
 }
 
 export function FooterWrapper() {
   const pathname = usePathname();
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/reports/disc-fitment')) return null;
   return <Footer />;
 }

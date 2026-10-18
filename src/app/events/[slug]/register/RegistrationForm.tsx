@@ -323,7 +323,7 @@ export function RegistrationForm({
             <span>Complimentary OriginBI Assessment Included</span>
           </div>
           <p className="text-slate-600 text-[11px]">
-            An invitation link has been dispatched to your email. Take the short assessment at your convenience and visit the OriginBI desk on fair day at the venue to collect your printed single-page behavioral insight snapshot!
+            An invitation link has been dispatched to your email. Take the short assessment at your convenience and download your personalized single-page behavioral report on the spot!
           </p>
         </div>
 

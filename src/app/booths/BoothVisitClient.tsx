@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   MapPin,
   ArrowRight,
-  Download,
   RotateCcw,
   AlertCircle,
   Sparkles,
@@ -21,7 +20,6 @@ import {
   X,
   Compass,
   GraduationCap,
-  Printer,
   FileCheck2,
   Layers,
 } from 'lucide-react';
@@ -316,6 +314,13 @@ export function BoothVisitClient({
     }
   }
 
+  // Auto-lookup if initialIdentifier and event are provided
+  useEffect(() => {
+    if (initialIdentifier && (initialEvent || initialEventId) && !participant) {
+      handleLookup(initialIdentifier, initialEvent?.id || initialEventId);
+    }
+  }, [initialIdentifier, initialEvent, initialEventId]);
+
   // Active event currently loaded
   const currentEvent = useMemo(() => {
     return events.find((e) => e.id === activeEventId) || events[0] || null;
@@ -375,12 +380,12 @@ export function BoothVisitClient({
     setSelectedUniIds(new Set());
   }
 
-  // Save selected booths
+  // Save selected preferred colleges
   async function handleConfirmVisits() {
     if (!participant || !currentEvent) return;
 
     if (selectedUniIds.size === 0) {
-      setSaveError('Please select at least one university booth to confirm your visit.');
+      setSaveError('Please select at least one preferred college to save your visit plan.');
       return;
     }
 
@@ -395,13 +400,13 @@ export function BoothVisitClient({
       });
 
       if (!res.success) {
-        setSaveError(res.error || 'Failed to save visits.');
+        setSaveError(res.error || 'Failed to save preferences.');
       } else {
         setConfirmedVisits(res.boothVisits || []);
         setIsConfirmed(true);
       }
     } catch (err) {
-      setSaveError('Failed to record university booth visits. Please try again.');
+      setSaveError('Failed to save preferred colleges. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -431,32 +436,33 @@ export function BoothVisitClient({
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/90 backdrop-blur shadow-xs border border-purple-100 text-brand-purple">
           <Sparkles size={13} className="text-brand-purple" />
-          <span>Campus Square™ • Digital Booth Passport</span>
+          <span>Campus Square™ • Fair Visit Planner</span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-heading font-black text-brand-navy tracking-tight">
-          Plan & Record University Booths
+          Select Your Preferred Colleges
         </h1>
         <p className="text-sm sm:text-base text-slate-500 leading-relaxed">
-          Select your fair edition, verify your attendee details, and mark the universities you explore to generate your official one-page participation record.
+          Select your fair edition, verify your attendee details, and choose the colleges you plan to visit or explore at the fair.
         </p>
 
         {/* 3-Step Breadcrumb / Status Tracker */}
-        <div className="pt-2 flex items-center justify-center gap-2 sm:gap-3 text-xs font-bold">
+        <div className="pt-2 flex items-center justify-center gap-1.5 sm:gap-3 text-[11px] sm:text-xs font-bold">
           <div
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${currentStep === 1
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full transition-colors shrink-0 ${currentStep === 1
               ? 'bg-brand-purple text-white shadow-xs'
               : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
               }`}
           >
             {currentStep > 1 ? <Check size={12} className="stroke-[3]" /> : <span>1</span>}
-            <span>Fair & Attendee</span>
+            <span className="hidden sm:inline">Fair & Attendee</span>
+            <span className="sm:hidden">Attendee</span>
           </div>
 
-          <span className="text-slate-300">→</span>
+          <span className="text-slate-300 text-xs select-none">→</span>
 
           <div
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${currentStep === 2
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full transition-colors shrink-0 ${currentStep === 2
               ? 'bg-brand-purple text-white shadow-xs'
               : currentStep > 2
                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
@@ -464,26 +470,28 @@ export function BoothVisitClient({
               }`}
           >
             {currentStep > 2 ? <Check size={12} className="stroke-[3]" /> : <span>2</span>}
-            <span>Curate Booths</span>
+            <span className="hidden sm:inline">Preferred Colleges</span>
+            <span className="sm:hidden">Colleges</span>
           </div>
 
-          <span className="text-slate-300">→</span>
+          <span className="text-slate-300 text-xs select-none">→</span>
 
           <div
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${currentStep === 3
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full transition-colors shrink-0 ${currentStep === 3
               ? 'bg-brand-purple text-white shadow-xs'
               : 'bg-slate-100 text-slate-400'
               }`}
           >
             <span>3</span>
-            <span>Verified Report</span>
+            <span className="hidden sm:inline">Visit Plan & Report</span>
+            <span className="sm:hidden">Report</span>
           </div>
         </div>
       </div>
 
       {/* ----------------- STATE 1: SEARCHABLE AUTOCOMPLETE & IDENTIFIER FORM ----------------- */}
       {!participant && (
-        <div className="max-w-xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl p-7 sm:p-9 shadow-[0_16px_50px_rgba(34,5,44,0.06)] border border-purple-100 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="max-w-xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-8 md:p-9 shadow-[0_16px_50px_rgba(34,5,44,0.06)] border border-purple-100 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -808,7 +816,7 @@ export function BoothVisitClient({
                 </>
               ) : (
                 <>
-                  <span>Continue to Booth Selection</span>
+                  <span>Select Preferred Colleges</span>
                   <ArrowRight size={16} />
                 </>
               )}
@@ -816,10 +824,10 @@ export function BoothVisitClient({
           </form>
 
           {/* Helper Highlights */}
-          <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="p-2.5 rounded-xl bg-purple-50/50 border border-purple-100">
-              <span className="block font-bold text-brand-purple">
-                {selectedEvent ? (selectedEvent.universitiesCount ? `${selectedEvent.universitiesCount} Booths` : 'University Booths') : 'All Booths'}
+          <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-3 gap-1.5 sm:gap-2.5 text-center text-xs">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-purple-50/50 border border-purple-100">
+              <span className="block font-bold text-brand-purple text-[11px] sm:text-xs truncate">
+                {selectedEvent ? (selectedEvent.universitiesCount ? `${selectedEvent.universitiesCount} Colleges` : 'Universities') : 'All Colleges'}
               </span>
               <span className="text-[10px] text-slate-500">Official Fair</span>
             </div>
@@ -837,17 +845,17 @@ export function BoothVisitClient({
 
       {/* ----------------- STATE 2 & 3: PARTICIPANT LOADED ----------------- */}
       {participant && currentEvent && (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
           {/* Attendee Profile Header Badge */}
-          <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-purple-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-purple to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-purple-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 min-w-0 flex-1">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-brand-purple to-indigo-600 text-white flex items-center justify-center font-bold text-base sm:text-lg shadow-sm shrink-0">
                 {participant.fullName.charAt(0).toUpperCase()}
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-lg font-bold text-brand-navy">{participant.fullName}</h3>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                  <h3 className="text-base sm:text-lg font-bold text-brand-navy truncate">{participant.fullName}</h3>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0">
                     <ShieldCheck size={11} />
                     Verified Attendee
                   </span>
@@ -860,16 +868,26 @@ export function BoothVisitClient({
               </div>
             </div>
 
-            <button
-              onClick={handleReset}
-              className="text-xs text-slate-500 hover:text-brand-purple font-semibold flex items-center gap-1.5 transition-colors self-end sm:self-center px-3.5 py-2 rounded-xl border border-slate-200 hover:border-brand-purple/40 bg-slate-50 hover:bg-white cursor-pointer"
-            >
-              <RotateCcw size={13} />
-              <span>Change Student / Fair</span>
-            </button>
+            <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0 flex-wrap">
+              <Link
+                href={`/reports/disc-fitment/${participant.id}?eventId=${currentEvent.id}`}
+                target="_blank"
+                className="text-xs text-white font-bold flex items-center justify-center gap-1.5 transition-all w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-purple to-indigo-600 hover:from-purple-800 hover:to-indigo-700 shadow-sm cursor-pointer"
+              >
+                <Sparkles size={13} className="text-brand-turquoise" />
+                <span>1-Page Career Pathway Report</span>
+              </Link>
+              <button
+                onClick={handleReset}
+                className="text-xs text-slate-600 hover:text-brand-purple font-semibold flex items-center justify-center gap-1.5 transition-colors w-full sm:w-auto px-3.5 py-2.5 rounded-xl border border-slate-200 hover:border-brand-purple/40 bg-slate-50 hover:bg-white cursor-pointer"
+              >
+                <RotateCcw size={13} />
+                <span>Change Student / Fair</span>
+              </button>
+            </div>
           </div>
 
-          {/* ----------------- CONFIRMED STATE: SHOW EXACT VISITED UNIVERSITY BOOTHS CARD ----------------- */}
+          {/* ----------------- CONFIRMED STATE: SHOW EXACT PREFERRED UNIVERSITY COLLEGES CARD ----------------- */}
           {isConfirmed && (
             <div className="space-y-6 animate-in fade-in duration-300">
               {/* Success Banner */}
@@ -877,25 +895,25 @@ export function BoothVisitClient({
                 <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <h4 className="font-bold text-emerald-900 text-sm sm:text-base">
-                    University Booth Visits Confirmed!
+                    Preferred Colleges Saved!
                   </h4>
                   <p className="text-xs sm:text-sm text-emerald-700 mt-0.5 leading-relaxed">
-                    Your visited university booths have been securely saved. Only these {confirmedVisits.length} selected universities are recorded in your event profile and report.
+                    Your {confirmedVisits.length} preferred colleges have been noted for your fair visit itinerary. You are welcome to explore any and all universities across the edition, and your official 1-page pathway report evaluates all exhibiting universities without restriction.
                   </p>
                 </div>
               </div>
 
-              {/* Exact "VISITED UNIVERSITY BOOTHS" Card Matching Reference Screenshot */}
+              {/* Exact "PREFERRED COLLEGES & UNIVERSITIES" Card */}
               <div className="bg-[#f8fafd] rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">
-                    VISITED UNIVERSITY BOOTHS ({confirmedVisits.length})
+                    PREFERRED COLLEGES & UNIVERSITIES ({confirmedVisits.length})
                   </h4>
                   <button
                     onClick={() => setIsConfirmed(false)}
                     className="text-xs text-brand-purple hover:underline font-semibold flex items-center gap-1 cursor-pointer"
                   >
-                    <span>Edit / Select More Booths</span>
+                    <span>Edit / Select More Colleges</span>
                     <ArrowRight size={12} />
                   </button>
                 </div>
@@ -929,87 +947,28 @@ export function BoothVisitClient({
                     <span>Official Participation Document</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-heading font-bold text-white">
-                    1-Page University Fair Visit Summary
+                    1-Page Career Pathway Report
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                    Download or print your official one-page report featuring verified booth visits, participant credentials, and university fair certification.
+                    View and download your official one-page report featuring personalized behavioral fitment against courses offered across the fair.
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
-                  <button
-                    onClick={() => window.print()}
-                    className="px-6 py-3.5 rounded-xl bg-white text-brand-navy hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                <div className="flex flex-col sm:flex-row gap-2.5 w-full md:w-auto shrink-0 flex-wrap">
+                  <Link
+                    href={`/reports/disc-fitment/${participant.id}?eventId=${currentEvent.id}`}
+                    target="_blank"
+                    className="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Download size={16} />
-                    <span>Download 1-Page Report</span>
-                  </button>
+                    <Sparkles size={15} />
+                    <span>View 1-Page Career Pathway Report</span>
+                  </Link>
                   <button
                     onClick={() => setIsConfirmed(false)}
-                    className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm border border-white/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm border border-white/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <span>Update Selection</span>
+                    <span>Update Preferred Colleges</span>
                   </button>
-                </div>
-              </div>
-
-              {/* Printable 1-Page Report Format (Shown in browser print / PDF export) */}
-              <div
-                id="printable-booth-report"
-                className="hidden print:block bg-white text-black p-8 max-w-3xl mx-auto border border-slate-300 rounded-lg text-xs leading-normal"
-              >
-                <div className="flex justify-between items-start border-b-2 border-purple-900 pb-4 mb-6">
-                  <div>
-                    <h1 className="text-2xl font-bold text-purple-950 font-heading">CAMPUS SQUARE™ - UNIVERSITY FAIR</h1>
-                    <p className="text-sm font-semibold text-purple-700">Official Student Booth Visit Report</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm text-slate-900">{currentEvent.title}</p>
-                    <p className="text-slate-500">{currentEvent.venue || currentEvent.city}</p>
-                    <p className="text-slate-400 text-[10px] mt-1">Generated: {new Date().toLocaleDateString('en-IN')}</p>
-                  </div>
-                </div>
-
-                {/* Student Details Card */}
-                <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200 mb-6">
-                  <div>
-                    <p><strong className="text-slate-600">Student Name:</strong> {participant.fullName}</p>
-                    <p className="mt-1"><strong className="text-slate-600">Registered Mobile:</strong> {participant.mobile}</p>
-                    {participant.schoolLevel && (
-                      <p className="mt-1"><strong className="text-slate-600">Grade / Standard:</strong> {participant.schoolLevel} {participant.currentStandard || ''}</p>
-                    )}
-                  </div>
-                  <div>
-                    <p><strong className="text-slate-600">Email ID:</strong> {participant.email || 'N/A'}</p>
-                    <p className="mt-1"><strong className="text-slate-600">Verified Visited Booths:</strong> {confirmedVisits.length} Universities</p>
-                    <p className="mt-1"><strong className="text-slate-600">Status:</strong> <span className="text-emerald-700 font-bold">Checked-In / Verified</span></p>
-                  </div>
-                </div>
-
-                {/* Visited Booths Grid */}
-                <div className="mb-6">
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-3 border-b pb-1">
-                    Verified Visited University Booths ({confirmedVisits.length})
-                  </h2>
-                  <div className="grid grid-cols-2 gap-3">
-                    {confirmedVisits.map((v, idx) => (
-                      <div key={v.universityId} className="p-3 border border-slate-200 rounded-md flex items-center gap-2.5">
-                        <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-900 font-bold flex items-center justify-center text-[10px] shrink-0">
-                          {idx + 1}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-bold text-slate-900 text-xs">{v.universityName}</p>
-                          <p className="text-slate-500 text-[10px]">{v.universityCity}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Footer Certification */}
-                <div className="border-t border-slate-200 pt-4 mt-8 flex justify-between items-center text-[10px] text-slate-500">
-                  <p>&copy; {new Date().getFullYear()} Campus Square™ • Atom Infinity & OriginBI Partner Network</p>
-                  <p className="font-semibold text-slate-700">Official University Fair Participation Record</p>
                 </div>
               </div>
             </div>
@@ -1017,61 +976,73 @@ export function BoothVisitClient({
 
           {/* ----------------- SELECTION VIEW: ASK PLAN TO VISIT UNIVERSITIES ----------------- */}
           {!isConfirmed && (
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-purple-100 space-y-6">
+            <div className="bg-white rounded-3xl p-4 sm:p-7 md:p-8 shadow-sm border border-purple-100 space-y-5 sm:space-y-6">
               {/* Header & Instructions */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-100 pb-4 sm:pb-5">
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-brand-purple border border-purple-200/60 mb-2">
                     <Sparkles size={12} />
                     <span>Exhibiting Universities at {currentEvent.city || 'Your Fair'}</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-heading font-extrabold text-brand-navy">
-                    Plan Your University Booth Visits
+                    Select Your Preferred Colleges
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                    Select the institutions you plan to visit or have explored at <strong>{currentEvent.title}</strong>.
+                    Select the colleges and institutions you are interested in or planning to visit at <strong>{currentEvent.title}</strong>.
                   </p>
                 </div>
 
                 {/* Counter & Bulk Actions */}
-                <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end">
-                  <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-100 text-brand-purple">
+                <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end flex-wrap pt-1 sm:pt-0">
+                  <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-100 text-brand-purple shrink-0">
                     {selectedUniIds.size} Selected
                   </span>
-                  <button
-                    type="button"
-                    onClick={selectAll}
-                    className="text-xs text-brand-purple hover:underline font-semibold px-2 py-1 cursor-pointer"
-                  >
-                    Select All
-                  </button>
-                  <span className="text-slate-300">|</span>
-                  <button
-                    type="button"
-                    onClick={clearAll}
-                    className="text-xs text-slate-500 hover:text-slate-700 font-semibold px-2 py-1 cursor-pointer"
-                  >
-                    Clear All
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={selectAll}
+                      className="text-xs text-brand-purple hover:bg-purple-50 px-2.5 py-1 rounded-lg font-semibold cursor-pointer transition-colors active:scale-95"
+                    >
+                      Select All
+                    </button>
+                    <span className="text-slate-300">|</span>
+                    <button
+                      type="button"
+                      onClick={clearAll}
+                      className="text-xs text-slate-500 hover:bg-slate-100 px-2.5 py-1 rounded-lg font-semibold cursor-pointer transition-colors active:scale-95"
+                    >
+                      Clear All
+                    </button>
+                  </div>
                 </div>
               </div>
 
               {/* Previously Saved Note if any */}
               {confirmedVisits.length > 0 && (
-                <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200 text-xs text-purple-900 flex items-center justify-between gap-3">
+                <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200 text-xs text-purple-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 size={16} className="text-brand-purple shrink-0" />
                     <span>
-                      You currently have <strong>{confirmedVisits.length} booths</strong> recorded. You can adjust your selection below or confirm to generate your report.
+                      You have <strong>{confirmedVisits.length} preferred colleges</strong> selected in your visit plan. You can adjust your selection anytime or explore any exhibiting university.
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsConfirmed(true)}
-                    className="text-xs font-bold text-brand-purple hover:underline shrink-0 cursor-pointer"
-                  >
-                    View Current Report &rarr;
-                  </button>
+                  <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
+                    <Link
+                      href={`/reports/disc-fitment/${participant.id}?eventId=${currentEvent.id}`}
+                      target="_blank"
+                      className="text-xs font-bold text-brand-purple hover:underline"
+                    >
+                      View 1-Page Report &rarr;
+                    </Link>
+                    <span className="text-slate-300">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsConfirmed(true)}
+                      className="text-xs font-bold text-slate-700 hover:text-brand-navy cursor-pointer"
+                    >
+                      View Itinerary
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -1083,14 +1054,14 @@ export function BoothVisitClient({
                     value={searchFilter}
                     onChange={(e) => setSearchFilter(e.target.value)}
                     placeholder="Search university by name or city (e.g. Amity, Pune, VIT, RV)..."
-                    className="w-full px-4 py-3.5 pl-11 text-xs sm:text-sm text-brand-navy bg-slate-50/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple"
+                    className="w-full px-4 py-3 sm:py-3.5 pl-11 text-xs sm:text-sm text-brand-navy bg-slate-50/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple transition-all"
                   />
-                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                   {searchFilter && (
                     <button
                       type="button"
                       onClick={() => setSearchFilter('')}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 cursor-pointer p-1"
                     >
                       Clear
                     </button>
@@ -1099,11 +1070,11 @@ export function BoothVisitClient({
 
                 {/* City Filter Pills */}
                 {availableCities.length > 1 && (
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
+                  <div className="-mx-1 px-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 text-xs scroll-smooth">
                     <button
                       type="button"
                       onClick={() => setCityFilter('ALL')}
-                      className={`px-3 py-1 rounded-full font-bold transition-all shrink-0 cursor-pointer ${cityFilter === 'ALL'
+                      className={`px-3 py-1.5 rounded-full font-bold transition-all shrink-0 cursor-pointer active:scale-95 ${cityFilter === 'ALL'
                         ? 'bg-brand-purple text-white shadow-2xs'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
@@ -1117,7 +1088,7 @@ export function BoothVisitClient({
                           key={c}
                           type="button"
                           onClick={() => setCityFilter(c)}
-                          className={`px-3 py-1 rounded-full font-bold transition-all shrink-0 cursor-pointer ${cityFilter === c
+                          className={`px-3 py-1.5 rounded-full font-bold transition-all shrink-0 cursor-pointer active:scale-95 ${cityFilter === c
                             ? 'bg-brand-purple text-white shadow-2xs'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                             }`}
@@ -1130,8 +1101,8 @@ export function BoothVisitClient({
                 )}
               </div>
 
-              {/* University Selection Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[520px] overflow-y-auto pr-1">
+              {/* University Selection Grid with Generous Padding to Prevent Scrollbar Collision */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5 max-h-[460px] sm:max-h-[520px] overflow-y-auto p-1.5 pr-3.5 sm:pr-4 overscroll-contain rounded-2xl">
                 {filteredUniversities.map((uni) => {
                   const isChecked = selectedUniIds.has(uni.id);
 
@@ -1139,7 +1110,7 @@ export function BoothVisitClient({
                     <div
                       key={uni.id}
                       onClick={() => toggleUniversity(uni.id)}
-                      className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 select-none ${isChecked
+                      className={`p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 select-none active:scale-[0.99] ${isChecked
                         ? 'border-brand-purple bg-purple-50/50 shadow-xs ring-2 ring-brand-purple/20'
                         : 'border-slate-200 hover:border-slate-300 hover:shadow-2xs bg-white'
                         }`}
@@ -1157,18 +1128,18 @@ export function BoothVisitClient({
                       {/* Info */}
                       <div className="min-w-0 flex-1">
                         <p
-                          className={`text-xs sm:text-sm font-bold leading-tight ${isChecked ? 'text-brand-purple' : 'text-brand-navy'
+                          className={`text-xs sm:text-sm font-bold leading-snug break-words ${isChecked ? 'text-brand-purple' : 'text-brand-navy'
                             }`}
                         >
                           {uni.name}
                         </p>
-                        <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1 truncate">
+                        <p className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-1 truncate">
                           <MapPin size={11} className="shrink-0 text-slate-400" />
-                          <span>{uni.city}</span>
+                          <span className="truncate">{uni.city}</span>
                           {uni.boothNumber && (
                             <>
                               <span className="text-slate-300">•</span>
-                              <span className="font-semibold text-slate-600">Booth #{uni.boothNumber}</span>
+                              <span className="font-semibold text-slate-600 shrink-0">Booth #{uni.boothNumber}</span>
                             </>
                           )}
                         </p>
@@ -1192,27 +1163,27 @@ export function BoothVisitClient({
               )}
 
               {/* Bottom Confirm Action Bar */}
-              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                 <div className="text-xs text-slate-600 text-center sm:text-left">
                   <strong className="text-brand-navy font-bold">{selectedUniIds.size}</strong> of{' '}
-                  {currentEvent.participatingUniversities.length} eligible booths selected
+                  {currentEvent.participatingUniversities.length} colleges selected
                 </div>
 
                 <button
                   type="button"
                   onClick={handleConfirmVisits}
                   disabled={isSaving || selectedUniIds.size === 0}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-brand-purple via-[#7e1c9a] to-purple-800 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-brand-purple via-[#7e1c9a] to-purple-800 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   {isSaving ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Recording Booth Visits...</span>
+                      <span>Saving Preferred Colleges...</span>
                     </>
                   ) : (
                     <>
                       <CheckCircle2 size={16} />
-                      <span>Confirm & Record Visited Booths</span>
+                      <span>Confirm & Save Preferred Colleges</span>
                     </>
                   )}
                 </button>

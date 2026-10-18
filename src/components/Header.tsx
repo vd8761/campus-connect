@@ -52,7 +52,7 @@ export function Header() {
 
         {/* Desktop CTA */}
         <div className="hidden lg:flex items-center gap-4">
-          <Link href="/events/university-fair-2026-theni/register">
+          <Link href="/register">
             <Button variant="gradient" className="shadow-md">Register Now</Button>
           </Link>
         </div>
@@ -84,7 +84,7 @@ export function Header() {
               </Link>
             );
           })}
-          <Link href="/events/university-fair-2026-theni/register" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
             <Button variant="gradient" className="w-full mt-2 shadow-md">Register Now</Button>
           </Link>
         </div>

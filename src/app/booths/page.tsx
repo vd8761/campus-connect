@@ -5,9 +5,9 @@ import { BoothVisitClient } from './BoothVisitClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Plan & Record University Booth Visits | Campus Square™',
+  title: 'Preferred Colleges & Fair Visit Plan | Campus Square™',
   description:
-    'Choose your university fair edition, select the university booths you plan to visit, confirm your visits, and download your official 1-page visit report.',
+    'Choose your university fair edition, select the colleges and universities you plan to visit, and download your tailored career pathway report.',
   alternates: {
     canonical: '/booths',
   },

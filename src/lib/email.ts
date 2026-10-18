@@ -179,7 +179,7 @@ export const sendRegistrationEmail = async ({
           Your registration gives you <strong>free access</strong> to the OriginBI Assessment (Worth <strong>₹${ORIGINBI_ASSESSMENT_AMOUNT}</strong> - completely complimentary for attendees).
         </p>
         <p style="margin: 0 0 14px 0; color: #6B5677; font-size: 13px; line-height: 1.55; font-family: 'Inter', sans-serif;">
-          You will receive an email invitation to complete the short profile test. Visit the dedicated OriginBI desk on fair day to collect your personalised single-page career snapshot.
+          You will receive an email invitation to complete the short profile test. Complete it to download your personalised single-page career report on the spot!
         </p>
         <div style="font-size: 12px; color: #701A94; font-weight: 700; padding-top: 12px; border-top: 1px solid #E8DCF0; font-family: 'Inter', sans-serif;">
           A joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong>

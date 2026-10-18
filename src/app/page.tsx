@@ -21,6 +21,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { to12HourTime } from "@/lib/dateUtils";
+import { getEventStatus } from "@/lib/event-utils";
 import { ORIGINBI_ASSESSMENT_AMOUNT } from "@/lib/constants";
 import { UniversityPartnersSection } from "@/components/UniversityPartnersSection";
 import { StakeholdersSection } from "@/components/StakeholdersSection";
@@ -60,12 +61,67 @@ export default async function Home() {
     status: 'OPEN'
   };
 
-  const futureEditions = [
-    { city: "Coimbatore", venue: "Host School Partner", date: "Coming in 2026/2027", status: "Announcing Soon" },
-    { city: "Trichy", venue: "Host School Partner", date: "Coming in 2026/2027", status: "Announcing Soon" },
-    { city: "Chennai", venue: "Host School Partner", date: "Coming in 2026/2027", status: "Announcing Soon" },
-    { city: "Bengaluru", venue: "Host School Partner", date: "Coming in 2026/2027", status: "Announcing Soon" },
-  ];
+  // Determine status of Theni event and find currently active open event
+  const theniStatus = theniEvent 
+    ? getEventStatus(
+        new Date(theniEvent.startDate), 
+        new Date(theniEvent.endDate || theniEvent.startDate), 
+        theniEvent.registrationOpen ? new Date(theniEvent.registrationOpen) : null, 
+        theniEvent.registrationClose ? new Date(theniEvent.registrationClose) : null, 
+        theniEvent.status === 'DRAFT'
+      )
+    : 'CLOSED';
+
+  const isTheniOpen = ['OPEN', 'LIMITED_SEATS'].includes(theniStatus);
+
+  // Dynamically find all events that are currently accepting registrations
+  const openEvents = rawEvents.filter(e => {
+    const s = getEventStatus(
+      new Date(e.startDate), 
+      new Date(e.endDate || e.startDate), 
+      e.registrationOpen ? new Date(e.registrationOpen) : null, 
+      e.registrationClose ? new Date(e.registrationClose) : null, 
+      e.status === 'DRAFT'
+    );
+    return ['OPEN', 'LIMITED_SEATS'].includes(s);
+  });
+  const hasMultipleOpenEvents = openEvents.length > 1;
+  const activeOpenEvent = openEvents.length > 0 ? openEvents[0] : (isTheniOpen ? theniEvent : null);
+
+  // Featured Event: The first open event, or default to theniEvent
+  const featuredEvent = openEvents[0] || theniEvent;
+  const featuredEventStatus = getEventStatus(
+    new Date(featuredEvent.startDate),
+    new Date(featuredEvent.endDate || featuredEvent.startDate),
+    featuredEvent.registrationOpen ? new Date(featuredEvent.registrationOpen) : null,
+    featuredEvent.registrationClose ? new Date(featuredEvent.registrationClose) : null,
+    featuredEvent.status === 'DRAFT'
+  );
+  const isFeaturedOpen = ['OPEN', 'LIMITED_SEATS'].includes(featuredEventStatus);
+
+  const featuredDateFormatted = new Date(featuredEvent.startDate).toLocaleDateString('en-US', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  const featuredTimeFormatted = featuredEvent.startTime && featuredEvent.endTime
+    ? `${to12HourTime(featuredEvent.startTime)} - ${to12HourTime(featuredEvent.endTime)}`
+    : '1:00 PM - 4:00 PM';
+
+  const featuredVenue = featuredEvent.venue || `${featuredEvent.city} Host School Partner`;
+
+  // Other database events (excluding the current featured one)
+  const otherDbEvents = rawEvents.filter(e => e.id !== featuredEvent.id);
+
+  // Future pipeline cities that do not yet exist as concrete records in the DB
+  const pipelineCities = [
+    { city: "Coimbatore", defaultVenue: "Host School Partner", date: "Coming in 2026/2027" },
+    { city: "Trichy", defaultVenue: "Host School Partner", date: "Coming in 2026/2027" },
+    { city: "Chennai", defaultVenue: "Host School Partner", date: "Coming in 2026/2027" },
+    { city: "Bengaluru", defaultVenue: "Host School Partner", date: "Coming in 2026/2027" },
+  ].filter(p => !rawEvents.some(e => e.city?.toLowerCase() === p.city.toLowerCase()));
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -158,23 +214,53 @@ export default async function Home() {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
-              <Link
-                href="/events/university-fair-2026-theni/register"
-                className="flex-1"
-              >
-                <Button
-                  variant="gradient"
-                  size="lg"
-                  className="w-full rounded-xl py-6 text-base font-extrabold shadow-lg shadow-brand-purple/40 cursor-pointer flex items-center justify-center gap-2"
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-5">
+              {hasMultipleOpenEvents ? (
+                <Link
+                  href="/register"
+                  className="flex-1"
                 >
-                  <span>Register Now - Assessment FREE</span>
-                  <ArrowRight size={18} />
-                </Button>
-              </Link>
+                  <Button
+                    variant="gradient"
+                    size="lg"
+                    className="w-full rounded-xl py-6 text-base font-extrabold shadow-lg shadow-brand-purple/40 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Register Free - Choose Your Edition</span>
+                    <ArrowRight size={18} />
+                  </Button>
+                </Link>
+              ) : activeOpenEvent ? (
+                <Link
+                  href={`/events/${activeOpenEvent.slug}/register`}
+                  className="flex-1"
+                >
+                  <Button
+                    variant="gradient"
+                    size="lg"
+                    className="w-full rounded-xl py-6 text-base font-extrabold shadow-lg shadow-brand-purple/40 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Register Free - Assessment Included</span>
+                    <ArrowRight size={18} />
+                  </Button>
+                </Link>
+              ) : (
+                <Link
+                  href="#upcoming-editions"
+                  className="flex-1"
+                >
+                  <Button
+                    variant="gradient"
+                    size="lg"
+                    className="w-full rounded-xl py-6 text-base font-extrabold shadow-lg shadow-brand-purple/40 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Explore Upcoming Editions & Pre-Register</span>
+                    <ArrowRight size={18} />
+                  </Button>
+                </Link>
+              )}
 
               <Link
-                href="#university-partners"
+                href="#upcoming-editions"
                 className="sm:w-auto"
               >
                 <Button
@@ -182,37 +268,34 @@ export default async function Home() {
                   size="lg"
                   className="w-full sm:w-auto rounded-xl py-6 text-sm font-bold border-white/30 text-white bg-white/5 hover:bg-white hover:text-brand-navy cursor-pointer transition-all"
                 >
-                  Explore University Partners
+                  Explore Editions & Partners
                 </Button>
               </Link>
             </div>
 
-            {/* Event Details Immediately Below CTA */}
-            <div className="border-t border-white/15 bg-white/[0.06] -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 px-6 sm:px-8 py-4 rounded-b-3xl">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs sm:text-sm">
-                <div className="flex items-center gap-2 text-brand-turquoise font-medium min-w-0">
-                  <MapPin size={16} className="text-brand-turquoise shrink-0" />
-                  <span className="leading-snug">
-                    <strong className="text-white font-bold">The Little Kingdom School, Theni</strong>
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-200">
-                  <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                    <Calendar size={15} className="text-brand-turquoise shrink-0" />
-                    <span>Saturday, 24 October 2026</span>
-                  </div>
-                  <span className="hidden sm:inline text-white/30">•</span>
-                  <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                    <Clock size={15} className="text-brand-turquoise shrink-0" />
-                    <span>1:00 PM - 4:00 PM</span>
-                  </div>
-                </div>
+            {/* Universal Multi-Edition Trust Pillars (Evergreen across all editions) */}
+            <div className="pt-4 border-t border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-200">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-brand-turquoise shrink-0" />
+                <span>School-Hosted University Fairs</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-brand-turquoise shrink-0" />
+                <span>Leading Exhibiting Universities</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-brand-turquoise shrink-0" />
+                <span>1-Page Career Pathway Report</span>
               </div>
             </div>
           </div>
 
           <p className="text-xs text-gray-400 max-w-xl mx-auto">
-            Once you register, you&apos;ll receive your online assessment link by email. Complete it before the event to collect your printed, detailed profile report directly at our registration desk!
+            {activeOpenEvent ? (
+              <>Once you register, you&apos;ll receive your online assessment link by email. Complete it before or during the event to download your detailed profile report on the spot!</>
+            ) : (
+              <>Registrations for the current edition have concluded. Explore our upcoming multi-city fair series below to stay informed and pre-register for the next edition!</>
+            )}
           </p>
         </div>
       </section>
@@ -242,16 +325,20 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Featured Card: Theni */}
+          {/* Featured Card: Dynamic Current / Featured Edition */}
           <div className="bg-white rounded-3xl border-2 border-brand-purple/30 shadow-xl overflow-hidden mb-10 hover:shadow-2xl transition-all duration-300">
             <div className="bg-gradient-to-r from-brand-navy via-[#320846] to-brand-navy text-white px-6 py-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="px-2.5 py-0.5 rounded-full bg-brand-turquoise text-brand-navy text-xs font-extrabold uppercase tracking-wider">
-                  Theni Edition
+                  {featuredEvent.city} Edition
                 </span>
-                <span className="text-sm font-semibold text-white/90">Registration Open</span>
+                <span className="text-sm font-semibold text-white/90">
+                  {isFeaturedOpen ? 'Registration Open' : featuredEventStatus === 'COMPLETED' ? 'Edition Concluded' : 'Registration Closed'}
+                </span>
               </div>
-              <span className="text-xs text-white/70">Admission: Completely Free</span>
+              <span className="text-xs text-white/70">
+                {isFeaturedOpen ? 'Admission: Completely Free' : 'Recap & Booth Directory Available'}
+              </span>
             </div>
 
             <div className="p-6 sm:p-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
@@ -261,32 +348,40 @@ export default async function Home() {
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-heading font-extrabold text-brand-navy">
-                  Campus Square™ - The Little Kingdom School, Theni
+                  Campus Square™ - {featuredVenue}
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                   <div className="flex items-center gap-2.5 text-xs sm:text-sm text-brand-navy font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <Calendar size={18} className="text-brand-purple shrink-0" />
-                    <span>Saturday, 24 October 2026</span>
+                    <span>{featuredDateFormatted}</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-xs sm:text-sm text-brand-navy font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <Clock size={18} className="text-brand-purple shrink-0" />
-                    <span>1:00 PM - 4:00 PM</span>
+                    <span>{featuredTimeFormatted}</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-xs sm:text-sm text-brand-navy font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
                     <MapPin size={18} className="text-brand-purple shrink-0" />
-                    <span>The Little Kingdom School, Theni</span>
+                    <span>{featuredVenue}</span>
                   </div>
                 </div>
               </div>
 
               <div className="w-full lg:w-auto shrink-0 flex flex-col gap-3">
-                <Link href="/events/university-fair-2026-theni/register" className="w-full">
-                  <Button variant="gradient" size="lg" className="w-full rounded-xl py-6 text-base font-bold shadow-lg shadow-brand-purple/20">
-                    Register for Theni Edition
-                  </Button>
-                </Link>
-                <Link href="/events/university-fair-2026-theni" className="w-full">
+                {isFeaturedOpen ? (
+                  <Link href={`/events/${featuredEvent.slug}/register`} className="w-full">
+                    <Button variant="gradient" size="lg" className="w-full rounded-xl py-6 text-base font-bold shadow-lg shadow-brand-purple/20">
+                      Register for {featuredEvent.city} Edition
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="#upcoming-editions" className="w-full">
+                    <Button variant="outline" size="lg" className="w-full rounded-xl py-6 text-sm font-bold border-brand-purple/40 text-brand-navy bg-slate-50 hover:bg-slate-100">
+                      Registration Closed • Explore Next Editions
+                    </Button>
+                  </Link>
+                )}
+                <Link href={`/events/${featuredEvent.slug}`} className="w-full">
                   <Button variant="outline" size="lg" className="w-full rounded-xl">
                     View Event Details & Booths
                   </Button>
@@ -295,27 +390,77 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Future Editions Pipeline */}
+          {/* Editions Pipeline: Shows any other DB editions + future cities */}
           <div className="mt-8">
             <h4 className="text-lg font-heading font-bold text-brand-navy mb-4 text-center sm:text-left">
               Upcoming Editions
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {futureEditions.map((ed, idx) => (
+              {/* Other Database Editions */}
+              {otherDbEvents.map((dbEvent) => {
+                const s = getEventStatus(
+                  new Date(dbEvent.startDate),
+                  new Date(dbEvent.endDate || dbEvent.startDate),
+                  dbEvent.registrationOpen ? new Date(dbEvent.registrationOpen) : null,
+                  dbEvent.registrationClose ? new Date(dbEvent.registrationClose) : null,
+                  dbEvent.status === 'DRAFT'
+                );
+                const isOpen = ['OPEN', 'LIMITED_SEATS'].includes(s);
+                const isOpeningSoon = s === 'OPENING_SOON';
+                const formattedDate = new Date(dbEvent.startDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                });
+
+                return (
+                  <div key={dbEvent.id} className="bg-white rounded-2xl p-5 border border-brand-border/80 shadow-xs flex flex-col justify-between hover:border-brand-purple/40 hover:shadow-md transition-all">
+                    <div>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                        isOpen 
+                          ? 'bg-emerald-50 text-emerald-700' 
+                          : isOpeningSoon 
+                            ? 'bg-purple-50 text-purple-700' 
+                            : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {isOpen ? 'Registration Open' : isOpeningSoon ? 'Opening Soon' : 'Completed Edition'}
+                      </span>
+                      <h5 className="text-xl font-heading font-bold text-brand-navy mt-2 mb-1">
+                        {dbEvent.city} Edition
+                      </h5>
+                      <p className="text-xs text-brand-muted mb-3 truncate">
+                        {dbEvent.venue || 'Host School Partner'}
+                      </p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-brand-purple font-medium">
+                      <span>{formattedDate}</span>
+                      <Link 
+                        href={isOpen ? `/events/${dbEvent.slug}/register` : `/events/${dbEvent.slug}`} 
+                        className="hover:underline font-bold"
+                      >
+                        {isOpen ? 'Register Now →' : 'View Details →'}
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Pipeline Future Editions */}
+              {pipelineCities.map((pipe, idx) => (
                 <div key={idx} className="bg-white rounded-2xl p-5 border border-brand-border/80 shadow-xs flex flex-col justify-between">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
-                      {ed.status}
+                      Announcing Soon
                     </span>
                     <h5 className="text-xl font-heading font-bold text-brand-navy mt-2 mb-1">
-                      {ed.city} Edition
+                      {pipe.city} Edition
                     </h5>
                     <p className="text-xs text-brand-muted mb-3">
-                      {ed.venue}
+                      {pipe.defaultVenue}
                     </p>
                   </div>
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-brand-purple font-medium">
-                    <span>{ed.date}</span>
+                    <span>{pipe.date}</span>
                     <Link href="/host" className="hover:underline">Nominate School &rarr;</Link>
                   </div>
                 </div>
@@ -415,9 +560,13 @@ export default async function Home() {
 
             <div className="shrink-0 relative z-10 w-full md:w-auto">
               <Link href="/host">
-                <Button size="lg" className="bg-brand-turquoise hover:bg-white !text-brand-navy font-extrabold px-8 py-6 rounded-xl shadow-xl w-full cursor-pointer transition-all flex items-center justify-center gap-2 group">
-                  <span className="!text-brand-navy font-extrabold">Discuss Hosting an Edition</span>
-                  <ArrowRight size={18} className="!text-brand-navy shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                <Button 
+                  variant="white" 
+                  size="lg" 
+                  className="bg-white hover:bg-slate-100 text-brand-navy font-extrabold px-8 py-6 rounded-2xl shadow-xl w-full cursor-pointer transition-all flex items-center justify-center gap-2 group hover:scale-[1.02]"
+                >
+                  <span className="text-brand-navy font-extrabold">Discuss Hosting an Edition</span>
+                  <ArrowRight size={18} className="text-brand-navy shrink-0 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>

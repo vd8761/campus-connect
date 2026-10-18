@@ -152,7 +152,7 @@ export async function generateAiCourseMapping(participantId: string) {
     }
 
     if (!participant.boothVisits || participant.boothVisits.length === 0) {
-      return { error: 'Student has not visited any university booths.' };
+      return { error: 'Student has not selected any preferred colleges.' };
     }
 
     // Brief animation delay for interactive feel
@@ -161,7 +161,7 @@ export async function generateAiCourseMapping(participantId: string) {
     const recommendedCourses = await matchCoursesToProfile(participant);
 
     if (recommendedCourses.length === 0) {
-      return { error: 'No matching courses found in the university booths visited.' };
+      return { error: 'No matching courses found in the preferred colleges selected.' };
     }
 
     return {

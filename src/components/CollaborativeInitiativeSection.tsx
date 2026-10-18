@@ -35,8 +35,7 @@ export function CollaborativeInitiativeSection({ className = '', showBottomCta =
         {/* Two-Column Editorial Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Card 1: Atom Infinity */}
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-brand-border/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
-            <div className="absolute top-0 left-0 h-1.5 w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-400 rounded-t-3xl"></div>
+          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-brand-border/80 border-t-4 border-t-purple-600 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
 
             <div>
               {/* Partner Logo Card */}
@@ -51,7 +50,7 @@ export function CollaborativeInitiativeSection({ className = '', showBottomCta =
               </div>
 
               <div className="inline-block px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold uppercase tracking-wider mb-3">
-                School Leadership & Educational Network
+                Education Strategy & Institutional Growth
               </div>
 
               <h3 className="text-2xl font-heading font-bold text-brand-navy mb-3">
@@ -59,26 +58,26 @@ export function CollaborativeInitiativeSection({ className = '', showBottomCta =
               </h3>
 
               <p className="text-brand-muted text-sm leading-relaxed mb-6">
-                A premier educational initiatives platform dedicated to empowering school leaders, trustees, and educators across India. Atom Infinity facilitates high-impact academic conclaves and institutional collaborations that elevate school communities.
+                An education-focused strategy and execution partner dedicated to building future-ready schools and strengthening educational institutions across India. Atom Infinity delivers end-to-end solutions spanning school strategy, academics, infrastructure, administration, leadership, and student exposure.
               </p>
 
               <div className="space-y-3 pt-4 border-t border-slate-100">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 size={18} className="text-purple-600 shrink-0 mt-0.5" />
                   <span className="text-xs sm:text-sm text-slate-700 font-medium">
-                    Trusted network of prominent K-12 school principals and trustees.
+                    Comprehensive K–12 solutions supporting schools at every stage of their growth.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 size={18} className="text-purple-600 shrink-0 mt-0.5" />
                   <span className="text-xs sm:text-sm text-slate-700 font-medium">
-                    Editions hosted directly inside schools for maximum trust and comfort.
+                    Strategic partnerships connecting schools with education experts, technology providers, and universities.
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 size={18} className="text-purple-600 shrink-0 mt-0.5" />
                   <span className="text-xs sm:text-sm text-slate-700 font-medium">
-                    Bridge connecting senior school leadership with higher education.
+                    A bridge connecting school leadership, educational innovation, and future-ready learning opportunities.
                   </span>
                 </div>
               </div>
@@ -86,8 +85,7 @@ export function CollaborativeInitiativeSection({ className = '', showBottomCta =
           </div>
 
           {/* Card 2: OriginBI Mindworks */}
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-brand-border/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
-            <div className="absolute top-0 left-0 h-1.5 w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-500 rounded-t-3xl"></div>
+          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-brand-border/80 border-t-4 border-t-teal-500 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
 
             <div>
               {/* Partner Logo Card */}
