@@ -81,7 +81,7 @@ export default async function Home() {
           {/* Joint Initiative Credential */}
           <div className="flex flex-col items-center justify-center gap-2.5 mb-8">
             <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-slate-300">
-              A joint collaboration by Atom Infinity and Origin Bi
+              A joint collaboration by
             </span>
             <div className="inline-flex items-center gap-4 sm:gap-6 bg-white px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl border border-white/20">
               <div className="relative h-8 w-28 sm:h-10 sm:w-36 md:h-11 md:w-40">
