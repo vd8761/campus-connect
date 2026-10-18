@@ -102,7 +102,7 @@ export function EventsExplorer({ events }: EventsExplorerProps) {
               { id: 'ALL', label: 'All Editions', count: counts.ALL },
               { id: 'OPEN', label: 'Open for Registration', count: counts.OPEN, highlight: true },
               { id: 'UPCOMING', label: 'Opening Soon', count: counts.UPCOMING },
-              { id: 'PAST', label: 'Past Conclaves', count: counts.PAST },
+              { id: 'PAST', label: 'Past Editions', count: counts.PAST },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -141,7 +141,7 @@ export function EventsExplorer({ events }: EventsExplorerProps) {
             <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-muted" />
             <input
               type="text"
-              placeholder="Search by event title, conclave topic, city, or venue..."
+              placeholder="Search by event title, city, or venue..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-brand-border bg-brand-light/50 focus:bg-white text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
@@ -178,12 +178,12 @@ export function EventsExplorer({ events }: EventsExplorerProps) {
             <Search size={28} />
           </div>
           <h3 className="text-xl font-heading font-bold text-brand-navy mb-2">
-            {activeTab === 'PAST' ? 'No Past Conclaves in the Archive' : 'No Matching Events Found'}
+            {activeTab === 'PAST' ? 'No Past Editions in the Archive' : 'No Matching Events Found'}
           </h3>
           <p className="text-sm text-brand-muted mb-6 leading-relaxed">
             {activeTab === 'PAST' 
               ? 'All currently scheduled editions are upcoming or open for registration. You can explore photo highlights from previous editions in our gallery.'
-              : 'We couldn’t find any events matching your selected criteria. Try resetting your search or view all available conclaves.'}
+              : 'We couldn’t find any events matching your selected criteria. Try resetting your search or view all available editions.'}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button

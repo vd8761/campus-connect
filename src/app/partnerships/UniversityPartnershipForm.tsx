@@ -543,7 +543,7 @@ export function UniversityPartnershipForm() {
           </Button>
 
           <p className="text-center text-xs text-brand-muted pt-2">
-            By submitting, you agree to receive communications regarding Campus Square partnership editions.
+            By submitting, you agree to receive communications regarding Campus Square™ partnership editions.
           </p>
         </form>
       )}

@@ -1107,7 +1107,7 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
                     Assessment Not Yet Completed
                   </h3>
                   <p className="text-xs text-slate-500 mt-1 max-w-sm">
-                    {selectedStudent.fullName} is registered for the conclave, but has not yet taken
+                    {selectedStudent.fullName} is registered for the edition, but has not yet taken
                     their Origin BI DISC psychometric assessment.
                   </p>
                 </div>

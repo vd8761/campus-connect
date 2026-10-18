@@ -44,7 +44,7 @@ export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
     {
       title: 'Event Management',
       items: [
-        { href: '/admin/events', label: 'All Conclaves', icon: Calendar },
+        { href: '/admin/events', label: 'Fair Editions', icon: Calendar },
         { href: '/admin/event-types', label: 'Event Categories', icon: Tags },
       ],
     },
@@ -69,7 +69,7 @@ export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
         <Link href="/admin" className="flex items-center">
           <Image 
             src="/campus-square-logo-transparent.png" 
-            alt="Campus Square" 
+            alt="Campus Square™" 
             width={160} 
             height={40} 
             className="h-8 w-auto object-contain"

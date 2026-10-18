@@ -16,8 +16,8 @@ export function AdminTopBar({ onLogout }: AdminTopBarProps) {
   // Simple breadcrumb label
   const getPageTitle = () => {
     if (pathname === '/admin') return 'Dashboard';
-    if (pathname.includes('/events/new')) return 'New Conclave';
-    if (pathname.includes('/events')) return 'Conclaves';
+    if (pathname.includes('/events/new')) return 'New Edition';
+    if (pathname.includes('/events')) return 'Fair Editions';
     if (pathname.includes('/event-types')) return 'Event Categories';
     if (pathname.includes('/universities')) return 'Universities';
     if (pathname.includes('/participants')) return 'Registered Delegates';
@@ -37,7 +37,7 @@ export function AdminTopBar({ onLogout }: AdminTopBarProps) {
       {/* Left: Breadcrumbs & Current context */}
       <div className="flex items-center gap-2.5 text-xs">
         <Link href="/admin" className="font-semibold text-brand-purple hover:text-brand-purple/80 transition-colors">
-          Campus Square
+          Campus Square™
         </Link>
         <span className="text-slate-300 font-normal">/</span>
         <span className="font-bold text-brand-navy">{getPageTitle()}</span>

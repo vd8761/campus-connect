@@ -31,7 +31,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
         </h4>
 
         <p className="text-xs text-white/80 leading-relaxed mb-3">
-          Register for Campus Square and get free access to the OriginBI Assessment (Actual value ₹{ORIGINBI_ASSESSMENT_AMOUNT} - completely free for attendees). You’ll receive an email to complete a short assessment. After finishing, download your personalised single-page result PDF on the university fair day spot - a clear snapshot of your strengths, working style, and career alignment to guide smarter choices.
+          Register for Campus Square™ and get free access to the OriginBI Assessment (Actual value ₹{ORIGINBI_ASSESSMENT_AMOUNT} - completely free for attendees). You’ll receive an email to complete a short assessment. After finishing, download your personalised single-page result PDF on the university fair day spot - a clear snapshot of your strengths, working style, and career alignment to guide smarter choices.
         </p>
 
         <div className="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 text-[11px] text-white/70">
@@ -63,7 +63,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
         </h4>
 
         <p className="text-xs text-brand-muted leading-relaxed mb-3">
-          Register for Campus Square and get <strong className="text-brand-navy">free access</strong> to the OriginBI Assessment (Actual value ₹{ORIGINBI_ASSESSMENT_AMOUNT} - no payment needed). You’ll receive an email to take a short assessment and download your personalised single-page result PDF on the university fair day spot to guide smarter stream & career choices.
+          Register for Campus Square™ and get <strong className="text-brand-navy">free access</strong> to the OriginBI Assessment (Actual value ₹{ORIGINBI_ASSESSMENT_AMOUNT} - no payment needed). You’ll receive an email to take a short assessment and download your personalised single-page result PDF on the university fair day spot to guide smarter stream & career choices.
         </p>
 
         <div className="pt-2 border-t border-purple-100 flex items-center justify-between gap-2 text-[11px] text-brand-muted">
@@ -101,7 +101,7 @@ export function OriginBIHighlightBox({ compact = false, variant = 'default', cla
         </h3>
 
         <p className="text-xs sm:text-sm text-brand-muted leading-relaxed mb-4">
-          Register for Campus Square and get <strong className="text-brand-navy font-semibold">free access to the OriginBI Assessment</strong> (Actual cost: <span className="line-through text-gray-400">₹{ORIGINBI_ASSESSMENT_AMOUNT}</span> - entirely free with your registration).
+          Register for Campus Square™ and get <strong className="text-brand-navy font-semibold">free access to the OriginBI Assessment</strong> (Actual cost: <span className="line-through text-gray-400">₹{ORIGINBI_ASSESSMENT_AMOUNT}</span> - entirely free with your registration).
         </p>
 
         <p className="text-xs sm:text-sm text-brand-muted leading-relaxed mb-4">

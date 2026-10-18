@@ -73,48 +73,56 @@ export async function submitUniversityPartnershipEnquiry(rawData: unknown) {
 
     console.log(`[Analytics] University partnership enquiry submitted: ${enquiry.id} (${data.universityName})`);
 
-    // 1. Dispatch internal notification email to administrator / team inbox
-    sendEnquiryNotificationEmail({
-      category: 'University Partnership',
-      subjectTitle: `University Partnership Inquiry: ${data.universityName}`,
-      senderName: data.contactPerson,
-      senderEmail: data.officialEmail,
-      senderPhone: data.phoneNumber,
-      organizationName: data.universityName,
-      designation: data.designation,
-      city: data.preferredLocations,
-      details: [
-        { label: 'University Name', value: data.universityName },
-        { label: 'Contact Person', value: data.contactPerson },
-        { label: 'Designation', value: data.designation },
-        { label: 'Official Email', value: data.officialEmail },
-        { label: 'Phone / WhatsApp', value: data.phoneNumber },
-        { label: 'Website', value: data.website || 'N/A' },
-        { label: 'Preferred Locations', value: data.preferredLocations },
-        { label: 'Partnership Interests', value: data.partnershipInterests },
-        { label: 'Referral Source', value: data.referralSource || 'Direct Website' },
-        { label: 'Database Reference ID', value: enquiry.id },
-      ],
-      notes: `Preferred Locations: ${data.preferredLocations}\nInterests: ${data.partnershipInterests}`,
-    }).catch(err => console.error('[Email Notification Error]', err));
-
-    // 2. Dispatch personalized thank you acknowledgement email to the user
-    sendEnquiryAcknowledgementEmail({
-      category: 'University Partnership',
-      recipientName: data.contactPerson,
-      recipientEmail: data.officialEmail,
-      organizationName: data.universityName,
-      enquiryId: enquiry.id,
-      details: [
-        { label: 'University / Institution', value: data.universityName },
-        { label: 'Primary Contact Person', value: data.contactPerson },
-        { label: 'Official Designation', value: data.designation },
-        { label: 'Official Email ID', value: data.officialEmail },
-        { label: 'Phone / WhatsApp', value: data.phoneNumber },
-        { label: 'Preferred Conclave Locations', value: data.preferredLocations },
-        { label: 'Partnership Interests', value: data.partnershipInterests },
-      ],
-    }).catch(err => console.error('[User Thank You Email Error]', err));
+    // Dispatch both notification to team and acknowledgement to submitter
+    try {
+      const [adminEmailRes, userEmailRes] = await Promise.allSettled([
+        sendEnquiryNotificationEmail({
+          category: 'University Partnership',
+          subjectTitle: `University Partnership Inquiry: ${data.universityName}`,
+          senderName: data.contactPerson,
+          senderEmail: data.officialEmail,
+          senderPhone: data.phoneNumber,
+          organizationName: data.universityName,
+          designation: data.designation,
+          city: data.preferredLocations,
+          details: [
+            { label: 'University Name', value: data.universityName },
+            { label: 'Contact Person', value: data.contactPerson },
+            { label: 'Designation', value: data.designation },
+            { label: 'Official Email', value: data.officialEmail },
+            { label: 'Phone / WhatsApp', value: data.phoneNumber },
+            { label: 'Website', value: data.website || 'N/A' },
+            { label: 'Preferred Locations', value: data.preferredLocations },
+            { label: 'Partnership Interests', value: data.partnershipInterests },
+            { label: 'Referral Source', value: data.referralSource || 'Direct Website' },
+            { label: 'Database Reference ID', value: enquiry.id },
+          ],
+          notes: `Preferred Locations: ${data.preferredLocations}\nInterests: ${data.partnershipInterests}`,
+        }),
+        sendEnquiryAcknowledgementEmail({
+          category: 'University Partnership',
+          recipientName: data.contactPerson,
+          recipientEmail: data.officialEmail,
+          organizationName: data.universityName,
+          enquiryId: enquiry.id,
+          details: [
+            { label: 'University / Institution', value: data.universityName },
+            { label: 'Primary Contact Person', value: data.contactPerson },
+            { label: 'Official Designation', value: data.designation },
+            { label: 'Official Email ID', value: data.officialEmail },
+            { label: 'Phone / WhatsApp', value: data.phoneNumber },
+            { label: 'Preferred Edition Locations', value: data.preferredLocations },
+            { label: 'Partnership Interests', value: data.partnershipInterests },
+          ],
+        }),
+      ]);
+      console.log('[Email Dispatch] University enquiry email status:', {
+        adminStatus: adminEmailRes.status,
+        userStatus: userEmailRes.status,
+      });
+    } catch (emailErr) {
+      console.error('[Email Dispatch Error]', emailErr);
+    }
 
     revalidatePath("/partnerships");
     revalidatePath("/admin/partners");
@@ -122,7 +130,7 @@ export async function submitUniversityPartnershipEnquiry(rawData: unknown) {
     return {
       success: true,
       enquiryId: enquiry.id,
-      message: "Thank you for partnering with Campus Square! Our university relations team will reach out to you shortly.",
+      message: "Thank you for partnering with Campus Square™! Our university relations team will reach out to you shortly.",
     };
   } catch (error: any) {
     console.error("Error submitting university partnership enquiry:", error);
@@ -170,49 +178,57 @@ export async function submitSchoolHostingEnquiry(rawData: unknown) {
 
     console.log(`[Analytics] School hosting enquiry submitted: ${enquiry.id} (${data.schoolName})`);
 
-    // 1. Dispatch internal notification email to administrator / team inbox
-    sendEnquiryNotificationEmail({
-      category: 'Host School Proposal',
-      subjectTitle: `School Hosting Proposal: ${data.schoolName}`,
-      senderName: data.contactPerson,
-      senderEmail: data.officialEmail,
-      senderPhone: data.phoneNumber,
-      organizationName: data.schoolName,
-      designation: data.designation,
-      city: data.location,
-      details: [
-        { label: 'School Name', value: data.schoolName },
-        { label: 'School Location', value: data.location },
-        { label: 'Contact Person', value: data.contactPerson },
-        { label: 'Designation', value: data.designation },
-        { label: 'Official Email', value: data.officialEmail },
-        { label: 'Phone / WhatsApp', value: data.phoneNumber },
-        { label: 'Expected Student Audience', value: data.expectedStudentAudience },
-        { label: 'Preferred Dates', value: data.preferredDates },
-        { label: 'Referral Source', value: data.referralSource || 'Direct Website' },
-        { label: 'Database Reference ID', value: enquiry.id },
-      ],
-      notes: data.notes || undefined,
-    }).catch(err => console.error('[Email Notification Error]', err));
-
-    // 2. Dispatch personalized thank you acknowledgement email to the user
-    sendEnquiryAcknowledgementEmail({
-      category: 'Host School Proposal',
-      recipientName: data.contactPerson,
-      recipientEmail: data.officialEmail,
-      organizationName: data.schoolName,
-      enquiryId: enquiry.id,
-      details: [
-        { label: 'School Name', value: data.schoolName },
-        { label: 'Location (City, State)', value: data.location },
-        { label: 'Contact Person', value: data.contactPerson },
-        { label: 'Official Designation', value: data.designation },
-        { label: 'Official Email ID', value: data.officialEmail },
-        { label: 'Phone / WhatsApp', value: data.phoneNumber },
-        { label: 'Expected Student Audience', value: data.expectedStudentAudience },
-        { label: 'Preferred Dates', value: data.preferredDates },
-      ],
-    }).catch(err => console.error('[User Thank You Email Error]', err));
+    // Dispatch both notification to team and acknowledgement to submitter
+    try {
+      const [adminEmailRes, userEmailRes] = await Promise.allSettled([
+        sendEnquiryNotificationEmail({
+          category: 'Host School Proposal',
+          subjectTitle: `School Hosting Proposal: ${data.schoolName}`,
+          senderName: data.contactPerson,
+          senderEmail: data.officialEmail,
+          senderPhone: data.phoneNumber,
+          organizationName: data.schoolName,
+          designation: data.designation,
+          city: data.location,
+          details: [
+            { label: 'School Name', value: data.schoolName },
+            { label: 'School Location', value: data.location },
+            { label: 'Contact Person', value: data.contactPerson },
+            { label: 'Designation', value: data.designation },
+            { label: 'Official Email', value: data.officialEmail },
+            { label: 'Phone / WhatsApp', value: data.phoneNumber },
+            { label: 'Expected Student Audience', value: data.expectedStudentAudience },
+            { label: 'Preferred Dates', value: data.preferredDates },
+            { label: 'Referral Source', value: data.referralSource || 'Direct Website' },
+            { label: 'Database Reference ID', value: enquiry.id },
+          ],
+          notes: data.notes || undefined,
+        }),
+        sendEnquiryAcknowledgementEmail({
+          category: 'Host School Proposal',
+          recipientName: data.contactPerson,
+          recipientEmail: data.officialEmail,
+          organizationName: data.schoolName,
+          enquiryId: enquiry.id,
+          details: [
+            { label: 'School Name', value: data.schoolName },
+            { label: 'Location (City, State)', value: data.location },
+            { label: 'Contact Person', value: data.contactPerson },
+            { label: 'Official Designation', value: data.designation },
+            { label: 'Official Email ID', value: data.officialEmail },
+            { label: 'Phone / WhatsApp', value: data.phoneNumber },
+            { label: 'Expected Student Audience', value: data.expectedStudentAudience },
+            { label: 'Preferred Dates', value: data.preferredDates },
+          ],
+        }),
+      ]);
+      console.log('[Email Dispatch] School hosting proposal email status:', {
+        adminStatus: adminEmailRes.status,
+        userStatus: userEmailRes.status,
+      });
+    } catch (emailErr) {
+      console.error('[Email Dispatch Error]', emailErr);
+    }
 
     revalidatePath("/host");
     revalidatePath("/admin/partners");
@@ -220,7 +236,7 @@ export async function submitSchoolHostingEnquiry(rawData: unknown) {
     return {
       success: true,
       enquiryId: enquiry.id,
-      message: "Thank you for your interest in hosting Campus Square! Our school partnerships team will connect with your leadership team promptly.",
+      message: "Thank you for your interest in hosting Campus Square™! Our school partnerships team will connect with your leadership team promptly.",
     };
   } catch (error: any) {
     console.error("Error submitting school hosting enquiry:", error);
@@ -268,41 +284,49 @@ export async function submitContactUsMessage(rawData: unknown) {
 
     console.log(`[Analytics] Contact Us message received: ${enquiry.id} from ${fullName}`);
 
-    // 1. Dispatch internal notification email to administrator / team inbox
-    sendEnquiryNotificationEmail({
-      category: 'General Contact Message',
-      subjectTitle: `Contact Form Message: ${data.subject}`,
-      senderName: fullName,
-      senderEmail: data.email,
-      details: [
-        { label: 'Full Name', value: fullName },
-        { label: 'Email Address', value: data.email },
-        { label: 'Subject', value: data.subject },
-        { label: 'Database Reference ID', value: enquiry.id },
-      ],
-      notes: data.message,
-    }).catch(err => console.error('[Email Notification Error]', err));
-
-    // 2. Dispatch personalized thank you acknowledgement email to the user
-    sendEnquiryAcknowledgementEmail({
-      category: 'General Contact Message',
-      recipientName: fullName,
-      recipientEmail: data.email,
-      enquiryId: enquiry.id,
-      details: [
-        { label: 'Full Name', value: fullName },
-        { label: 'Email Address', value: data.email },
-        { label: 'Subject', value: data.subject },
-        { label: 'Your Message', value: data.message },
-      ],
-    }).catch(err => console.error('[User Thank You Email Error]', err));
+    // Dispatch both notification to team and acknowledgement to submitter
+    try {
+      const [adminEmailRes, userEmailRes] = await Promise.allSettled([
+        sendEnquiryNotificationEmail({
+          category: 'General Contact Message',
+          subjectTitle: `Contact Form Message: ${data.subject}`,
+          senderName: fullName,
+          senderEmail: data.email,
+          details: [
+            { label: 'Full Name', value: fullName },
+            { label: 'Email Address', value: data.email },
+            { label: 'Subject', value: data.subject },
+            { label: 'Database Reference ID', value: enquiry.id },
+          ],
+          notes: data.message,
+        }),
+        sendEnquiryAcknowledgementEmail({
+          category: 'General Contact Message',
+          recipientName: fullName,
+          recipientEmail: data.email,
+          enquiryId: enquiry.id,
+          details: [
+            { label: 'Full Name', value: fullName },
+            { label: 'Email Address', value: data.email },
+            { label: 'Subject', value: data.subject },
+            { label: 'Your Message', value: data.message },
+          ],
+        }),
+      ]);
+      console.log('[Email Dispatch] Contact enquiry email status:', {
+        adminStatus: adminEmailRes.status,
+        userStatus: userEmailRes.status,
+      });
+    } catch (emailErr) {
+      console.error('[Email Dispatch Error]', emailErr);
+    }
 
     revalidatePath("/contact");
 
     return {
       success: true,
       enquiryId: enquiry.id,
-      message: "Thank you for reaching out to Campus Square! We have received your message and will respond promptly.",
+      message: "Thank you for reaching out to Campus Square™! We have received your message and will respond promptly.",
     };
   } catch (error: any) {
     console.error("Error submitting contact message:", error);

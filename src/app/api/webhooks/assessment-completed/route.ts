@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       }
     };
 
-    // Find the participant in Campus Square
+    // Find the participant in Campus Square™
     const participant = await executeWithRetry(async () => {
       if (normalizedEmail) {
         const found = await prisma.participant.findFirst({
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
 
     if (!participant) {
       return NextResponse.json(
-        { success: false, error: 'Participant not found in Campus Square database' },
+        { success: false, error: 'Participant not found in Campus Square™ database' },
         { status: 404 }
       );
     }
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Assessment result successfully recorded in Campus Square',
+      message: 'Assessment result successfully recorded in Campus Square™',
       participantId: participant.id,
       assessmentResultId: assessmentResult.id,
     });

@@ -9,8 +9,8 @@ import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Our University Partners | Campus Square',
-  description: 'We are proud to collaborate with universities and higher education institutions to connect schools, students and families with meaningful academic opportunities.',
+  title: 'Our University Partners | Campus Square™',
+  description: 'We are proud to collaborate with universities and higher education institutions to connect schools, students and parents with meaningful academic opportunities.',
 };
 
 export default function PartnersPage() {
@@ -22,13 +22,13 @@ export default function PartnersPage() {
         <div className="container mx-auto max-w-4xl text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-turquoise text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur">
             <Sparkles size={14} />
-            <span>Campus Square University Network</span>
+            <span>Campus Square™ University Network</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-6 tracking-tight">
             Our University <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Partners</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-6">
-            We are proud to collaborate with universities and higher education institutions to connect schools, students and families with meaningful academic opportunities.
+            We are proud to collaborate with universities and higher education institutions to connect schools, students and parents with meaningful academic opportunities.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link href="/partnerships#enquiry-form">
@@ -51,7 +51,7 @@ export default function PartnersPage() {
             <div>
               <h2 className="text-2xl md:text-3xl font-heading font-bold text-brand-navy">All Participating Institutions</h2>
               <p className="text-sm text-brand-muted mt-1">
-                Associated across our school-hosted university fairs and academic editions ({UNIVERSITY_PARTNERS.length} Partners)
+                Associated across our school-hosted university fairs and academic editions
               </p>
             </div>
             <Link href="/partnerships#enquiry-form">

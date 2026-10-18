@@ -19,22 +19,22 @@ export interface FAQCategory {
 
 export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
   {
-    title: "1. About Campus Square",
+    title: "1. About Campus Square™",
     items: [
       {
         id: 1,
-        question: "What is Campus Square?",
-        answer: "Campus Square is a school-university fair initiative by Atom Infinity and OriginBI. It connects schools, universities, students, parents and education partners to explore higher education opportunities and build meaningful connections.",
+        question: "What is Campus Square™?",
+        answer: "Campus Square™ is a school-university fair joint collaboration by Atom Infinity and OriginBI. It connects schools, universities, students, parents and education partners to explore higher education opportunities and build meaningful connections.",
       },
       {
         id: 2,
-        question: "Who can participate in Campus Square?",
-        answer: "Campus Square welcomes students, parents, school leaders, university representatives, educators, career counsellors and education partners.",
+        question: "Who can participate in Campus Square™?",
+        answer: "Campus Square™ welcomes students, parents, school leaders, university representatives, educators, career counsellors and education partners.",
       },
       {
         id: 3,
-        question: "Where are Campus Square events conducted?",
-        answer: "Campus Square editions are hosted at different schools and locations. Visit the Upcoming Editions section to explore events and their details.",
+        question: "Where are Campus Square™ events conducted?",
+        answer: "Campus Square™ editions are hosted at different schools and locations. Visit the Upcoming Editions section to explore events and their details.",
       },
     ],
   },
@@ -43,22 +43,22 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
     items: [
       {
         id: 4,
-        question: "Why should students attend Campus Square?",
+        question: "Why should students attend Campus Square™?",
         answer: "Students can discover universities, explore academic programmes, interact with university representatives and learn about higher education and career pathways.",
       },
       {
         id: 5,
-        question: "Can parents attend Campus Square?",
+        question: "Can parents attend Campus Square™?",
         answer: "Yes. Parents and guardians are welcome to explore educational opportunities and support their children's academic and career decisions.",
       },
       {
         id: 6,
-        question: "Is Campus Square registration free?",
-        answer: "Yes! Registration for Campus Square is completely free.",
+        question: "Is Campus Square™ registration free?",
+        answer: "Yes! Registration for Campus Square™ is completely free.",
       },
       {
         id: 7,
-        question: "How can I register for Campus Square?",
+        question: "How can I register for Campus Square™?",
         answer: "Visit the website, select your preferred edition and complete the online registration form.",
       },
       {
@@ -69,17 +69,17 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
       {
         id: 9,
         question: "Is the OriginBI assessment free?",
-        answer: "Yes! The OriginBI assessment offered through Campus Square is completely free for participants.",
+        answer: "Yes! The OriginBI assessment offered through Campus Square™ is completely free for participants.",
       },
       {
         id: 10,
         question: "How can I access the free OriginBI assessment?",
-        answer: "Register for Campus Square and follow the instructions provided on the website or by the event team to access your complimentary assessment.",
+        answer: "Register for Campus Square™ and follow the instructions provided on the website or by the event team to access your complimentary assessment.",
       },
       {
         id: 11,
         question: "Do I need to pay separately for the assessment?",
-        answer: "No. The OriginBI assessment offered through Campus Square is free, with no separate assessment fee.",
+        answer: "No. The OriginBI assessment offered through Campus Square™ is free, with no separate assessment fee.",
       },
       {
         id: 12,
@@ -98,8 +98,8 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
     items: [
       {
         id: 14,
-        question: "Which universities are associated with Campus Square?",
-        answer: "Campus Square works with university partners to connect students with higher education opportunities. Visit the University Partners section to explore the institutions associated with the initiative.",
+        question: "Which universities are associated with Campus Square™?",
+        answer: "Campus Square™ works with university partners to connect students with higher education opportunities. Visit the University Partners section to explore the institutions associated with the initiative.",
       },
       {
         id: 15,
@@ -108,7 +108,7 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
       },
       {
         id: 16,
-        question: "How can a university become a Campus Square partner?",
+        question: "How can a university become a Campus Square™ partner?",
         answer: "Universities can submit an enquiry through the University Partnerships section of the website to explore collaboration opportunities.",
       },
       {
@@ -119,7 +119,7 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
       {
         id: 18,
         question: "How can a university participate in a particular edition?",
-        answer: "Contact the Campus Square team through the university enquiry form and mention your preferred event or location. Participation details will be discussed with the team.",
+        answer: "Contact the Campus Square™ team through the university enquiry form and mention your preferred event or location. Participation details will be discussed with the team.",
       },
     ],
   },
@@ -128,23 +128,23 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
     items: [
       {
         id: 19,
-        question: "Can a school host a Campus Square edition?",
-        answer: "Yes. Schools interested in hosting an edition can contact the Campus Square team to discuss the opportunity and event requirements.",
+        question: "Can a school host a Campus Square™ edition?",
+        answer: "Yes. Schools interested in hosting an edition can contact the Campus Square™ team to discuss the opportunity and event requirements.",
       },
       {
         id: 20,
-        question: "What are the benefits of hosting Campus Square?",
-        answer: "Hosting a Campus Square edition helps schools connect students and parents with universities, encourage higher education exploration and strengthen engagement with educational institutions.",
+        question: "What are the benefits of hosting Campus Square™?",
+        answer: "Hosting a Campus Square™ edition helps schools connect students and parents with universities, encourage higher education exploration and strengthen engagement with educational institutions.",
       },
       {
         id: 21,
-        question: "Can educators and career counsellors collaborate with Campus Square?",
+        question: "Can educators and career counsellors collaborate with Campus Square™?",
         answer: "Yes. Educators, career counsellors and academic professionals are welcome to enquire about relevant collaboration opportunities.",
       },
       {
         id: 22,
         question: "Can education companies and service providers participate?",
-        answer: "Relevant education organisations and service providers can contact the Campus Square team to explore potential collaboration opportunities.",
+        answer: "Relevant education organisations and service providers can contact the Campus Square™ team to explore potential collaboration opportunities.",
       },
     ],
   },
@@ -153,7 +153,7 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
     items: [
       {
         id: 23,
-        question: "How can I find upcoming Campus Square events?",
+        question: "How can I find upcoming Campus Square™ events?",
         answer: "Visit the Upcoming Editions section of the website for available event details, registration links and participating universities.",
       },
       {
@@ -164,11 +164,11 @@ export const CAMPUS_SQUARE_FAQS: FAQCategory[] = [
       {
         id: 25,
         question: "Can I change or cancel my registration?",
-        answer: "Please contact the Campus Square team through the website if you need to update or cancel your registration.",
+        answer: "Please contact the Campus Square™ team through the website if you need to update or cancel your registration.",
       },
       {
         id: 26,
-        question: "How can I contact Campus Square?",
+        question: "How can I contact Campus Square™?",
         answer: "Visit the Contact Us section of the website to submit your enquiry regarding registration, university partnerships, school hosting or collaboration.",
       },
       {
@@ -207,7 +207,7 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
           </h2>
 
           <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-            Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
+            Campus Square™ - A University Fair Series, a joint collaboration by Atom Infinity and Origin Bi, bringing schools and universities together to connect students with higher education opportunities.
           </p>
           <p className="text-sm font-semibold text-brand-purple mt-1">
             Connect Campuses. Schools. Universities. Students. Opportunities.
@@ -219,8 +219,8 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
           <button
             onClick={() => setSelectedCategory('ALL')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${selectedCategory === 'ALL'
-                ? 'bg-brand-navy text-white shadow-md'
-                : 'bg-white text-brand-navy border border-brand-border hover:border-brand-purple/40'
+              ? 'bg-brand-navy text-white shadow-md'
+              : 'bg-white text-brand-navy border border-brand-border hover:border-brand-purple/40'
               }`}
           >
             All Questions (27)
@@ -230,8 +230,8 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
               key={idx}
               onClick={() => setSelectedCategory(idx)}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${selectedCategory === idx
-                  ? 'bg-brand-navy text-white shadow-md'
-                  : 'bg-white text-brand-navy border border-brand-border hover:border-brand-purple/40'
+                ? 'bg-brand-navy text-white shadow-md'
+                : 'bg-white text-brand-navy border border-brand-border hover:border-brand-purple/40'
                 }`}
             >
               {cat.title.replace(/^\d+\.\s*/, '')}
@@ -255,8 +255,8 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
                     <div
                       key={item.id}
                       className={`rounded-2xl border transition-all duration-200 overflow-hidden ${isOpen
-                          ? 'border-brand-purple/40 bg-purple-50/20'
-                          : 'border-brand-border/60 bg-white hover:border-brand-border'
+                        ? 'border-brand-purple/40 bg-purple-50/20'
+                        : 'border-brand-border/60 bg-white hover:border-brand-border'
                         }`}
                     >
                       <button
@@ -296,7 +296,7 @@ export function CampusSquareFaqSection({ isStandalone = false }: { isStandalone?
             Still Have Questions?
           </h3>
           <p className="text-brand-muted text-sm max-w-lg mx-auto mb-6">
-            Whether you represent a school, university, student community or education organisation, Campus Square welcomes opportunities to collaborate.
+            Whether you represent a school, university, student community or education organisation, Campus Square™ welcomes opportunities to collaborate.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-semibold">

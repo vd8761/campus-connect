@@ -21,8 +21,8 @@ import {
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 
 export const metadata: Metadata = {
-  title: 'Host an Edition | Bring Campus Square to Your School',
-  description: 'Give your students and families an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives. Discuss hosting a Campus Square edition.',
+  title: 'Host an Edition | Bring Campus Square™ to Your School',
+  description: 'Give your students and parents an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives. Discuss hosting a Campus Square™ edition.',
 };
 
 export default function HostPage() {
@@ -61,15 +61,15 @@ export default function HostPage() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold mb-5 tracking-tight leading-tight">
-            Bring Campus Square to <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Your School.</span>
+            Bring Campus Square™ to <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Your School.</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed mb-6">
-            Give your students and families an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives.
+            Give your students and parents an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives.
           </p>
 
           <p className="text-sm sm:text-base text-gray-300 max-w-xl mx-auto leading-relaxed mb-8">
-            We welcome school management teams, principals and education leaders interested in hosting a Campus Square edition.
+            We welcome school management teams, principals and education leaders interested in hosting a Campus Square™ edition.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -88,51 +88,19 @@ export default function HostPage() {
         </div>
       </section>
 
-      {/* Joint Collaboration Banner */}
-      <section className="container mx-auto px-4 -mt-10 relative z-20 max-w-5xl">
-        <div className="bg-gradient-to-r from-brand-navy via-[#320846] to-brand-navy rounded-3xl p-7 sm:p-10 text-white relative overflow-hidden shadow-2xl border border-white/10">
-          <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -left-20 -top-20 w-64 h-64 bg-brand-turquoise/20 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex-1 text-center md:text-left">
-              <div className="inline-block px-3 py-1 rounded-full bg-brand-turquoise/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-3">
-                Collaborative Initiative
-              </div>
-              <h4 className="text-xl sm:text-2xl font-heading font-bold text-white mb-2">
-                Atom Infinity ✕ OriginBI Mindworks
-              </h4>
-              <p className="text-gray-200 text-xs sm:text-sm leading-relaxed max-w-2xl">
-                We are delighted to present a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4 shrink-0 bg-white px-5 sm:px-6 py-3.5 rounded-2xl shadow-2xl border border-white/20">
-              <div className="relative h-10 w-28 sm:h-11 sm:w-32">
-                <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
-              </div>
-              <span className="text-brand-navy font-bold text-base sm:text-lg">✕</span>
-              <div className="relative h-10 w-28 sm:h-11 sm:w-32">
-                <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized className="object-contain" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* First Edition Case Study / Spotlight */}
-      <section className="py-16 px-4">
+      {/* Host School Spotlight */}
+      <section className="py-16 px-4 -mt-10 relative z-20">
         <div className="container mx-auto max-w-5xl">
           <div className="bg-gradient-to-r from-brand-navy to-[#320846] text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-white/10 flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="max-w-xl">
               <span className="text-brand-turquoise text-xs font-bold uppercase tracking-wider">
-                First Edition Showcase
+                Host School Showcase
               </span>
               <h2 className="text-2xl sm:text-3xl font-heading font-bold mt-2 mb-4">
                 The Little Kingdom School, Theni
               </h2>
               <p className="text-gray-200 text-sm sm:text-base leading-relaxed mb-6">
-                Proud host of the debut Campus Square edition on Saturday, 24 October 2026. Bringing together 19 premier university partners, hundreds of enthusiastic high schoolers, and complete behavioral profiling.
+                Proud host of the debut Campus Square™ edition on Saturday, 24 October 2026. Bringing together premier university partners, hundreds of enthusiastic high schoolers, and complete behavioral profiling.
               </p>
               <div className="flex flex-wrap gap-4 text-xs font-medium text-white/80">
                 <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg">
@@ -155,7 +123,7 @@ export default function HostPage() {
         </div>
       </section>
 
-      {/* Why Host Campus Square */}
+      {/* Why Host Campus Square™ */}
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -163,7 +131,7 @@ export default function HostPage() {
               Transform Your Campus Into a Higher Education Hub
             </h2>
             <p className="text-brand-muted text-sm sm:text-base">
-              Schools hosting Campus Square become central destinations for career discovery, parent collaboration, and academic networking.
+              Schools hosting Campus Square™ become central destinations for career discovery, parent collaboration, and academic networking.
             </p>
           </div>
 

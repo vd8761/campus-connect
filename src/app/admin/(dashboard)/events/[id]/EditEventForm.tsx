@@ -60,7 +60,7 @@ export function EditEventForm({ event }: { event: any }) {
                 defaultValue={event.title}
                 required 
                 onChange={(e) => generateSlug(e.target.value)}
-                placeholder="e.g. School Leaders Conclave 2026"
+                placeholder="e.g. University Fair 2026"
                 className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400"
               />
               <InputError message="Event Title is required." />
@@ -90,7 +90,7 @@ export function EditEventForm({ event }: { event: any }) {
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   required 
-                  placeholder="school-leaders-conclave-2026"
+                  placeholder="university-fair-2026"
                   className="flex-1 h-11 px-4 rounded-r-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                 />
               </div>

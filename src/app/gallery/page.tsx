@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Event Gallery | Campus Square',
-  description: 'Explore moments from Campus Square school-hosted university fairs, student admissions interactions, and OriginBI assessment sessions.',
+  title: 'Event Gallery | Campus Square™',
+  description: 'Explore moments from Campus Square™ school-hosted university fairs, student admissions interactions, and OriginBI assessment sessions.',
 };
 
 const galleryImages = [
@@ -33,7 +33,7 @@ export default function GalleryPage() {
             Schools. Universities. Students. Opportunities.
           </p>
           <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Highlights from Campus Square university fairs, student admissions interactions, school leadership discussions, and on-spot OriginBI assessment result sessions.
+            Highlights from Campus Square™ university fairs, student admissions interactions, school leadership discussions, and on-spot OriginBI assessment result sessions.
           </p>
         </div>
       </section>

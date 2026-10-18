@@ -120,7 +120,7 @@ export function SmartRegistration({
         </div>
         <h2 className="text-2xl font-heading font-bold text-brand-navy mb-2">Welcome! Let's get started.</h2>
         <p className="text-brand-muted text-sm">
-          Enter your email or mobile number to see if you are already registered with Campus Square.
+          Enter your email or mobile number to see if you are already registered with Campus Square™.
         </p>
       </div>
 

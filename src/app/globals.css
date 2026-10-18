@@ -47,6 +47,18 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
+/* Typographic Trademark & Superscript Reset */
+sup {
+  font-size: 0.35em;
+  line-height: 0;
+  vertical-align: super;
+  position: relative;
+  top: -0.65em;
+  margin-left: 0.12em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 /* Modern Minimalist Scrollbars (No OS Arrows) */
 ::-webkit-scrollbar {
   width: 6px;

@@ -4,6 +4,7 @@ import {
   Calendar, 
   Building2, 
   Sparkles, 
+  BrainCircuit,
   ArrowUpRight, 
   Plus, 
   MapPin, 
@@ -21,6 +22,7 @@ export default async function AdminDashboard() {
   let registrationsCount = 0;
   let universitiesCount = 0;
   let coursesCount = 0;
+  let discProfilesCount = 0;
   let recentRegistrations: any[] = [];
   let upcomingEvents: any[] = [];
 
@@ -29,6 +31,7 @@ export default async function AdminDashboard() {
     registrationsCount = await prisma.eventRegistration.count();
     universitiesCount = await prisma.university.count();
     coursesCount = await prisma.course.count();
+    discProfilesCount = await prisma.assessmentResult.count();
     
     recentRegistrations = await prisma.eventRegistration.findMany({
       take: 5,
@@ -60,7 +63,7 @@ export default async function AdminDashboard() {
 
   const statCards = [
     {
-      title: 'Total Conclaves',
+      title: 'Total Fair Editions',
       value: eventsCount,
       subtitle: eventsCount > 0 ? 'Active Editions' : 'No Active Editions',
       badge: eventsCount > 0 ? 'Active Series' : 'Draft / Empty',
@@ -72,7 +75,7 @@ export default async function AdminDashboard() {
     {
       title: 'Registered Delegates',
       value: registrationsCount,
-      subtitle: registrationsCount > 0 ? 'Across scheduled editions' : 'Awaiting conclave launch',
+      subtitle: registrationsCount > 0 ? 'Across scheduled editions' : 'Awaiting edition launch',
       badge: registrationsCount > 0 ? '+ Live Attendees' : '0 Registrations',
       badgeColor: registrationsCount > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600',
       icon: Users,
@@ -90,13 +93,13 @@ export default async function AdminDashboard() {
       href: '/admin/universities',
     },
     {
-      title: 'AI Course Mapping',
-      value: 'Online',
-      subtitle: 'Recommendation Engine',
-      badge: 'Active v2.0',
-      badgeColor: 'bg-blue-50 text-blue-700',
-      icon: Sparkles,
-      iconBg: 'bg-blue-100 text-blue-600',
+      title: 'DISC Profiling',
+      value: discProfilesCount,
+      subtitle: discProfilesCount > 0 ? 'Origin BI Assessments' : 'Awaiting Assessments',
+      badge: discProfilesCount > 0 ? '+ Assessed' : 'Origin BI Active',
+      badgeColor: 'bg-indigo-50 text-indigo-700',
+      icon: BrainCircuit,
+      iconBg: 'bg-indigo-100 text-indigo-600',
       href: '/admin/reports/recommendations',
     },
   ];
@@ -110,7 +113,7 @@ export default async function AdminDashboard() {
             Dashboard Overview
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Real-time conclave metrics, delegate registrations, and verified university partners.
+            Real-time edition metrics, delegate registrations, and verified university partners.
           </p>
         </div>
 
@@ -118,7 +121,7 @@ export default async function AdminDashboard() {
           <Link href="/admin/events/new">
             <Button variant="gradient" className="rounded-xl font-bold gap-2 h-11 px-5 shadow-sm hover:shadow-md transition-all">
               <Plus size={16} />
-              <span>Create Conclave</span>
+              <span>Create Edition</span>
             </Button>
           </Link>
           <Link href="/admin/participants">
@@ -165,7 +168,7 @@ export default async function AdminDashboard() {
         })}
       </div>
 
-      {/* Two-Column Grid: Recent Registrations & Active Conclaves */}
+      {/* Two-Column Grid: Recent Registrations & Active Editions */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Recent Registrations Table (8 cols) */}
         <div className="lg:col-span-8 bg-white rounded-2xl border border-brand-border/80 shadow-2xs overflow-hidden flex flex-col">
@@ -176,7 +179,7 @@ export default async function AdminDashboard() {
                   Recent Delegate Registrations
                 </h2>
                 <p className="text-xs text-brand-muted mt-0.5">
-                  Latest attendees registered across educational conclaves
+                  Latest attendees registered across educational editions
                 </p>
               </div>
               <Link 
@@ -193,7 +196,7 @@ export default async function AdminDashboard() {
                 <thead className="bg-brand-light/50 text-[11px] font-bold text-brand-muted uppercase tracking-wider border-b border-brand-border/60">
                   <tr>
                     <th className="pl-6 pr-3 py-3.5">Delegate</th>
-                    <th className="px-3 py-3.5">Conclave Edition</th>
+                    <th className="px-3 py-3.5">Fair Edition</th>
                     <th className="px-3 py-3.5">Status</th>
                     <th className="pl-3 pr-6 py-3.5 text-right">Date</th>
                   </tr>
@@ -225,7 +228,7 @@ export default async function AdminDashboard() {
 
                           <td className="px-3 py-4 whitespace-nowrap">
                             <div className="font-semibold text-brand-navy text-sm">
-                              {reg.event?.title || 'Conclave'}
+                              {reg.event?.title || 'Edition'}
                             </div>
                             <div className="text-xs text-brand-muted flex items-center gap-1.5 mt-0.5">
                               <MapPin size={11} className="text-brand-purple shrink-0" />
@@ -279,13 +282,13 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        {/* Right Column: Upcoming Conclaves Glance (4 cols) */}
+        {/* Right Column: Upcoming Editions Glance (4 cols) */}
         <div className="lg:col-span-4 bg-white rounded-2xl border border-brand-border/80 shadow-2xs p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h2 className="text-lg font-heading font-bold text-brand-navy">
-                  Active Conclaves
+                  Active Editions
                 </h2>
                 <p className="text-xs text-brand-muted mt-0.5">
                   Scheduled upcoming editions
@@ -343,9 +346,9 @@ export default async function AdminDashboard() {
               ) : (
                 <div className="py-8 px-4 text-center rounded-xl border border-dashed border-brand-border/80 bg-brand-light/30">
                   <Calendar size={28} className="mx-auto text-brand-muted/40 mb-2" />
-                  <p className="text-xs font-bold text-brand-navy">No Scheduled Conclaves</p>
+                  <p className="text-xs font-bold text-brand-navy">No Scheduled Editions</p>
                   <p className="text-[11px] text-brand-muted mt-0.5">
-                    Click below to create your first educational conclave.
+                    Click below to create your first educational edition.
                   </p>
                 </div>
               )}

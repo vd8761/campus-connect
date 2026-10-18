@@ -61,7 +61,7 @@ export function ParticipatingUniversitiesSelector({ initialSelectedIds = [] }: {
               </span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Choose the verified academic partners attending and setting up booths for this conclave edition.
+              Choose the verified academic partners attending and setting up booths for this fair edition.
             </p>
           </div>
         </div>

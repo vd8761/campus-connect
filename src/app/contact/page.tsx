@@ -5,14 +5,14 @@ import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { ContactForm } from './ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Campus Square',
-  description: 'Have questions about our university fairs, academic conclaves, partnerships, or registrations? Connect with the Campus Square team.',
+  title: 'Contact Us | Campus Square™',
+  description: 'Have questions about our university fairs, editions, partnerships, or registrations? Connect with the Campus Square™ team.',
   alternates: {
     canonical: '/contact',
   },
   openGraph: {
-    title: 'Contact Us | Campus Square',
-    description: 'Have questions about our university fairs, academic conclaves, partnerships, or registrations? Connect with the Campus Square team.',
+    title: 'Contact Us | Campus Square™',
+    description: 'Have questions about our university fairs, editions, partnerships, or registrations? Connect with the Campus Square™ team.',
     url: '/contact',
   },
 };
@@ -46,7 +46,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-3xl font-heading font-bold mb-4">Contact Information</h3>
                 <p className="text-gray-300 text-xs sm:text-sm mb-8 leading-relaxed">
-                  Campus Square - A Collaborative Initiative by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong>.
+                  Campus Square™ - A University Fair Series, a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong>.
                 </p>
 
                 <div className="space-y-6">
@@ -88,7 +88,7 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4">
                     <Calendar className="w-6 h-6 text-brand-turquoise mt-1 shrink-0" />
                     <div>
-                      <h4 className="font-semibold text-base mb-1">Inaugural First Edition Venue</h4>
+                      <h4 className="font-semibold text-base mb-1">Upcoming Event Venue</h4>
                       <p className="text-gray-300 text-xs leading-relaxed">
                         The Little Kingdom School,<br />
                         Theni, Tamil Nadu, India<br />

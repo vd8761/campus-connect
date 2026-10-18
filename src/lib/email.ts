@@ -4,6 +4,18 @@ import path from 'path';
 import fs from 'fs';
 import { ORIGINBI_ASSESSMENT_AMOUNT } from './constants';
 
+export function getEmailAssetUrls() {
+  const rawBaseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://campussquare.originbi.com';
+  const baseUrl = rawBaseUrl.replace(/^http:\/\//i, 'https://').replace(/\/+$/, '');
+  return {
+    baseUrl,
+    colorLogoUrl: `${baseUrl}/campus-square-logo-transparent.png`,
+    whiteLogoUrl: `${baseUrl}/campus-square-logo-white.png`,
+    atomLogoUrl: `${baseUrl}/atom-logo.png`,
+    originBiLogoUrl: `${baseUrl}/Origin-BI-Logo-01.png`,
+  };
+}
+
 export function getEmailTransporter() {
   const hasAwsSdkCredentials = !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
 
@@ -21,6 +33,10 @@ export function getEmailTransporter() {
     } as any);
   }
 
+  if (!process.env.SMTP_USER) {
+    console.warn('[Email Warning] No AWS SES credentials (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY) or SMTP credentials (SMTP_USER / SMTP_PASS) found in environment variables. Email sending may fail.');
+  }
+
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'email-smtp.ap-south-1.amazonaws.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -33,42 +49,14 @@ export function getEmailTransporter() {
 }
 
 export function getFromEmailAddress(): string {
-  if (process.env.EMAIL_FROM) {
-    const name = process.env.EMAIL_SEND_FROM_NAME || 'Campus Square';
-    return `"${name}" <${process.env.EMAIL_FROM.trim()}>`;
+  const rawFrom = process.env.EMAIL_FROM || process.env.SMTP_FROM || 'no-reply@originbi.com';
+  const fromClean = rawFrom.trim();
+  const name = process.env.EMAIL_SEND_FROM_NAME || 'Campus Square™';
+
+  if (fromClean.includes('<')) {
+    return fromClean;
   }
-  return process.env.SMTP_FROM || '"Campus Square" <no-reply@originbi.com>';
-}
-
-function getBrandLogoAttachments() {
-  const attachments: { filename: string; path: string; cid: string }[] = [];
-  const publicDir = path.join(process.cwd(), 'public');
-
-  // Full-color transparent logo for white headers (matches website top navbar)
-  const colorLogoPath = path.join(publicDir, 'campus-square-logo-transparent.png');
-  if (fs.existsSync(colorLogoPath)) {
-    attachments.push({ filename: 'campus-square-logo.png', path: colorLogoPath, cid: 'campussquarecoloredlogo' });
-  }
-
-  // White transparent logo for dark navy headers & footers
-  const whiteLogoPath = path.join(publicDir, 'campus-square-logo-white.png');
-  if (fs.existsSync(whiteLogoPath)) {
-    attachments.push({ filename: 'campus-square-logo-white.png', path: whiteLogoPath, cid: 'campussquarewhitelogo' });
-  }
-
-  // Atom Infinity co-branding logo
-  const atomLogoPath = path.join(publicDir, 'atom-logo.png');
-  if (fs.existsSync(atomLogoPath)) {
-    attachments.push({ filename: 'atom-logo.png', path: atomLogoPath, cid: 'atomlogo' });
-  }
-
-  // OriginBI Mindworks co-branding logo
-  const originBiLogoPath = path.join(publicDir, 'Origin-BI-Logo-01.png');
-  if (fs.existsSync(originBiLogoPath)) {
-    attachments.push({ filename: 'originbi-logo.png', path: originBiLogoPath, cid: 'originbilogo' });
-  }
-
-  return attachments;
+  return `"${name}" <${fromClean}>`;
 }
 
 export const sendRegistrationEmail = async ({
@@ -83,7 +71,7 @@ export const sendRegistrationEmail = async ({
   eventName: string;
 }) => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://campussquare.originbi.com';
+    const { baseUrl, colorLogoUrl, whiteLogoUrl, atomLogoUrl, originBiLogoUrl } = getEmailAssetUrls();
     const currentYear = new Date().getFullYear();
 
     const htmlTemplate = `
@@ -128,27 +116,27 @@ export const sendRegistrationEmail = async ({
 </head>
 <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAF7FC; margin: 0; padding: 24px 12px;">
   <div class="wrapper">
-    <!-- Top Brand Navbar: Campus Square Logo (Left) + Atom Infinity ✕ OriginBI Logos (Right) -->
+    <!-- Top Brand Navbar: Campus Square™ Logo (Left) + Atom Infinity ✕ OriginBI Logos (Right) -->
     <div class="top-navbar">
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
         <tr>
           <td align="left" style="vertical-align: middle;">
-            <img src="cid:campussquarecoloredlogo" alt="Campus Square" style="height: 38px; width: auto; max-width: 200px; display: block; border: 0;" />
+            <img src="${colorLogoUrl}" alt="Campus Square™" style="height: 38px; width: auto; max-width: 200px; display: block; border: 0;" />
           </td>
           <td align="right" style="vertical-align: middle;">
             <table align="right" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; background-color: #FAF7FC; border: 1px solid #E8DCF0; border-radius: 12px; padding: 5px 12px; box-shadow: 0 2px 6px rgba(34, 5, 44, 0.04);">
               <tr>
                 <td style="font-size: 10px; font-weight: 700; color: #6B5677; text-transform: uppercase; letter-spacing: 0.5px; padding-right: 8px; vertical-align: middle; font-family: 'Plus Jakarta Sans', sans-serif;">
-                  Joint Initiative:
+                  Joint Collaboration:
                 </td>
                 <td align="center" style="vertical-align: middle; padding: 0 4px;">
-                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
+                  <img src="${atomLogoUrl}" alt="Atom Infinity" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
                 </td>
                 <td align="center" style="font-size: 12px; font-weight: 800; color: #701A94; padding: 0 5px; vertical-align: middle; line-height: 1;">
                   ✕
                 </td>
                 <td align="center" style="vertical-align: middle; padding: 0 4px;">
-                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
+                  <img src="${originBiLogoUrl}" alt="OriginBI Mindworks" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
                 </td>
               </tr>
             </table>
@@ -157,33 +145,8 @@ export const sendRegistrationEmail = async ({
       </table>
     </div>
 
-    <!-- Hero Header Banner (Matches Website Hero Conclave Theme) -->
+    <!-- Hero Header Banner (Matches Website Hero Fair Theme) -->
     <div class="hero">
-      <!-- Joint Initiative Credential (Matches Website Hero Pill) -->
-      <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 18px auto; width: auto !important; border-collapse: separate; text-align: center;">
-        <tr>
-          <td align="center" style="font-size: 10px; font-weight: 700; color: #D8C3E5; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">
-            A JOINT EDUCATION INITIATIVE OF
-          </td>
-        </tr>
-        <tr>
-          <td align="center">
-            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; padding: 6px 14px; width: auto !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);">
-              <tr>
-                <td style="vertical-align: middle; padding-right: 8px;">
-                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
-                </td>
-                <td style="vertical-align: middle; padding: 0 6px; font-size: 14px; font-weight: 800; color: #22052C;">
-                  ✕
-                </td>
-                <td style="vertical-align: middle; padding-left: 8px;">
-                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
 
       <div style="display: inline-block; background-color: #16A66A; color: #ffffff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 16px; border-radius: 9999px; margin-bottom: 16px; font-family: 'Plus Jakarta Sans', sans-serif;">
         ✓ Registration Confirmed
@@ -224,7 +187,7 @@ export const sendRegistrationEmail = async ({
       </div>
 
       <p style="color: #6B5677; font-size: 14px; line-height: 1.6; text-align: center; margin: 28px 0 0 0; font-family: 'Inter', sans-serif;">
-        We look forward to welcoming you to the campus conclave!
+        We look forward to welcoming you to the fair edition!
       </p>
     </div>
 
@@ -234,11 +197,11 @@ export const sendRegistrationEmail = async ({
     <!-- Official Brand Footer (Matches Website Footer) -->
     <div class="footer">
       <div style="margin-bottom: 20px;">
-        <img src="cid:campussquarewhitelogo" alt="Campus Square" style="max-height: 36px; max-width: 190px; display: block; margin: 0 auto 12px auto; border: 0;" />
+        <img src="${whiteLogoUrl}" alt="Campus Square™" style="max-height: 36px; max-width: 190px; display: block; margin: 0 auto 12px auto; border: 0;" />
         <p style="font-size: 11px; color: #B58BD7; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px 0; font-family: 'Plus Jakarta Sans', sans-serif;">Connect Campuses.</p>
         <p style="font-size: 12px; color: #FAF7FC; font-weight: 600; margin: 0 0 8px 0; font-family: 'Inter', sans-serif;">Schools. Universities. Students. Opportunities.</p>
         <p style="font-size: 12px; color: #D8C3E5; margin: 0; max-width: 480px; display: inline-block; line-height: 1.5; font-family: 'Inter', sans-serif;">
-          Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
+          Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
         </p>
       </div>
 
@@ -256,7 +219,7 @@ export const sendRegistrationEmail = async ({
               </p>
             </td>
             <td style="vertical-align: top; width: 50%; padding-left: 14px; border-left: 1px solid rgba(255, 255, 255, 0.12);">
-              <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Inaugural First Edition:</p>
+              <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Event Venue:</p>
               <p style="margin: 0; font-size: 11px; color: #FAF7FC; line-height: 1.55; font-family: 'Inter', sans-serif;">
                 The Little Kingdom School,<br>
                 Theni, Tamil Nadu, India<br>
@@ -286,7 +249,7 @@ export const sendRegistrationEmail = async ({
 
       <!-- Copyright -->
       <div style="padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 11px; color: #8E6E9C; font-family: 'Inter', sans-serif;">
-        &copy; ${currentYear} Campus Square. Connect Campuses. All rights reserved.
+        &copy; ${currentYear} Campus Square™. Connect Campuses. All rights reserved.
       </div>
     </div>
   </div>
@@ -303,7 +266,6 @@ export const sendRegistrationEmail = async ({
       to,
       subject: `Registration Confirmed: ${eventName}`,
       html: htmlTemplate,
-      attachments: getBrandLogoAttachments(),
     });
 
     console.log("Registration email sent: %s", info.messageId);
@@ -355,7 +317,7 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
     const ccList = parseEmailList(process.env.ENQUIRY_NOTIFICATION_CC);
     const bccList = parseEmailList(process.env.ENQUIRY_NOTIFICATION_BCC);
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://campussquare.originbi.com';
+    const { baseUrl, colorLogoUrl, whiteLogoUrl, atomLogoUrl, originBiLogoUrl } = getEmailAssetUrls();
     const currentYear = new Date().getFullYear();
     const formattedDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'full', timeStyle: 'short' });
 
@@ -375,12 +337,6 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
       categoryBadgeBorder = '#B58BD7';
       categoryIcon = '✉️';
     }
-
-    const footerRouting = [
-      `To: <strong>${recipient}</strong>`,
-      ccList.length > 0 ? `CC: <strong>${ccList.join(', ')}</strong>` : null,
-      bccList.length > 0 ? `BCC: <strong>${bccList.join(', ')}</strong>` : null,
-    ].filter(Boolean).join(' • ');
 
     const htmlTemplate = `
 <!DOCTYPE html>
@@ -433,27 +389,27 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
 </head>
 <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAF7FC; margin: 0; padding: 24px 12px;">
   <div class="wrapper">
-    <!-- Top Brand Navbar: Campus Square Logo (Left) + Atom Infinity ✕ OriginBI Logos (Right) -->
+    <!-- Top Brand Navbar: Campus Square™ Logo (Left) + Atom Infinity ✕ OriginBI Logos (Right) -->
     <div class="top-navbar">
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
         <tr>
           <td align="left" style="vertical-align: middle;">
-            <img src="cid:campussquarecoloredlogo" alt="Campus Square" style="height: 38px; width: auto; max-width: 200px; display: block; border: 0;" />
+            <img src="${colorLogoUrl}" alt="Campus Square™" style="height: 38px; width: auto; max-width: 200px; display: block; border: 0;" />
           </td>
           <td align="right" style="vertical-align: middle;">
             <table align="right" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; background-color: #FAF7FC; border: 1px solid #E8DCF0; border-radius: 12px; padding: 5px 12px; box-shadow: 0 2px 6px rgba(34, 5, 44, 0.04);">
               <tr>
                 <td style="font-size: 10px; font-weight: 700; color: #6B5677; text-transform: uppercase; letter-spacing: 0.5px; padding-right: 8px; vertical-align: middle; font-family: 'Plus Jakarta Sans', sans-serif;">
-                  Joint Initiative:
+                  Joint Collaboration:
                 </td>
                 <td align="center" style="vertical-align: middle; padding: 0 4px;">
-                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
+                  <img src="${atomLogoUrl}" alt="Atom Infinity" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
                 </td>
                 <td align="center" style="font-size: 12px; font-weight: 800; color: #701A94; padding: 0 5px; vertical-align: middle; line-height: 1;">
                   ✕
                 </td>
                 <td align="center" style="vertical-align: middle; padding: 0 4px;">
-                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
+                  <img src="${originBiLogoUrl}" alt="OriginBI Mindworks" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
                 </td>
               </tr>
             </table>
@@ -462,41 +418,15 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
       </table>
     </div>
 
-    <!-- Hero Header Banner (Matches Website Hero Dark Conclave Theme) -->
+    <!-- Hero Header Banner (Matches Website Hero Dark Fair Theme) -->
     <div class="hero">
-      <!-- Joint Initiative Credential (Matches Website Hero Pill) -->
-      <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 18px; border-collapse: separate; width: auto !important;">
-        <tr>
-          <td style="font-size: 10px; font-weight: 700; color: #D8C3E5; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">
-            A JOINT EDUCATION INITIATIVE OF
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; padding: 6px 14px; width: auto !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);">
-              <tr>
-                <td style="vertical-align: middle; padding-right: 8px;">
-                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
-                </td>
-                <td style="vertical-align: middle; padding: 0 6px; font-size: 14px; font-weight: 800; color: #22052C;">
-                  ✕
-                </td>
-                <td style="vertical-align: middle; padding-left: 8px;">
-                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-
       <!-- Category Badge -->
       <div>
         <span class="badge">${categoryIcon} ${payload.category}</span>
       </div>
 
       <h1 class="title">${payload.subjectTitle}</h1>
-      <p class="subtitle">Campus Square Management Notification • Received: ${formattedDate} IST</p>
+      <p class="subtitle">Campus Square™ Management Notification • Received: ${formattedDate} IST</p>
     </div>
 
     <!-- Body -->
@@ -519,7 +449,7 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
         <table border="0" cellspacing="0" cellpadding="0" style="margin-top: 14px; width: auto !important; border-collapse: separate;">
           <tr>
             <td align="center" style="border-radius: 9999px; background-color: #701A94; padding: 0;" bgcolor="#701A94">
-              <a href="mailto:${payload.senderEmail}?subject=Re: Campus Square - ${encodeURIComponent(payload.organizationName || payload.senderName)}" style="display: inline-block; background-color: #701A94; color: #ffffff !important; text-decoration: none !important; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 9999px; border: 1px solid #701A94; -webkit-text-fill-color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">
+              <a href="mailto:${payload.senderEmail}?subject=Re: Campus Square™ - ${encodeURIComponent(payload.organizationName || payload.senderName)}" style="display: inline-block; background-color: #701A94; color: #ffffff !important; text-decoration: none !important; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 9999px; border: 1px solid #701A94; -webkit-text-fill-color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif;">
                 <font color="#ffffff" style="color: #ffffff !important; text-decoration: none !important;">
                   <span style="color: #ffffff !important; text-decoration: none !important; font-weight: 700;">✉️ Reply Directly</span>
                 </font>
@@ -556,35 +486,6 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
           <p style="margin: 0; font-size: 14px; color: #22052C; line-height: 1.6; font-family: 'Inter', sans-serif;">${String(payload.notes).replace(/\n/g, '<br/>')}</p>
         </div>
       ` : ''}
-
-      <!-- Institutional Co-Branding Banner (Matches Website Section) -->
-      <div class="collab-banner">
-        <div style="display: inline-block; padding: 5px 14px; border-radius: 9999px; background-color: rgba(112, 26, 148, 0.08); color: #701A94; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">
-          Collaborative Initiative
-        </div>
-        <h4 style="font-size: 15px; font-weight: 800; color: #22052C; margin: 0 0 14px 0; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.4;">
-          Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
-        </h4>
-
-        <!-- Perfectly Centered Compact Co-Branding Logo Card -->
-        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 16px auto; width: auto !important; border-collapse: separate; background-color: #ffffff; border-radius: 14px; border: 1px solid #E8DCF0; box-shadow: 0 4px 14px rgba(34, 5, 44, 0.05);">
-          <tr>
-            <td align="center" style="padding: 12px 20px; vertical-align: middle;">
-              <img src="cid:atomlogo" alt="Atom Infinity" style="height: 30px; width: auto; max-width: 120px; display: block; border: 0;" />
-            </td>
-            <td align="center" style="padding: 12px 6px; font-size: 14px; font-weight: 800; color: #701A94; vertical-align: middle; line-height: 1;">
-              ✕
-            </td>
-            <td align="center" style="padding: 12px 20px; vertical-align: middle;">
-              <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 30px; width: auto; max-width: 120px; display: block; border: 0;" />
-            </td>
-          </tr>
-        </table>
-
-        <p style="margin: 0; font-size: 12px; color: #6B5677; font-weight: 500; line-height: 1.6; font-family: 'Inter', sans-serif; max-width: 520px; display: inline-block;">
-          We are delighted to present a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
-        </p>
-      </div>
     </div>
 
     <!-- Top Accent Gradient Stripe -->
@@ -593,11 +494,11 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
     <!-- Official Brand Footer (Matches Website Footer) -->
     <div class="footer">
       <div style="margin-bottom: 20px;">
-        <img src="cid:campussquarewhitelogo" alt="Campus Square" style="max-height: 36px; max-width: 190px; display: block; margin: 0 auto 12px auto; border: 0;" />
+        <img src="${whiteLogoUrl}" alt="Campus Square™" style="max-height: 36px; max-width: 190px; display: block; margin: 0 auto 12px auto; border: 0;" />
         <p style="font-size: 11px; color: #B58BD7; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px 0; font-family: 'Plus Jakarta Sans', sans-serif;">Connect Campuses.</p>
         <p style="font-size: 12px; color: #FAF7FC; font-weight: 600; margin: 0 0 8px 0; font-family: 'Inter', sans-serif;">Schools. Universities. Students. Opportunities.</p>
         <p style="font-size: 12px; color: #D8C3E5; margin: 0; max-width: 480px; display: inline-block; line-height: 1.5; font-family: 'Inter', sans-serif;">
-          Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
+          Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
         </p>
       </div>
 
@@ -615,7 +516,7 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
               </p>
             </td>
             <td style="vertical-align: top; width: 50%; padding-left: 14px; border-left: 1px solid rgba(255, 255, 255, 0.12);">
-              <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Inaugural First Edition:</p>
+              <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Event Venue:</p>
               <p style="margin: 0; font-size: 11px; color: #FAF7FC; line-height: 1.55; font-family: 'Inter', sans-serif;">
                 The Little Kingdom School,<br>
                 Theni, Tamil Nadu, India<br>
@@ -643,14 +544,9 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
         </tr>
       </table>
 
-      <!-- Footer Routing & Copyright -->
+      <!-- Copyright -->
       <div style="padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 11px; color: #8E6E9C; font-family: 'Inter', sans-serif;">
-        <div style="margin-bottom: 8px;">
-          <span style="background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 4px 10px; display: inline-block; color: #B58BD7; font-size: 11px;">
-            ${footerRouting}
-          </span>
-        </div>
-        <p style="margin: 0;">&copy; ${currentYear} Campus Square. Connect Campuses. All rights reserved.</p>
+        &copy; ${currentYear} Campus Square™. Connect Campuses. All rights reserved.
       </div>
     </div>
   </div>
@@ -665,9 +561,8 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
       from: fromAddress,
       replyTo: payload.senderEmail,
       to: recipient,
-      subject: `[Campus Square] New ${payload.category}: ${payload.organizationName || payload.senderName}`,
+      subject: `[Campus Square™] New ${payload.category}: ${payload.organizationName || payload.senderName}`,
       html: htmlTemplate,
-      attachments: getBrandLogoAttachments(),
     };
 
     if (ccList.length > 0) {
@@ -699,7 +594,7 @@ export interface EnquiryAcknowledgementPayload {
 
 export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledgementPayload) => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://campussquare.originbi.com';
+    const { baseUrl, colorLogoUrl, whiteLogoUrl, atomLogoUrl, originBiLogoUrl } = getEmailAssetUrls();
     const currentYear = new Date().getFullYear();
 
     const detailsRowsHtml = payload.details
@@ -715,18 +610,18 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
         </tr>
       `).join('');
 
-    let subject = `Thank you for contacting Campus Square`;
+    let subject = `Thank you for contacting Campus Square™`;
     let headingText = `Thank you, ${payload.recipientName}!`;
     let introText = `We have received your message and will get back to you shortly.`;
 
     if (payload.category === 'University Partnership') {
-      subject = `Thank you for partnering with Campus Square${payload.organizationName ? ` - ${payload.organizationName}` : ''}`;
+      subject = `Thank you for partnering with Campus Square™${payload.organizationName ? ` - ${payload.organizationName}` : ''}`;
       headingText = `Thank you for your Partnership Inquiry!`;
-      introText = `We are delighted by your interest in collaborating with <strong>Campus Square</strong> for ${payload.organizationName ? `<strong>${payload.organizationName}</strong>` : 'your institution'}. Our Higher Education & Conclave Directorate has received your proposal.`;
+      introText = `We are delighted by your interest in collaborating with <strong>Campus Square™</strong> for ${payload.organizationName ? `<strong>${payload.organizationName}</strong>` : 'your institution'}. Our Higher Education Directorate has received your proposal.`;
     } else if (payload.category === 'Host School Proposal') {
-      subject = `Thank you for your School Hosting Proposal - Campus Square`;
+      subject = `Thank you for your School Hosting Proposal - Campus Square™`;
       headingText = `Thank you for your School Hosting Proposal!`;
-      introText = `We have received your proposal to host a Campus Square Edition at ${payload.organizationName ? `<strong>${payload.organizationName}</strong>` : 'your esteemed school'}. Our School Conclave Coordination team is reviewing your submission.`;
+      introText = `We have received your proposal to host a Campus Square™ Edition at ${payload.organizationName ? `<strong>${payload.organizationName}</strong>` : 'your esteemed school'}. Our School Coordination team is reviewing your submission.`;
     }
 
     const htmlTemplate = `
@@ -772,27 +667,27 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
 </head>
 <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAF7FC; margin: 0; padding: 24px 12px;">
   <div class="wrapper">
-    <!-- Top Brand Navbar: Campus Square Logo (Left) + Atom Infinity ✕ OriginBI Logos (Right) -->
+    <!-- Top Brand Navbar: Campus Square™ Logo (Left) + Atom Infinity ✕ OriginBI Logos (Right) -->
     <div class="top-navbar">
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
         <tr>
           <td align="left" style="vertical-align: middle;">
-            <img src="cid:campussquarecoloredlogo" alt="Campus Square" style="height: 38px; width: auto; max-width: 200px; display: block; border: 0;" />
+            <img src="${colorLogoUrl}" alt="Campus Square™" style="height: 38px; width: auto; max-width: 200px; display: block; border: 0;" />
           </td>
           <td align="right" style="vertical-align: middle;">
             <table align="right" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; background-color: #FAF7FC; border: 1px solid #E8DCF0; border-radius: 12px; padding: 5px 12px; box-shadow: 0 2px 6px rgba(34, 5, 44, 0.04);">
               <tr>
                 <td style="font-size: 10px; font-weight: 700; color: #6B5677; text-transform: uppercase; letter-spacing: 0.5px; padding-right: 8px; vertical-align: middle; font-family: 'Plus Jakarta Sans', sans-serif;">
-                  Joint Initiative:
+                  Joint Collaboration:
                 </td>
                 <td align="center" style="vertical-align: middle; padding: 0 4px;">
-                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
+                  <img src="${atomLogoUrl}" alt="Atom Infinity" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
                 </td>
                 <td align="center" style="font-size: 12px; font-weight: 800; color: #701A94; padding: 0 5px; vertical-align: middle; line-height: 1;">
                   ✕
                 </td>
                 <td align="center" style="vertical-align: middle; padding: 0 4px;">
-                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
+                  <img src="${originBiLogoUrl}" alt="OriginBI Mindworks" style="height: 20px; width: auto; max-width: 75px; display: block; border: 0;" />
                 </td>
               </tr>
             </table>
@@ -803,31 +698,6 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
 
     <!-- Hero Header Banner -->
     <div class="hero">
-      <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 18px auto; width: auto !important; border-collapse: separate; text-align: center;">
-        <tr>
-          <td align="center" style="font-size: 10px; font-weight: 700; color: #D8C3E5; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif;">
-            A JOINT EDUCATION INITIATIVE OF
-          </td>
-        </tr>
-        <tr>
-          <td align="center">
-            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; padding: 6px 14px; width: auto !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);">
-              <tr>
-                <td style="vertical-align: middle; padding-right: 8px;">
-                  <img src="cid:atomlogo" alt="Atom Infinity" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
-                </td>
-                <td style="vertical-align: middle; padding: 0 6px; font-size: 14px; font-weight: 800; color: #22052C;">
-                  ✕
-                </td>
-                <td style="vertical-align: middle; padding-left: 8px;">
-                  <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 22px; max-width: 85px; object-fit: contain; display: block; border: 0;" />
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-
       <div style="display: inline-block; background-color: #16A66A; color: #ffffff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 16px; border-radius: 9999px; margin-bottom: 14px; font-family: 'Plus Jakarta Sans', sans-serif;">
         ✓ Submission Received
       </div>
@@ -835,7 +705,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
         ${headingText}
       </h1>
       <p style="color: #D8C3E5; font-size: 13px; margin: 0; line-height: 1.5; font-family: 'Inter', -apple-system, sans-serif;">
-        Campus Square Directorate • Where Education Meets Opportunity
+        Campus Square™ Directorate • Where Education Meets Opportunity
       </p>
     </div>
 
@@ -857,19 +727,19 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
           <tr>
             <td style="vertical-align: top; width: 28px; padding-bottom: 12px; font-size: 16px;">1️⃣</td>
             <td style="vertical-align: top; padding-bottom: 12px; font-size: 13px; color: #4A3B52; line-height: 1.5; font-family: 'Inter', sans-serif;">
-              <strong style="color: #22052C;">Review & Assessment:</strong> Our Conclave Secretariat is reviewing your preferences and event scheduling parameters.
+              <strong style="color: #22052C;">Review & Assessment:</strong> Our Operations Directorate is reviewing your preferences and event scheduling parameters.
             </td>
           </tr>
           <tr>
             <td style="vertical-align: top; width: 28px; padding-bottom: 12px; font-size: 16px;">2️⃣</td>
             <td style="vertical-align: top; padding-bottom: 12px; font-size: 13px; color: #4A3B52; line-height: 1.5; font-family: 'Inter', sans-serif;">
-              <strong style="color: #22052C;">Direct Outreach:</strong> A dedicated Conclave Officer will connect with you via phone or email within <strong style="color: #701A94;">24 to 48 business hours</strong>.
+              <strong style="color: #22052C;">Direct Outreach:</strong> A dedicated Partnership Officer will connect with you via phone or email within <strong style="color: #701A94;">24 to 48 business hours</strong>.
             </td>
           </tr>
           <tr>
             <td style="vertical-align: top; width: 28px; font-size: 16px;">3️⃣</td>
             <td style="vertical-align: top; font-size: 13px; color: #4A3B52; line-height: 1.5; font-family: 'Inter', sans-serif;">
-              <strong style="color: #22052C;">Partnership Finalization:</strong> We will provide detailed conclave floorplans, student demographic profiles, and booth allocations.
+              <strong style="color: #22052C;">Partnership Finalization:</strong> We will provide detailed fair floorplans, student demographic profiles, and booth allocations.
             </td>
           </tr>
         </table>
@@ -908,24 +778,11 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
       <!-- Institutional Co-Branding Banner -->
       <div class="collab-banner">
         <div style="display: inline-block; padding: 4px 12px; border-radius: 9999px; background-color: rgba(112, 26, 148, 0.08); color: #701A94; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">
-          Collaborative Initiative
+          Joint Collaboration
         </div>
-        <h4 style="font-size: 14px; font-weight: 800; color: #22052C; margin: 0 0 12px 0; font-family: 'Plus Jakarta Sans', sans-serif;">
-          Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks
+        <h4 style="font-size: 14px; font-weight: 800; color: #22052C; margin: 0 0 10px 0; font-family: 'Plus Jakarta Sans', sans-serif;">
+          Campus Square™ - A University Fair Series, a joint collaboration by Atom Infinity and Origin Bi
         </h4>
-        <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 14px auto; width: auto !important; border-collapse: separate; background-color: #ffffff; border-radius: 12px; border: 1px solid #E8DCF0; box-shadow: 0 2px 8px rgba(34, 5, 44, 0.04);">
-          <tr>
-            <td align="center" style="padding: 10px 18px; vertical-align: middle;">
-              <img src="cid:atomlogo" alt="Atom Infinity" style="height: 26px; width: auto; max-width: 110px; display: block; border: 0;" />
-            </td>
-            <td align="center" style="padding: 10px 6px; font-size: 14px; font-weight: 800; color: #701A94; vertical-align: middle; line-height: 1;">
-              ✕
-            </td>
-            <td align="center" style="padding: 10px 18px; vertical-align: middle;">
-              <img src="cid:originbilogo" alt="OriginBI Mindworks" style="height: 26px; width: auto; max-width: 110px; display: block; border: 0;" />
-            </td>
-          </tr>
-        </table>
         <p style="margin: 0; font-size: 12px; color: #6B5677; font-weight: 500; line-height: 1.55; font-family: 'Inter', sans-serif; max-width: 480px; display: inline-block;">
           Committed to empowering school leaders, students, and university partners with future-focused insights, data-driven innovation and transformative opportunities.
         </p>
@@ -938,11 +795,11 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
     <!-- Official Brand Footer -->
     <div class="footer">
       <div style="margin-bottom: 20px;">
-        <img src="cid:campussquarewhitelogo" alt="Campus Square" style="max-height: 36px; max-width: 190px; display: block; margin: 0 auto 12px auto; border: 0;" />
+        <img src="${whiteLogoUrl}" alt="Campus Square™" style="max-height: 36px; max-width: 190px; display: block; margin: 0 auto 12px auto; border: 0;" />
         <p style="font-size: 11px; color: #B58BD7; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px 0; font-family: 'Plus Jakarta Sans', sans-serif;">Connect Campuses.</p>
         <p style="font-size: 12px; color: #FAF7FC; font-weight: 600; margin: 0 0 8px 0; font-family: 'Inter', sans-serif;">Schools. Universities. Students. Opportunities.</p>
         <p style="font-size: 12px; color: #D8C3E5; margin: 0; max-width: 480px; display: inline-block; line-height: 1.5; font-family: 'Inter', sans-serif;">
-          Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
+          Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
         </p>
       </div>
 
@@ -960,7 +817,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
               </p>
             </td>
             <td style="vertical-align: top; width: 50%; padding-left: 14px; border-left: 1px solid rgba(255, 255, 255, 0.12);">
-              <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Inaugural First Edition:</p>
+              <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Event Venue:</p>
               <p style="margin: 0; font-size: 11px; color: #FAF7FC; line-height: 1.55; font-family: 'Inter', sans-serif;">
                 The Little Kingdom School,<br>
                 Theni, Tamil Nadu, India<br>
@@ -990,7 +847,7 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
 
       <!-- Copyright -->
       <div style="padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 11px; color: #8E6E9C; font-family: 'Inter', sans-serif;">
-        &copy; ${currentYear} Campus Square. Connect Campuses. All rights reserved.
+        &copy; ${currentYear} Campus Square™. Connect Campuses. All rights reserved.
       </div>
     </div>
   </div>
@@ -1006,7 +863,6 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
       to: payload.recipientEmail,
       subject,
       html: htmlTemplate,
-      attachments: getBrandLogoAttachments(),
     });
 
     console.log(`[Email] Thank you acknowledgement sent to ${payload.recipientEmail} (messageId: ${info.messageId})`);

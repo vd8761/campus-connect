@@ -61,7 +61,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
-            Manage Conclaves
+            Manage Fair Editions
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Create, schedule, and oversee your summits, education fairs, and booth venues.
@@ -70,7 +70,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
         <Link href="/admin/events/new">
           <Button variant="gradient" className="rounded-xl font-bold gap-2 h-11 px-5 shadow-sm hover:shadow-md transition-all">
             <Plus size={16} />
-            <span>Create New Conclave</span>
+            <span>Create New Edition</span>
           </Button>
         </Link>
       </div>

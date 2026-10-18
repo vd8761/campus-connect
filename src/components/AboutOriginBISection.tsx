@@ -100,7 +100,7 @@ export function AboutOriginBISection() {
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
-                  <span className="font-semibold text-brand-purple">100% Free</span> for Campus Square attendees
+                  <span className="font-semibold text-brand-purple">100% Free</span> for Campus Square™ attendees
                 </li>
               </ul>
             </div>
@@ -135,13 +135,13 @@ export function AboutOriginBISection() {
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-turquoise mb-3">
                 <Sparkles size={14} />
-                <span>The Atom Infinity × OriginBI Mindworks Initiative</span>
+                <span>The Atom Infinity × OriginBI Mindworks Joint Collaboration</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-heading font-bold mb-3 text-white">
                 Early Access to Self-Awareness Tools for Every Student
               </h3>
               <p className="text-sm sm:text-base text-gray-200 leading-relaxed">
-                Through the joint collaboration between <span className="text-white font-semibold">Atom Infinity</span> and <span className="text-white font-semibold">OriginBI Mindworks</span>, selected Campus Square conclave editions go beyond networking and university interactions. They also give students early access to data-driven self-awareness tools that support better academic and career choices.
+                Through the joint collaboration between <span className="text-white font-semibold">Atom Infinity</span> and <span className="text-white font-semibold">OriginBI Mindworks</span>, selected Campus Square™ editions go beyond networking and university interactions. They also give students early access to data-driven self-awareness tools that support better academic and career choices.
               </p>
             </div>
 

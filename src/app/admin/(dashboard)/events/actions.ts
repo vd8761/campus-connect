@@ -38,7 +38,7 @@ export async function deleteEventAction(id: string) {
     return { success: true };
   } catch (error: any) {
     console.error("Delete Event Error:", error);
-    return { error: error.message || "Failed to delete conclave." };
+    return { error: error.message || "Failed to delete edition." };
   }
 }
 

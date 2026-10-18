@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         canonical: `/events/${slug}`,
       },
       openGraph: {
-        title: `${title} | Campus Square`,
+        title: `${title} | Campus Square™`,
         description,
         type: 'website',
         url: `/events/${slug}`,
@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${title} | Campus Square`,
+        title: `${title} | Campus Square™`,
         description,
         images: [imageUrl],
       },
@@ -83,7 +83,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   } catch (error) {
     console.error("Error in generateMetadata:", error);
     return {
-      title: 'University Fair & Conclave | Campus Square',
+      title: 'University Fair Edition | Campus Square™',
     };
   }
 }
@@ -138,7 +138,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     image: [imageSrc],
     organizer: {
       '@type': 'Organization',
-      name: 'Campus Square',
+      name: 'Campus Square™',
       url: process.env.NEXT_PUBLIC_APP_URL || '/',
     },
     offers: {

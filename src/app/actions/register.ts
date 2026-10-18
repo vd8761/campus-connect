@@ -118,44 +118,61 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
       where: { id: validatedData.eventId }
     });
 
-    // Send Email
+    // Send Registration Ticket Email
     if (eventDetails) {
-      const { sendRegistrationEmail } = await import('@/lib/email');
-      await sendRegistrationEmail({
-        to: validatedData.email,
-        name: validatedData.studentName,
-        ticketCode: qrCodeValue,
-        eventName: eventDetails.title,
-      });
+      try {
+        const { sendRegistrationEmail } = await import('@/lib/email');
+        const mailResult = await sendRegistrationEmail({
+          to: validatedData.email,
+          name: validatedData.studentName,
+          ticketCode: qrCodeValue,
+          eventName: eventDetails.title,
+        });
+        if (!mailResult.success) {
+          console.warn('[Registration Email Warning] Could not deliver email:', mailResult.error);
+        } else {
+          console.log('[Registration Email Success] Delivered ticket to', validatedData.email);
+        }
+      } catch (mailErr) {
+        console.error('[Registration Email Error]', mailErr);
+      }
     }
 
     // Register student in OriginBI for Complimentary School Assessment (Level 1 Behavioral)
     try {
-      const originBiBaseUrl = process.env.ORIGINBI_API_URL || 'http://localhost:4003';
-      const originBiRes = await fetch(`${originBiBaseUrl}/campus-square/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(8000),
-        body: JSON.stringify({
-          fullName: validatedData.studentName,
-          email: validatedData.email,
-          mobile: validatedData.phone,
-          gender: validatedData.gender,
-          studentBoard: validatedData.board,
-          schoolLevel: validatedData.schoolLevel,
-          schoolStream: validatedData.stream,
-          eventSlug: eventDetails?.slug,
-          eventName: eventDetails?.title,
-          sendEmail: true,
-        }),
-      });
+      const originBiBaseUrl = process.env.ORIGINBI_API_URL;
+      const isLocalhost = !originBiBaseUrl || originBiBaseUrl.includes('localhost') || originBiBaseUrl.includes('127.0.0.1');
+      const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
 
-      if (!originBiRes.ok) {
-        const errText = await originBiRes.text();
-        console.warn(`[OriginBI] Registration response status ${originBiRes.status}:`, errText);
+      if (isProduction && isLocalhost) {
+        console.log('[OriginBI] ORIGINBI_API_URL not configured for production; skipping localhost sync.');
       } else {
-        const originBiData = await originBiRes.json();
-        console.log('[OriginBI] Student successfully registered in OriginBI:', originBiData);
+        const targetUrl = originBiBaseUrl || 'http://localhost:4003';
+        const originBiRes = await fetch(`${targetUrl}/campus-square/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(6000),
+          body: JSON.stringify({
+            fullName: validatedData.studentName,
+            email: validatedData.email,
+            mobile: validatedData.phone,
+            gender: validatedData.gender,
+            studentBoard: validatedData.board,
+            schoolLevel: validatedData.schoolLevel,
+            schoolStream: validatedData.stream,
+            eventSlug: eventDetails?.slug,
+            eventName: eventDetails?.title,
+            sendEmail: true,
+          }),
+        });
+
+        if (!originBiRes.ok) {
+          const errText = await originBiRes.text();
+          console.warn(`[OriginBI] Registration response status ${originBiRes.status}:`, errText);
+        } else {
+          const originBiData = await originBiRes.json();
+          console.log('[OriginBI] Student successfully registered in OriginBI:', originBiData);
+        }
       }
     } catch (originBiErr) {
       console.error('[OriginBI] Error calling OriginBI registration endpoint:', originBiErr);

@@ -21,23 +21,23 @@ const siteUrl = process.env.NEXT_PUBLIC_APP_URL;
 export const metadata: Metadata = {
   ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: {
-    template: '%s | Campus Square',
-    default: 'Campus Square | Connect Campuses',
+    template: '%s | Campus Square™',
+    default: 'Campus Square™ | Connect Campuses',
   },
-  description: "Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.",
+  description: "Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.",
   keywords: [
-    "Campus Square",
+    "Campus Square™",
     "Connect Campuses",
     "University Fair India",
     "School Hosted University Fair",
-    "Higher Education Conclave",
+    "Higher Education Fair",
     "Student Career Opportunities",
     "OriginBI Assessment",
     "Top Universities in India"
   ],
-  authors: [{ name: "Campus Square - Atom Infinity & OriginBI" }],
-  creator: "Campus Square",
-  publisher: "Campus Square",
+  authors: [{ name: "Campus Square™ - Atom Infinity & OriginBI" }],
+  creator: "Campus Square™",
+  publisher: "Campus Square™",
   formatDetection: {
     email: false,
     address: false,
@@ -47,10 +47,10 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Campus Square | Connect Campuses',
-    description: 'Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.',
+    title: 'Campus Square™ | Connect Campuses',
+    description: 'Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.',
     url: siteUrl,
-    siteName: 'Campus Square',
+    siteName: 'Campus Square™',
     locale: 'en_IN',
     type: 'website',
     images: [
@@ -58,14 +58,14 @@ export const metadata: Metadata = {
         url: '/campus-square-logo-main.jpg',
         width: 1200,
         height: 630,
-        alt: 'Campus Square - Connect Campuses',
+        alt: 'Campus Square™ - Connect Campuses',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Campus Square | Conclaves & University Fair Series',
-    description: 'Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students.',
+    title: 'Campus Square™ | A University Fair Series',
+    description: 'Campus Square™ - A University Fair Series, a joint collaboration by Atom Infinity and Origin Bi, bringing schools and universities together to connect students with higher education opportunities.',
     images: ['/campus-square-logo-main.jpg'],
   },
   robots: {
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'EducationalOrganization',
-  name: 'Campus Square',
+  name: 'Campus Square™',
   ...(siteUrl ? { url: siteUrl, logo: `${siteUrl}/campus-square-logo-main.jpg` } : { logo: '/campus-square-logo-main.jpg' }),
   description: 'Connecting ambitious school leaders and forward-thinking universities to create global opportunities for students across India.',
   telephone: '+91-8056134455',

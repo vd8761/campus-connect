@@ -11,7 +11,7 @@ export function Logo({ light = false, className }: LogoProps) {
     <div className="flex items-center">
       <Image
         src={light ? "/campus-square-logo-white.png" : "/campus-square-logo-transparent.png"}
-        alt="Campus Square"
+        alt="Campus Square™"
         width={953}
         height={311}
         className={className || "w-auto h-9 md:h-10 lg:h-11 object-contain transition-all"}

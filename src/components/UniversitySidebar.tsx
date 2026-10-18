@@ -18,7 +18,7 @@ export function UniversitySidebar() {
       <div className="px-5 mb-6 flex flex-col items-start">
         <Image 
           src="/campus-square-logo-transparent.png" 
-          alt="Campus Square Logo" 
+          alt="Campus Square™ Logo" 
           width={150} 
           height={50} 
           className="mb-4 object-contain"

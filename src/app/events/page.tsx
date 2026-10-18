@@ -8,8 +8,8 @@ import { Sparkles, MapPin, Building2, Users } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Editions & University Fairs | Campus Square',
-  description: 'Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.',
+  title: 'Editions & University Fairs | Campus Square™',
+  description: 'Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.',
 };
 
 export default async function EventsPage() {
@@ -72,7 +72,7 @@ export default async function EventsPage() {
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-purple/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-5 border border-white/10">
             <Building2 size={14} className="text-brand-turquoise" />
-            <span>Campus Square Editions</span>
+            <span>Campus Square™ Editions</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight mb-4">
@@ -84,19 +84,19 @@ export default async function EventsPage() {
           </p>
 
           <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed mb-8">
-            Campus Square is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
+            Campus Square™ is a multi-location education and university fair series hosted at different schools, bringing together school leaders, students, parents, universities, educators and education partners.
           </p>
 
           {/* Quick Metrics */}
           <div className="flex flex-wrap items-center justify-center gap-6 pt-4 border-t border-white/10 max-w-2xl mx-auto">
             <div className="flex items-center gap-2 text-sm text-white/90">
               <MapPin size={16} className="text-brand-turquoise" />
-              <span className="font-bold text-white">First Edition:</span> Theni (Oct 24, 2026)
+              <span className="font-bold text-white">Theni Edition:</span> Oct 24, 2026
             </div>
             <div className="h-4 w-px bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-sm text-white/90">
               <Building2 size={16} className="text-brand-turquoise" />
-              <span className="font-bold text-white">19+</span> University Partners
+              <span className="font-bold text-white">Premier</span> University Partners
             </div>
             <div className="h-4 w-px bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-sm text-white/90">

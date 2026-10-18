@@ -73,7 +73,7 @@ export function OriginBIBenefitsSection({ eventSlug, isRegistrationOpen = true }
       icon: AlertTriangle
     },
     {
-      title: "Confident decisions during & after conclave",
+      title: "Confident decisions during & after the fair",
       desc: "Walk up to university admissions officers knowing your exact profile, strengths, and career ambitions.",
       icon: TrendingUp
     }
@@ -101,11 +101,11 @@ export function OriginBIBenefitsSection({ eventSlug, isRegistrationOpen = true }
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-brand-navy tracking-tight mb-4">
-            How Students Benefit from <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Campus Square</span>
+            How Students Benefit from <span className="text-transparent bg-clip-text bg-[image:var(--primary-gradient)]">Campus Square™</span>
           </h2>
 
           <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-            When a student registers for a Campus Square conclave or university fair edition, they are <strong className="text-brand-navy font-semibold">automatically registered for the OriginBI Assessment</strong>.
+            When a student registers for a Campus Square™ university fair edition, they are <strong className="text-brand-navy font-semibold">automatically registered for the OriginBI Assessment</strong>.
           </p>
         </div>
 
@@ -210,7 +210,7 @@ export function OriginBIBenefitsSection({ eventSlug, isRegistrationOpen = true }
                   <span className="text-brand-turquoise">FREE</span>
                 </div>
                 <p className="text-xs text-white/80 leading-relaxed mt-2">
-                  Combined with direct interactions with universities and education leaders at Campus Square, the assessment gives students both external opportunities and internal clarity.
+                  Combined with direct interactions with universities and education leaders at Campus Square™, the assessment gives students both external opportunities and internal clarity.
                 </p>
               </div>
 

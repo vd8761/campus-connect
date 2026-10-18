@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import { ShieldCheck, Mail, MessageSquare } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Campus Square',
-  description: 'Read the Campus Square privacy policy to understand how we handle student, parent, school, and university data.',
+  title: 'Privacy Policy | Campus Square™',
+  description: 'Read the Campus Square™ privacy policy to understand how we handle student, parent, school, and university data.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
             <span>Data Privacy & Security</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-heading font-extrabold mb-4">Privacy Policy</h1>
-          <p className="text-gray-300 text-sm">Campus Square - A Collaborative Initiative by Atom Infinity and OriginBI Mindworks</p>
+          <p className="text-gray-300 text-sm">Campus Square™ - A University Fair Series, a joint collaboration by Atom Infinity and Origin Bi</p>
         </div>
       </section>
 
@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
             <div>
               <h2 className="text-xl font-heading font-bold text-brand-navy mb-3">1. Introduction</h2>
               <p>
-                Welcome to Campus Square. We respect your privacy and are committed to protecting personal data submitted through our event registrations, school hosting enquiries, and university partnership forms.
+                Welcome to Campus Square™. We respect your privacy and are committed to protecting personal data submitted through our event registrations, school hosting enquiries, and university partnership forms.
               </p>
             </div>
 
@@ -67,7 +67,7 @@ export default function PrivacyPolicyPage() {
                 <p><strong>Office Address:</strong> Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy, Chennai, Tamil Nadu 600032</p>
                 <p><strong>Email:</strong> interact@atom-infinity.com</p>
                 <p><strong>WhatsApp Support:</strong> +91 80561 34455</p>
-                <p><strong>Initiative:</strong> Atom Infinity & OriginBI Mindworks</p>
+                <p><strong>Joint Collaboration:</strong> Atom Infinity & OriginBI Mindworks</p>
               </div>
             </div>
           </div>

@@ -230,7 +230,7 @@ export function SchoolHostingForm() {
           <span>School Host Application</span>
         </div>
         <h3 className="text-2xl sm:text-3xl font-heading font-extrabold text-brand-navy">
-          Host a Campus Square Edition
+          Host a Campus Square™ Edition
         </h3>
         <p className="text-brand-muted text-sm mt-1">
           Provide your school details to schedule a preliminary discussion with our school partnerships director.

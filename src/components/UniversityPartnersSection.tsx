@@ -29,7 +29,7 @@ export function UniversityPartnersSection() {
           </h2>
 
           <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-            We are proud to collaborate with universities and higher education institutions to connect schools, students and families with meaningful academic opportunities.
+            We are proud to collaborate with universities and higher education institutions to connect schools, students and parents with meaningful academic opportunities.
           </p>
 
         </div>
@@ -105,7 +105,7 @@ export function UniversityPartnersSection() {
               size="default"
               className="rounded-xl px-5 py-2.5 gap-2 border-brand-border hover:border-brand-purple/50 font-semibold text-brand-navy hover:text-brand-purple text-xs sm:text-sm cursor-pointer shadow-xs"
             >
-              <span>View All 19 University Partners & Profiles</span>
+              <span>View All University Partners & Profiles</span>
               <ArrowRight size={15} />
             </Button>
           </Link>
@@ -115,7 +115,7 @@ export function UniversityPartnersSection() {
               size="default"
               className="text-brand-purple hover:bg-brand-purple/10 font-semibold text-xs sm:text-sm cursor-pointer"
             >
-              Partner with Campus Square
+              Partner with Campus Square™
             </Button>
           </Link>
         </div>
@@ -135,7 +135,7 @@ export function UniversityPartnersSection() {
                 Join Our Growing University Network
               </h3>
               <p className="text-sm md:text-base text-gray-200 leading-relaxed">
-                We welcome universities and higher education institutions to partner with Campus Square and connect with schools, students and families through our growing series of school-hosted university fairs.
+                We welcome universities and higher education institutions to partner with Campus Square™ and connect with schools, students and parents through our growing series of school-hosted university fairs.
               </p>
             </div>
 

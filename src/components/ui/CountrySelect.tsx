@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { getCountryCallingCode } from 'react-phone-number-input';
 
-export function CountrySelect({ value, onChange, labels, options, iconComponent: Icon }: any) {
+export function CountrySelect({ value, onChange, labels, options, iconComponent: Icon, className = '' }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -25,11 +25,25 @@ export function CountrySelect({ value, onChange, labels, options, iconComponent:
     return countryName.includes(searchLower) || code.includes(searchLower) || `+${code}`.includes(searchLower);
   }) : [];
 
+  // Determine rounded and background classes without conflicting defaults
+  const roundedClass = className && className.includes('rounded-')
+    ? className.split(' ').filter((c: string) => c.startsWith('rounded-')).join(' ')
+    : 'rounded-l-md';
+
+  const bgClass = className && className.includes('bg-')
+    ? className.split(' ').filter((c: string) => c.startsWith('bg-') || c.startsWith('hover:bg-')).join(' ')
+    : 'bg-gray-50/80 hover:bg-gray-100';
+
+  const hasCustomBorder = className && className.split(' ').some((c: string) => c.startsWith('border-') && !c.startsWith('border-r'));
+  const borderColorClass = hasCustomBorder
+    ? className.split(' ').filter((c: string) => c.startsWith('border-')).join(' ')
+    : 'border-brand-border';
+
   return (
-    <div className="relative flex items-center h-full border-r border-brand-border bg-gray-50/80 rounded-l-md hover:bg-gray-100 transition-colors z-10" ref={dropdownRef}>
+    <div className={`relative flex items-center h-full z-10 ${roundedClass} ${className}`} ref={dropdownRef}>
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2.5 px-3 cursor-pointer h-full"
+        className={`flex items-center gap-2.5 px-3 cursor-pointer h-full border-r transition-colors select-none ${roundedClass} overflow-hidden ${bgClass} ${borderColorClass}`}
       >
         <div className="flex items-center justify-center shrink-0 w-6 h-4 overflow-hidden rounded-[2px] shadow-sm">
           {Icon && value ? (
@@ -45,7 +59,7 @@ export function CountrySelect({ value, onChange, labels, options, iconComponent:
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-brand-border rounded-md shadow-xl py-1 flex flex-col max-h-[300px] animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
+        <div className="absolute top-full left-0 mt-1.5 w-72 bg-white border border-slate-200 rounded-xl shadow-xl py-1 flex flex-col max-h-[300px] animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
           
           <div className="p-2 border-b border-gray-100 bg-gray-50/50">
             <input 

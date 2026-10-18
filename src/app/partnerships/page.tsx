@@ -21,8 +21,8 @@ import {
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 
 export const metadata: Metadata = {
-  title: 'University Partnerships | Campus Square',
-  description: 'Together, We Connect Campuses. Partner with Campus Square to engage with prospective students, connect with school leaders and families, and showcase academic programmes across India.',
+  title: 'University Partnerships | Campus Square™',
+  description: 'Together, We Connect Campuses. Partner with Campus Square™ to engage with prospective students, connect with school leaders and parents, and showcase academic programmes across India.',
 };
 
 export default function UniversityPartnershipsPage() {
@@ -36,7 +36,7 @@ export default function UniversityPartnershipsPage() {
     },
     {
       title: "Connect with Prospective Students and Parents",
-      desc: "Engage face-to-face with motivated students and their families in an focused, interactive school-hosted setting that drives high-intent admissions conversations.",
+      desc: "Engage face-to-face with motivated students and their parents in an focused, interactive school-hosted setting that drives high-intent admissions conversations.",
       icon: Users,
       color: "from-blue-500/10 to-cyan-500/10",
       accent: "text-blue-600",
@@ -72,7 +72,7 @@ export default function UniversityPartnershipsPage() {
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-brand-turquoise text-xs font-semibold uppercase tracking-wider mb-5 backdrop-blur">
             <Building2 size={14} />
-            <span>Campus Square University Network</span>
+            <span>Campus Square™ University Network</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold mb-6 tracking-tight leading-tight">
@@ -80,44 +80,12 @@ export default function UniversityPartnershipsPage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed mb-8">
-            Campus Square provides a platform for universities to engage with prospective students, connect with school leaders and families, and showcase their academic programmes.
+            Campus Square™ provides a platform for universities to engage with prospective students, connect with school leaders and parents, and showcase their academic programmes.
           </p>
 
           <p className="text-base text-gray-300 max-w-2xl mx-auto leading-relaxed">
             We welcome additional universities and higher education institutions to join our growing network and collaborate with us across our upcoming editions.
           </p>
-        </div>
-      </section>
-
-      {/* Joint Collaboration Banner */}
-      <section className="container mx-auto px-4 -mt-10 relative z-20 max-w-5xl">
-        <div className="bg-gradient-to-r from-brand-navy via-[#320846] to-brand-navy rounded-3xl p-7 sm:p-10 text-white relative overflow-hidden shadow-2xl border border-white/10">
-          <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -left-20 -top-20 w-64 h-64 bg-brand-turquoise/20 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex-1 text-center md:text-left">
-              <div className="inline-block px-3 py-1 rounded-full bg-brand-turquoise/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-3">
-                Collaborative Initiative
-              </div>
-              <h4 className="text-xl sm:text-2xl font-heading font-bold text-white mb-2">
-                Atom Infinity ✕ OriginBI Mindworks
-              </h4>
-              <p className="text-gray-200 text-xs sm:text-sm leading-relaxed max-w-2xl">
-                We are delighted to present a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4 shrink-0 bg-white px-5 sm:px-6 py-3.5 rounded-2xl shadow-2xl border border-white/20">
-              <div className="relative h-10 w-28 sm:h-11 sm:w-32">
-                <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
-              </div>
-              <span className="text-brand-navy font-bold text-base sm:text-lg">✕</span>
-              <div className="relative h-10 w-28 sm:h-11 sm:w-32">
-                <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized className="object-contain" />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -130,10 +98,10 @@ export default function UniversityPartnershipsPage() {
               <span>Institutional Value Proposition</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-brand-navy mb-4">
-              Why Partner with Campus Square?
+              Why Partner with Campus Square™?
             </h2>
             <p className="text-brand-muted text-base">
-              A purposeful engagement platform engineered to create deep, measurable connections with students, families, and high schools.
+              A purposeful engagement platform engineered to create deep, measurable connections with students, parents, and high schools.
             </p>
           </div>
 
@@ -201,7 +169,7 @@ export default function UniversityPartnershipsPage() {
               Our Growing University Partner Network
             </h2>
             <p className="text-sm text-brand-muted">
-              Higher education institutions collaborating with Campus Square across multiple cities ({UNIVERSITY_PARTNERS.length} Partners)
+              Higher education institutions collaborating with Campus Square™ across regional editions
             </p>
           </div>
 

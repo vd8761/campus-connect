@@ -48,7 +48,7 @@ export default async function Home() {
     console.warn("Database connection failed. Showing fallback event states.");
   }
 
-  // Find the primary Theni First Edition
+  // Find the primary Theni Edition
   const theniEvent = rawEvents.find(e => e.slug === 'university-fair-2026-theni') || rawEvents[0] || {
     slug: 'university-fair-2026-theni',
     title: 'University Fair 2026',
@@ -70,7 +70,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* ------------------------------------------------------------------------- */}
-      {/* 1. HERO: CAMPUS SQUARE - REGISTRATION & ASSESSMENT FREE VISIBLE AT TOP  */}
+      {/* 1. HERO: CAMPUS SQUARE™ - REGISTRATION & ASSESSMENT FREE VISIBLE AT TOP  */}
       {/* ------------------------------------------------------------------------- */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-brand-navy to-slate-900 text-white pt-10 sm:pt-14 pb-20">
         {/* Glow gradients */}
@@ -81,7 +81,7 @@ export default async function Home() {
           {/* Joint Initiative Credential */}
           <div className="flex flex-col items-center justify-center gap-2.5 mb-8">
             <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-slate-300">
-              A joint education initiative of
+              A joint collaboration by Atom Infinity and Origin Bi
             </span>
             <div className="inline-flex items-center gap-4 sm:gap-6 bg-white px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl border border-white/20">
               <div className="relative h-8 w-28 sm:h-10 sm:w-36 md:h-11 md:w-40">
@@ -108,7 +108,7 @@ export default async function Home() {
 
           {/* Main Hero Typography */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-heading font-extrabold tracking-tight text-white mb-2">
-            CAMPUS SQUARE
+            CAMPUS SQUARE<sup>TM</sup>
           </h1>
 
           <p className="text-lg sm:text-xl font-heading font-semibold text-brand-turquoise mb-3 tracking-wide">
@@ -116,7 +116,7 @@ export default async function Home() {
           </p>
 
           <p className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-cyan-100 to-white mb-4">
-            Where Education Meets Opportunity.
+            A University Fair Series
           </p>
 
           {/* Supporting Line */}
@@ -131,7 +131,7 @@ export default async function Home() {
           </div>
 
           <p className="text-sm sm:text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed mb-8">
-            Bringing schools, universities, students, parents and education partners together to discover opportunities, build meaningful connections and shape the future of education.
+            Campus Square™ - A University Fair Series, a joint collaboration by Atom Infinity and Origin Bi, bringing schools and universities together to connect students with higher education opportunities.
           </p>
 
           {/* TOP REGISTRATION & FREE ORIGINBI ASSESSMENT OFFER CARD (Visible immediately without scrolling) */}
@@ -154,7 +154,7 @@ export default async function Home() {
             </h2>
 
             <p className="text-sm sm:text-base text-gray-200 leading-relaxed mb-6">
-              Choosing the right college and course after school is a crucial decision for every family. Meet admissions teams from 19 reputed universities face-to-face, ask questions openly, and receive a free OriginBI psychometric assessment (Worth ₹750) revealing your child&apos;s natural talents and best-fit degrees.
+              Choosing the right college and course after school is a crucial decision for every parent. Meet admissions teams from reputed universities face-to-face, ask questions openly, and receive a free OriginBI psychometric assessment (Worth ₹{ORIGINBI_ASSESSMENT_AMOUNT}) revealing your child&apos;s natural talents and best-fit degrees.
             </p>
 
             {/* CTAs */}
@@ -187,13 +187,13 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* First Edition Details Immediately Below CTA */}
+            {/* Event Details Immediately Below CTA */}
             <div className="border-t border-white/15 bg-white/[0.06] -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 px-6 sm:px-8 py-4 rounded-b-3xl">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs sm:text-sm">
                 <div className="flex items-center gap-2 text-brand-turquoise font-medium min-w-0">
                   <MapPin size={16} className="text-brand-turquoise shrink-0" />
                   <span className="leading-snug">
-                    First Edition: <strong className="text-white font-bold">The Little Kingdom School, Theni</strong>
+                    <strong className="text-white font-bold">The Little Kingdom School, Theni</strong>
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-200">
@@ -223,7 +223,7 @@ export default async function Home() {
       <UniversityPartnersSection />
 
       {/* ------------------------------------------------------------------------- */}
-      {/* 3. UPCOMING EDITIONS: FIRST EDITION IN THENI, FOLLOWED BY FUTURE LOCATIONS */}
+      {/* 3. UPCOMING EDITIONS: THENI, FOLLOWED BY FUTURE LOCATIONS                 */}
       {/* ------------------------------------------------------------------------- */}
       <section className="py-20 bg-slate-50 border-t border-brand-border/60" id="upcoming-editions">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -238,16 +238,16 @@ export default async function Home() {
             </h2>
 
             <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-              Campus Square is hosted at different schools across various cities. Explore our inaugural edition and upcoming regional locations.
+              Campus Square™ is hosted at different schools across various cities.
             </p>
           </div>
 
-          {/* First Edition Featured Card: Theni */}
+          {/* Featured Card: Theni */}
           <div className="bg-white rounded-3xl border-2 border-brand-purple/30 shadow-xl overflow-hidden mb-10 hover:shadow-2xl transition-all duration-300">
             <div className="bg-gradient-to-r from-brand-navy via-[#320846] to-brand-navy text-white px-6 py-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="px-2.5 py-0.5 rounded-full bg-brand-turquoise text-brand-navy text-xs font-extrabold uppercase tracking-wider">
-                  Inaugural First Edition
+                  Theni Edition
                 </span>
                 <span className="text-sm font-semibold text-white/90">Registration Open</span>
               </div>
@@ -261,12 +261,8 @@ export default async function Home() {
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-heading font-extrabold text-brand-navy">
-                  Campus Square - The Little Kingdom School, Theni
+                  Campus Square™ - The Little Kingdom School, Theni
                 </h3>
-
-                <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                  Join us for our first edition featuring 19 premier university partners, admissions counseling, and complimentary OriginBI behavioral profile mapping for students.
-                </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                   <div className="flex items-center gap-2.5 text-xs sm:text-sm text-brand-navy font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
@@ -302,7 +298,7 @@ export default async function Home() {
           {/* Future Editions Pipeline */}
           <div className="mt-8">
             <h4 className="text-lg font-heading font-bold text-brand-navy mb-4 text-center sm:text-left">
-              Upcoming Cities in Pipeline
+              Upcoming Editions
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {futureEditions.map((ed, idx) => (
@@ -339,35 +335,6 @@ export default async function Home() {
       {/* ------------------------------------------------------------------------- */}
       <section className="py-20 bg-white relative overflow-hidden" id="originbi-assessment">
         <div className="container mx-auto px-4 max-w-6xl">
-          {/* Joint Collaboration Banner */}
-          <div className="bg-gradient-to-r from-brand-navy via-[#320846] to-brand-navy text-white rounded-3xl p-8 sm:p-12 shadow-xl mb-16 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-brand-turquoise/20 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-              <div className="flex-1 text-center lg:text-left">
-                <span className="inline-block px-3.5 py-1 rounded-full bg-brand-turquoise/20 text-brand-turquoise text-xs font-bold uppercase tracking-wider mb-3">
-                  Strategic Future Readiness
-                </span>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold mb-3">
-                  A Joint Collaboration by Atom Infinity and OriginBI Mindworks
-                </h3>
-                <p className="text-gray-200 text-sm sm:text-base leading-relaxed max-w-2xl">
-                  We are delighted to present a joint collaboration by <strong>Atom Infinity</strong> and <strong>OriginBI Mindworks</strong> for selected conclave editions. Together, we are committed to empowering school leaders with future-focused insights, data-driven innovation and transformative solutions.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-4 shrink-0 bg-white p-4 sm:px-6 sm:py-4 rounded-2xl shadow-xl">
-                <div className="relative h-12 w-32">
-                  <Image src="/atom-logo.png" alt="Atom Infinity" fill unoptimized className="object-contain" />
-                </div>
-                <span className="text-brand-navy font-bold text-lg">✕</span>
-                <div className="relative h-12 w-32">
-                  <Image src="/Origin-BI-Logo-01.png" alt="OriginBI Mindworks" fill unoptimized className="object-contain" />
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* OriginBI Detail Sections */}
           <AboutOriginBISection />
           <OriginBIBenefitsSection eventSlug="university-fair-2026-theni" isRegistrationOpen={true} />
@@ -388,7 +355,7 @@ export default async function Home() {
                 Together, We Connect Campuses.
               </h2>
               <p className="text-brand-muted text-sm sm:text-base leading-relaxed mb-4">
-                Campus Square provides a platform for universities to engage with prospective students, connect with school leaders and families, and showcase their academic programmes.
+                Campus Square™ provides a platform for universities to engage with prospective students, connect with school leaders and parents, and showcase their academic programmes.
               </p>
               <ul className="space-y-2 text-xs sm:text-sm text-slate-700 font-medium">
                 <li className="flex items-center gap-2">
@@ -436,13 +403,13 @@ export default async function Home() {
                 School Leadership
               </span>
               <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-3">
-                Bring Campus Square to Your School.
+                Bring Campus Square™ to Your School.
               </h2>
               <p className="text-gray-200 text-sm sm:text-base leading-relaxed mb-4">
-                Give your students and families an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives.
+                Give your students and parents an opportunity to explore higher education institutions, discover academic pathways and interact with university representatives.
               </p>
               <p className="text-xs text-gray-300">
-                We welcome school management teams, principals and education leaders interested in hosting a Campus Square edition.
+                We welcome school management teams, principals and education leaders interested in hosting a Campus Square™ edition.
               </p>
             </div>
 
