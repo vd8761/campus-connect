@@ -86,6 +86,7 @@ export default async function Home() {
     return ['OPEN', 'LIMITED_SEATS'].includes(s);
   });
   const hasMultipleOpenEvents = openEvents.length > 1;
+  const hasZeroOpenEvents = openEvents.length === 0;
   const activeOpenEvent = openEvents.length > 0 ? openEvents[0] : (isTheniOpen ? theniEvent : null);
 
   // Featured Event: The first open event, or default to theniEvent
@@ -317,11 +318,15 @@ export default async function Home() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-brand-navy tracking-tight mb-4">
-              Upcoming Editions
+              {hasZeroOpenEvents ? 'Fair Editions & Tour Locations' : 'Upcoming Editions'}
             </h2>
 
             <p className="text-base sm:text-lg text-brand-muted leading-relaxed">
-              Campus Square™ is hosted at different schools across various cities.
+              {hasMultipleOpenEvents
+                ? `Campus Square™ is currently open across ${openEvents.length} school editions. Choose your city below to register free.`
+                : hasZeroOpenEvents
+                  ? 'Our recent school fair editions have concluded. Explore participating universities from past editions or nominate your school for our next tour.'
+                  : 'Campus Square™ is hosted at different schools across various cities.'}
             </p>
           </div>
 
@@ -337,7 +342,11 @@ export default async function Home() {
                 </span>
               </div>
               <span className="text-xs text-white/70">
-                {isFeaturedOpen ? 'Admission: Completely Free' : 'Recap & Booth Directory Available'}
+                {hasMultipleOpenEvents
+                  ? `${openEvents.length} Active Editions Open`
+                  : isFeaturedOpen
+                    ? 'Admission: Completely Free'
+                    : 'Recap & Booth Directory Available'}
               </span>
             </div>
 
@@ -375,15 +384,16 @@ export default async function Home() {
                     </Button>
                   </Link>
                 ) : (
-                  <Link href="#upcoming-editions" className="w-full">
-                    <Button variant="outline" size="lg" className="w-full rounded-xl py-6 text-sm font-bold border-brand-purple/40 text-brand-navy bg-slate-50 hover:bg-slate-100">
-                      Registration Closed • Explore Next Editions
+                  <Link href="/host" className="w-full">
+                    <Button variant="gradient" size="lg" className="w-full rounded-xl py-6 text-sm sm:text-base font-bold shadow-lg shadow-brand-purple/20 cursor-pointer flex items-center justify-center gap-2">
+                      <Building2 size={18} />
+                      <span>Nominate Your School to Host</span>
                     </Button>
                   </Link>
                 )}
                 <Link href={`/events/${featuredEvent.slug}`} className="w-full">
                   <Button variant="outline" size="lg" className="w-full rounded-xl">
-                    View Event Details & Booths
+                    {isFeaturedOpen ? 'View Event Details & Booths' : 'View Concluded Booths & Directory'}
                   </Button>
                 </Link>
               </div>
@@ -392,9 +402,20 @@ export default async function Home() {
 
           {/* Editions Pipeline: Shows any other DB editions + future cities */}
           <div className="mt-8">
-            <h4 className="text-lg font-heading font-bold text-brand-navy mb-4 text-center sm:text-left">
-              Upcoming Editions
-            </h4>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <h4 className="text-lg font-heading font-bold text-brand-navy text-center sm:text-left">
+                {hasMultipleOpenEvents
+                  ? 'Other Active & Upcoming Editions'
+                  : hasZeroOpenEvents
+                    ? 'Upcoming Tour Cities in Planning'
+                    : 'Upcoming Tour Locations'}
+              </h4>
+              {hasMultipleOpenEvents && (
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-center">
+                  {openEvents.length} Editions Open for Registration
+                </span>
+              )}
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Other Database Editions */}
               {otherDbEvents.map((dbEvent) => {

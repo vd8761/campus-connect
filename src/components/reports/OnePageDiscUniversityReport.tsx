@@ -442,7 +442,7 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
               <span>A Joint Collaboration by Atom Infinity and OriginBI Mindworks</span>
             </div>
             <div className="font-mono text-purple-900 font-bold">
-              Powered by OriginBI™ Behavioral Assessment Engine
+              Powered by OriginBI Behavioral Assessment Engine
             </div>
             <div className="font-bold text-slate-700">
               Page 1 of 1 (Strictly Confidential)
