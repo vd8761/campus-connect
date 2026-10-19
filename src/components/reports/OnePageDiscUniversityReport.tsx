@@ -41,6 +41,20 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
     return trimmed.trim().replace(/\.+$/, '') + '.';
   };
 
+  // Clean student brief by stripping psychometric acronyms and trait blend jargon
+  const cleanStudentBrief = (text?: string): string => {
+    if (!text) return '';
+    return text
+      .replace(/\s*\([A-Z]{1,2}\)/g, '')
+      .replace(/\b(ID|SC|DI|DC|DS|IS|IC|SD|SI|CS|CD|CI)\s+style\b/gi, 'profile')
+      .replace(/\b(ID|SC|DI|DC|DS|IS|IC|SD|SI|CS|CD|CI)\s+blend\b/gi, 'strengths')
+      .replace(/\b(ID|SC|DI|DC|DS|IS|IC|SD|SI|CS|CD|CI)\b(?=\s+trait|\s+profile)/g, '')
+      .replace(/\bblend of\s+(?:Influence|Dominance|Steadiness|Conscientiousness)(?:\s+and\s+(?:Influence|Dominance|Steadiness|Conscientiousness))?/gi, 'learning orientation')
+      .replace(/\b(Dominance|Influence|Steadiness|Conscientiousness)\s+traits?\b/gi, 'strengths')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  };
+
   // Group matched universities into High-to-Low Fitment Tiers for clear student & parent understanding
   const fitmentTiers = [
     {
@@ -71,46 +85,6 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
       universities: matchedUniversities.filter((u) => u.matchScore < 85),
     },
   ].filter((tier) => tier.universities.length > 0);
-
-  // DISC Breakdown meta with specific colors matching OriginBI standard
-  const discFactors = [
-    {
-      code: 'D',
-      label: 'Dominance',
-      score: scores.d,
-      barColor: 'bg-rose-500',
-      textColor: 'text-rose-700',
-      bgLight: 'bg-rose-50',
-      borderColor: 'border-rose-200',
-    },
-    {
-      code: 'I',
-      label: 'Influence',
-      score: scores.i,
-      barColor: 'bg-amber-500',
-      textColor: 'text-amber-700',
-      bgLight: 'bg-amber-50',
-      borderColor: 'border-amber-200',
-    },
-    {
-      code: 'S',
-      label: 'Steadiness',
-      score: scores.s,
-      barColor: 'bg-emerald-500',
-      textColor: 'text-emerald-700',
-      bgLight: 'bg-emerald-50',
-      borderColor: 'border-emerald-200',
-    },
-    {
-      code: 'C',
-      label: 'Conscientiousness',
-      score: scores.c,
-      barColor: 'bg-blue-500',
-      textColor: 'text-blue-700',
-      bgLight: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-    },
-  ];
 
   return (
     <div className="w-full flex justify-center py-4 print:py-0 bg-slate-100 print:bg-white text-slate-900 font-sans">
@@ -184,11 +158,11 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
             </div>
 
             {/* Title Strip & Document Meta Bar */}
-            <div className="mt-1 pt-1 border-t border-slate-150 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+            <div className="mt-1 pt-1 border-t border-slate-150 flex flex-row items-center justify-between gap-1.5">
               <div className="min-w-0">
                 <div className="inline-flex items-center gap-1.5 px-2 py-0.2 rounded-full bg-purple-100 text-purple-900 text-[8.5px] font-bold">
                   <BrainCircuit size={10} className="text-purple-700" />
-                  <span>DISC Psychometric Behavioral Assessment</span>
+                  <span>Student Academic Potential & Fitment Assessment</span>
                 </div>
                 <h1 className="text-sm sm:text-base font-heading font-black text-[#1e153b] tracking-tight mt-0.5 leading-tight">
                   University Course Fitment Pathway Report
@@ -222,114 +196,68 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
           </header>
 
           {/* ========================================================= */}
-          {/* 2. HERO BEHAVIORAL PROFILE & DISC READINESS CARD           */}
+          {/* 2. CANDIDATE PROFILE & STUDENT BRIEF                       */}
           {/* ========================================================= */}
-          <section className="bg-gradient-to-r from-purple-50/70 via-white to-indigo-50/50 rounded-lg p-1.5 sm:p-2 border border-purple-200/80 mb-1">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-              {/* Left Column: Student identity & Primary Archetype Pill */}
-              <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-purple-100 md:pr-2">
-                <div className="flex items-center justify-between gap-1">
-                  <span className="text-[8px] uppercase font-bold text-slate-500 tracking-wider">
-                    Candidate Dossier
-                  </span>
-                  <span className="inline-flex items-center gap-1 px-1 py-0.2 rounded text-[7.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    <ShieldCheck size={8} />
-                    Verified Attendee
-                  </span>
-                </div>
-                <h2 className="text-xs sm:text-sm font-extrabold text-[#1e153b] break-words mt-0.5 leading-tight">
-                  {fullName}
-                </h2>
-                <p className="text-[9px] text-slate-600 font-medium break-words">
-                  Stream: <span className="font-bold text-purple-900">{stream}</span>
-                </p>
-
-                {/* Primary Archetype Badge with OriginBI Color */}
-                <div
-                  className="mt-1 p-1 rounded-md border flex items-center gap-1.5"
-                  style={{
-                    backgroundColor: `rgba(${archetypeColor}, 0.08)`,
-                    borderColor: `rgba(${archetypeColor}, 0.3)`,
-                  }}
-                >
-                  <span
-                    className="w-5 h-5 rounded flex items-center justify-center font-black text-[10px] text-white shrink-0 shadow-2xs"
-                    style={{ backgroundColor: `rgb(${archetypeColor})` }}
-                  >
-                    {traitCode}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[7.5px] uppercase font-bold text-slate-500 leading-none">
-                      Primary Style Blend
-                    </p>
-                    <p className="text-[10.5px] font-black text-slate-900 truncate leading-tight">
-                      {archetypeName}
-                    </p>
-                    <p
-                      className="text-[8px] font-bold truncate leading-none mt-0.5"
-                      style={{ color: `rgb(${archetypeColor})` }}
-                    >
-                      {behavioralOrientation}
-                    </p>
+          <section className="bg-gradient-to-r from-purple-50/70 via-white to-indigo-50/50 rounded-lg p-2 border border-purple-200/80 mb-1">
+            <div className="flex flex-row items-stretch gap-2.5">
+              {/* Left Column: Student identity & Badges (Fixed 28% width) */}
+              <div className="w-[28%] shrink-0 border-r border-purple-200/80 pr-2 flex flex-col justify-center gap-1.5">
+                <div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[7.5px] uppercase font-bold text-slate-500 tracking-wider">
+                      Candidate Profile
+                    </span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[6.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      <ShieldCheck size={7.5} />
+                      Verified
+                    </span>
                   </div>
+                  <h2 className="text-sm font-extrabold text-[#1e153b] break-words mt-0.5 leading-tight">
+                    {fullName}
+                  </h2>
+                </div>
+
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="px-1.5 py-0.2 rounded bg-purple-100 text-purple-900 font-bold text-[7.5px]">
+                    Stream: {stream || 'Higher Secondary'}
+                  </span>
+                  {archetypeName && (
+                    <span className="px-1.5 py-0.2 rounded bg-amber-50 text-amber-900 border border-amber-200/60 font-bold text-[7.5px]">
+                      {archetypeName} Profile
+                    </span>
+                  )}
                 </div>
               </div>
 
-              {/* Right Column: DISC Readiness Bars & Executive Synthesis */}
-              <div className="md:col-span-7 flex flex-col justify-between space-y-1">
-                {/* 4 DISC Compact Readiness Factor Bars */}
-                <div>
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[8px] uppercase font-bold text-slate-500 tracking-wider">
-                      DISC Psychometric Readiness Distribution
-                    </span>
-                    <span className="text-[7.5px] font-semibold text-purple-900">
-                      Standardized Scale (0 - 100%)
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-1">
-                    {discFactors.map((item) => (
-                      <div
-                        key={item.code}
-                        className={`p-0.5 px-1 rounded border ${item.bgLight} ${item.borderColor}`}
-                      >
-                        <div className="flex items-center justify-between text-[8px] font-bold">
-                          <span className={item.textColor}>
-                            {item.code}
-                          </span>
-                          <span className="font-mono text-slate-900">{item.score}%</span>
-                        </div>
-                        <div className="w-full bg-slate-200 h-1 rounded-full mt-0.5 overflow-hidden">
-                          <div
-                            className={`h-full ${item.barColor} rounded-full`}
-                            style={{ width: `${Math.min(100, Math.max(10, item.score))}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Behavioral Synthesis */}
-                <div className="bg-white/85 rounded p-1 border border-purple-150">
-                  <p className="text-[8px] text-slate-700 leading-tight">
-                    <strong className="text-[#1e153b] font-bold">Behavioral Synthesis: </strong>
-                    {executiveSummary}
+              {/* Right Column: Brief About Student & Key Academic Strengths (72% width) */}
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
+                {/* Brief About Student */}
+                <div className="bg-white/95 rounded p-1.5 border border-purple-150">
+                  <p className="text-[7.5px] text-slate-700 leading-snug">
+                    <strong className="text-[#1e153b] font-bold">Student Brief: </strong>
+                    {cleanStudentBrief(executiveSummary)}
                   </p>
                 </div>
 
-                {/* 3 Behavioral Strengths */}
-                <div className="flex items-center gap-1 flex-wrap">
-                  {strengths.map((str, i) => (
-                    <span
-                      key={i}
-                      className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-purple-50 border border-purple-200/70 text-[7.5px] font-semibold text-purple-900"
-                    >
-                      <CheckCircle2 size={7.5} className="text-purple-600" />
-                      <span>{str}</span>
+                {/* Key Academic & Learning Strengths */}
+                <div>
+                  <div className="flex items-center gap-1 mb-0.5">
+                    <Sparkles size={7.5} className="text-purple-700" />
+                    <span className="text-[7px] uppercase font-bold text-purple-900 tracking-wider">
+                      Key Academic & Learning Strengths
                     </span>
-                  ))}
+                  </div>
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {strengths.map((str, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-purple-50 border border-purple-200/70 text-[6.5px] font-semibold text-purple-900"
+                      >
+                        <CheckCircle2 size={6.5} className="text-purple-600 shrink-0" />
+                        <span>{str}</span>
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -343,7 +271,7 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
               <div className="flex items-center gap-1">
                 <Award size={10} className="text-purple-800" />
                 <h3 className="text-[9.5px] font-heading font-black text-[#1e153b] uppercase tracking-wide">
-                  Exhibiting Universities: Matched Programs & Trait Rationale
+                  Exhibiting Universities: Matched Programs & Academic Fit Rationale
                 </h3>
               </div>
               <span className="text-[8px] font-bold text-purple-800 bg-purple-50 px-1.5 py-0.2 rounded-full border border-purple-200">
@@ -482,14 +410,14 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
           {/* ========================================================= */}
           {/* 4. ACADEMIC ADVISORY & FAIR COUNSELING STRIP              */}
           {/* ========================================================= */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-1.5 mt-1 pt-1 border-t border-slate-200">
+          <section className="grid grid-cols-2 gap-1.5 mt-1 pt-1 border-t border-slate-200">
             <div className="p-1 rounded bg-slate-50 border border-slate-200">
               <p className="text-[8px] font-bold text-[#1e153b] uppercase flex items-center gap-1">
                 <Compass size={8.5} className="text-purple-700" />
                 <span>Advisory for University Booth Visits</span>
               </p>
               <p className="text-[7px] text-slate-600 mt-0.5 leading-snug">
-                Present this verified 1-page profile at each university booth. Admissions deans prioritize candidates with documented cognitive traits for merit scholarships.
+                Present this verified 1-page profile at each university booth. Admissions deans prioritize candidates with documented academic strengths and career clarity for merit scholarships.
               </p>
             </div>
 
@@ -499,7 +427,7 @@ export function OnePageDiscUniversityReport({ report }: OnePageDiscUniversityRep
                 <span>Career Architecture Recommendation</span>
               </p>
               <p className="text-[7px] text-slate-700 mt-0.5 leading-snug">
-                Focus course inquiries on hands-on project studios and leadership tracks that activate your {archetypeName} strengths ({behavioralOrientation}).
+                Focus course inquiries on hands-on project studios and leadership tracks that activate your {archetypeName} profile strengths.
               </p>
             </div>
           </section>

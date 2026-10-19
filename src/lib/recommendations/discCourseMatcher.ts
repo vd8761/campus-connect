@@ -779,7 +779,7 @@ OriginBI Archetype: ${traitMeta.name} (${traitMeta.trait} • Code: ${blendedCod
 Top Matched University Courses: ${top3UniSummary}
 
 Return JSON with exact keys:
-"executiveSummary": (2 crisp sentences explaining why their specific ${blendedCode} trait blend naturally succeeds in these programs)
+"executiveSummary": (2 crisp sentences providing an inspiring academic brief about this student's natural learning talents, creative/analytical mindset, and career potential. Do NOT mention trait codes like ID, SC, or terms like Dominance, Influence, Steadiness, Conscientiousness, or DISC scores.)
 "strengths": (array of 3 short bullet points of cognitive & behavioral assets)
 "careerTrajectories": (array of 3 target industry roles/disciplines)`,
             },

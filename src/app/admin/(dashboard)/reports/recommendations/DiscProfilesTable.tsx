@@ -667,11 +667,11 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
                               href={`/reports/disc-fitment/${participant.id}`}
                               target="_blank"
                               onClick={(e) => e.stopPropagation()}
-                              className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white border border-emerald-200/80 font-bold text-xs inline-flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
-                              title="View official 1-Page University Match Report"
+                              className="w-7 h-7 rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200/80 transition-all cursor-pointer shadow-2xs inline-flex items-center justify-center shrink-0"
+                              title="Download / View 1-Page Pathway Report (PDF)"
+                              aria-label="Download 1-Page Pathway Report"
                             >
-                              <FileText size={12} />
-                              <span className="hidden sm:inline">1-Page Report</span>
+                              <Download size={14} />
                             </Link>
                           )}
                           <button
