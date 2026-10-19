@@ -91,11 +91,12 @@ function UniversityLoginForm() {
           <Button 
             type="submit" 
             variant="gradient" 
-            className="w-full py-6 text-base rounded-xl flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all"
+            className="w-full py-6 text-base rounded-xl inline-flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all whitespace-nowrap"
             isLoading={isLoading}
             loadingText="Authenticating..."
           >
-            Secure Login <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <span>Secure Login</span>
+            <ArrowRight size={18} className="shrink-0 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </form>

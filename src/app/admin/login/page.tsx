@@ -90,9 +90,10 @@ export default async function AdminLogin(props: { searchParams: Promise<{ error?
             <SubmitButton 
               variant="gradient" 
               loadingText="Authenticating..." 
-              className="w-full py-6 text-base rounded-xl flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all"
+              className="w-full py-6 text-base rounded-xl inline-flex items-center justify-center gap-2 group shadow-md hover:shadow-lg transition-all whitespace-nowrap"
             >
-              Secure Login <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <span>Secure Login</span>
+              <ArrowRight size={18} className="shrink-0 group-hover:translate-x-1 transition-transform" />
             </SubmitButton>
           </div>
         </ValidatedForm>

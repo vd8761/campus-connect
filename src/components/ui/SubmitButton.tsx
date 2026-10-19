@@ -30,14 +30,14 @@ export function SubmitButton({
       {...props}
     >
       {pending ? (
-        <span className="flex items-center justify-center gap-2">
+        <span className="inline-flex items-center justify-center gap-2 whitespace-nowrap">
           <Loader2 size={16} className="animate-spin shrink-0" />
           <span>{loadingText || 'Please wait...'}</span>
         </span>
       ) : (
-        <span className="flex items-center justify-center gap-2">
+        <span className="inline-flex items-center justify-center gap-2 whitespace-nowrap">
           {Icon && <Icon size={16} className="shrink-0" />}
-          <span>{children}</span>
+          {children}
         </span>
       )}
     </Button>

@@ -320,3 +320,13 @@ model BoothVisit {
 
   @@unique([eventId, universityId, participantId])
 }
+
+model UploadedFile {
+  id        String   @id @default(uuid())
+  filename  String
+  mimeType  String
+  data      String   @db.Text
+  size      Int
+  createdAt DateTime @default(now())
+}
+

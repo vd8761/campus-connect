@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 import { cookies } from 'next/headers';
 import { verifyAdminSessionToken } from '@/lib/session';
+import prisma from '@/lib/prisma';
+import { randomUUID } from 'crypto';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8 MB
 
 export async function POST(request: Request) {
   try {
@@ -32,9 +32,10 @@ export async function POST(request: Request) {
     }
 
     // 2. Validate file type
-    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+    const mimeType = (file.type || 'image/jpeg').toLowerCase();
+    if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, WEBP, and GIF images are allowed.' },
+        { error: `Invalid file type (${file.type}). Only JPEG, PNG, WEBP, and GIF images are allowed.` },
         { status: 400 }
       );
     }
@@ -42,36 +43,51 @@ export async function POST(request: Request) {
     // 3. Validate file size
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: 'File size exceeds maximum allowed limit (5MB).' },
+        { error: 'File size exceeds maximum allowed limit (8MB).' },
         { status: 400 }
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    // Safe alphanumeric filename
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64Data = buffer.toString('base64');
+    const fileId = randomUUID();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const filename = `${Date.now()}_${safeName}`;
-    
-    // Ensure the uploads directory exists
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
+
+    // Store in PostgreSQL database (zero filesystem dependency, 100% compatible with Vercel serverless)
     try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if directory already exists
+      if ((prisma as any).uploadedFile) {
+        await (prisma as any).uploadedFile.create({
+          data: {
+            id: fileId,
+            filename: safeName,
+            mimeType,
+            data: base64Data,
+            size: file.size,
+          },
+        });
+      } else {
+        throw new Error('Prisma uploadedFile model not yet on client instance');
+      }
+    } catch {
+      await prisma.$executeRawUnsafe(
+        'INSERT INTO "UploadedFile" ("id", "filename", "mimeType", "data", "size", "createdAt") VALUES ($1, $2, $3, $4, $5, NOW())',
+        fileId,
+        safeName,
+        mimeType,
+        base64Data,
+        file.size
+      );
     }
 
-    const filepath = join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-
-    const fileUrl = `/uploads/${filename}`;
+    const fileUrl = `/api/files/${fileId}`;
 
     return NextResponse.json({ url: fileUrl });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload Error:', error);
     return NextResponse.json(
-      { error: 'Upload failed.' },
+      { error: error?.message || 'Upload failed.' },
       { status: 500 }
     );
   }
 }
-
