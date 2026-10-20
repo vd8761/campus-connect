@@ -67,7 +67,7 @@ export function Footer() {
               <li className="flex items-start gap-2.5 pt-1">
                 <MapPin className="w-4 h-4 text-brand-turquoise shrink-0 mt-0.5" />
                 <span className="text-xs text-gray-300 leading-relaxed">
-                  Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy, Chennai, Tamil Nadu 600032
+                  21-B, 5th Cross St, Thiru Vi Ka Industrial Estate, Indira Nagar, Ramapuram, Chennai, St.Thomas Mount, Tamil Nadu 600032
                 </span>
               </li>
             </ul>

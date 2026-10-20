@@ -101,7 +101,7 @@ const organizationJsonLd = {
   email: 'interact@atom-infinity.com',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy',
+    streetAddress: '21-B, 5th Cross St, Thiru Vi Ka Industrial Estate, Indira Nagar, Ramapuram, St.Thomas Mount',
     addressLocality: 'Chennai',
     addressRegion: 'Tamil Nadu',
     postalCode: '600032',

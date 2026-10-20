@@ -212,9 +212,8 @@ export const sendRegistrationEmail = async ({
             <td style="vertical-align: top; width: 50%; padding-right: 14px;">
               <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Office Address:</p>
               <p style="margin: 0; font-size: 11px; color: #FAF7FC; line-height: 1.55; font-family: 'Inter', sans-serif;">
-                Tamarai Tech Park (Level 5),<br>
-                S.P.Plot No.16-19 & 20-A,<br>
-                Thiru Vi Ka Industrial Estate, Guindy,<br>
+                21-B, 5th Cross St, Thiru Vi Ka Industrial Estate,<br>
+                Indira Nagar, Ramapuram, St.Thomas Mount,<br>
                 Chennai, Tamil Nadu 600032
               </p>
             </td>
@@ -509,9 +508,8 @@ export const sendEnquiryNotificationEmail = async (payload: EnquiryNotificationP
             <td style="vertical-align: top; width: 50%; padding-right: 14px;">
               <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Office Address:</p>
               <p style="margin: 0; font-size: 11px; color: #FAF7FC; line-height: 1.55; font-family: 'Inter', sans-serif;">
-                Tamarai Tech Park (Level 5),<br>
-                S.P.Plot No.16-19 & 20-A,<br>
-                Thiru Vi Ka Industrial Estate, Guindy,<br>
+                21-B, 5th Cross St, Thiru Vi Ka Industrial Estate,<br>
+                Indira Nagar, Ramapuram, St.Thomas Mount,<br>
                 Chennai, Tamil Nadu 600032
               </p>
             </td>
@@ -810,9 +808,8 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
             <td style="vertical-align: top; width: 50%; padding-right: 14px;">
               <p style="margin: 0 0 6px 0; font-weight: 800; color: #D8C3E5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Plus Jakarta Sans', sans-serif;">Office Address:</p>
               <p style="margin: 0; font-size: 11px; color: #FAF7FC; line-height: 1.55; font-family: 'Inter', sans-serif;">
-                Tamarai Tech Park (Level 5),<br>
-                S.P.Plot No.16-19 & 20-A,<br>
-                Thiru Vi Ka Industrial Estate, Guindy,<br>
+                21-B, 5th Cross St, Thiru Vi Ka Industrial Estate,<br>
+                Indira Nagar, Ramapuram, St.Thomas Mount,<br>
                 Chennai, Tamil Nadu 600032
               </p>
             </td>

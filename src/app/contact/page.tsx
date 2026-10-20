@@ -77,9 +77,8 @@ export default function ContactPage() {
                     <div>
                       <h4 className="font-semibold text-base mb-1">Office Address</h4>
                       <p className="text-gray-300 text-xs leading-relaxed">
-                        Tamarai Tech Park (Level 5),<br />
-                        S.P.Plot No.16-19 & 20-A,<br />
-                        Thiru Vi Ka Industrial Estate, Guindy,<br />
+                        21-B, 5th Cross St, Thiru Vi Ka Industrial Estate,<br />
+                        Indira Nagar, Ramapuram, St.Thomas Mount,<br />
                         Chennai, Tamil Nadu 600032
                       </p>
                     </div>

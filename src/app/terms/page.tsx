@@ -65,7 +65,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl font-heading font-bold text-brand-navy mb-3">6. Official Contact</h2>
               <p>
-                For questions regarding these terms, contact us at <strong>interact@atom-infinity.com</strong>, via WhatsApp at <strong>+91 80561 34455</strong>, or visit our office at <strong>Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy, Chennai, Tamil Nadu 600032</strong>.
+                For questions regarding these terms, contact us at <strong>interact@atom-infinity.com</strong>, via WhatsApp at <strong>+91 80561 34455</strong>, or visit our office at <strong>21-B, 5th Cross St, Thiru Vi Ka Industrial Estate, Indira Nagar, Ramapuram, Chennai, St.Thomas Mount, Tamil Nadu 600032</strong>.
               </p>
             </div>
           </div>

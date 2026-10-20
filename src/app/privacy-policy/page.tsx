@@ -64,7 +64,7 @@ export default function PrivacyPolicyPage() {
                 If you have questions regarding your data, updates, or consent revocation, please contact our data coordinator directly:
               </p>
               <div className="mt-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-brand-navy space-y-1.5">
-                <p><strong>Office Address:</strong> Tamarai Tech Park (Level 5), S.P.Plot No.16-19 & 20-A, Thiru Vi Ka Industrial Estate, Guindy, Chennai, Tamil Nadu 600032</p>
+                <p><strong>Office Address:</strong> 21-B, 5th Cross St, Thiru Vi Ka Industrial Estate, Indira Nagar, Ramapuram, Chennai, St.Thomas Mount, Tamil Nadu 600032</p>
                 <p><strong>Email:</strong> interact@atom-infinity.com</p>
                 <p><strong>WhatsApp Support:</strong> +91 80561 34455</p>
                 <p><strong>Joint Collaboration:</strong> Atom Infinity & OriginBI Mindworks</p>
