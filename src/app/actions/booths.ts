@@ -392,6 +392,7 @@ export async function saveBoothVisits({
     // Revalidate paths that display booth visits
     revalidatePath('/admin/reports/recommendations');
     revalidatePath('/booths');
+    revalidatePath('/booths/[slug]', 'page');
     revalidatePath(`/events`);
 
     return {

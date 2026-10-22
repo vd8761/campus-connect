@@ -329,6 +329,13 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   Meet directly with admissions officers and explore undergraduate & postgraduate courses at these verified booths.
                 </p>
               </div>
+
+              <Link href={`/booths/${event.id}`} className="shrink-0">
+                <Button variant="outline" className="rounded-xl border-brand-purple/30 text-brand-purple hover:bg-brand-purple hover:text-white flex items-center gap-2">
+                  <Building2 size={15} />
+                  <span>Plan Booth Visits →</span>
+                </Button>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

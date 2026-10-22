@@ -67,6 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         status: { not: 'DRAFT' }
       },
       select: {
+        id: true,
         slug: true,
         updatedAt: true,
       }
@@ -81,6 +82,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       {
         url: `${baseUrl}/events/${event.slug}/register`,
+        lastModified: event.updatedAt || new Date(),
+        changeFrequency: 'daily',
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/booths/${event.id}`,
         lastModified: event.updatedAt || new Date(),
         changeFrequency: 'daily',
         priority: 0.8,

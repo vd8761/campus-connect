@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { Calendar, Plus, MapPin, Users, ExternalLink } from 'lucide-react';
+import { Calendar, Plus, MapPin, Users, ExternalLink, QrCode } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { getEventStatus } from '@/lib/event-utils';
@@ -151,6 +151,18 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
                     >
                       <span>Live Page</span>
                       <ExternalLink size={12} className="text-brand-purple" />
+                    </Button>
+                  </Link>
+
+                  <Link href={`/booths/${event.id}`} target="_blank">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="rounded-xl border-purple-200 text-brand-purple hover:bg-purple-50 h-9 text-xs font-semibold gap-1.5"
+                      title="Direct Edition Booths Page"
+                    >
+                      <QrCode size={12} className="text-brand-purple" />
+                      <span>Booths</span>
                     </Button>
                   </Link>
 

@@ -87,12 +87,14 @@ interface BoothVisitClientProps {
   initialIdentifier?: string;
   initialEventId?: string;
   availableEvents?: EventOption[];
+  isEditionLocked?: boolean;
 }
 
 export function BoothVisitClient({
   initialIdentifier = '',
   initialEventId = '',
   availableEvents = [],
+  isEditionLocked = false,
 }: BoothVisitClientProps) {
   // Step 1: Event Searchable Autocomplete state
   const initialEvent = useMemo(() => {
@@ -508,7 +510,7 @@ export function BoothVisitClient({
                   </span>
                   <span>Select University Fair Edition</span>
                 </label>
-                {selectedEvent && (
+                {selectedEvent && !isEditionLocked && (
                   <button
                     type="button"
                     onClick={() => {
@@ -522,16 +524,28 @@ export function BoothVisitClient({
                     Change Edition
                   </button>
                 )}
+                {selectedEvent && isEditionLocked && (
+                  <Link
+                    href="/booths"
+                    className="text-[11px] font-bold text-brand-purple hover:underline cursor-pointer"
+                  >
+                    Switch Edition →
+                  </Link>
+                )}
               </div>
 
               {/* Chosen Event Card (when selected) */}
               {selectedEvent && !isEventDropdownOpen ? (
                 <div
                   onClick={() => {
-                    setIsEventDropdownOpen(true);
-                    setEventSearchQuery('');
+                    if (!isEditionLocked) {
+                      setIsEventDropdownOpen(true);
+                      setEventSearchQuery('');
+                    }
                   }}
-                  className="group p-4 rounded-2xl border-2 border-brand-purple/30 bg-purple-50/30 hover:bg-purple-50/60 hover:border-brand-purple transition-all cursor-pointer flex items-center justify-between gap-3 shadow-2xs"
+                  className={`p-4 rounded-2xl border-2 border-brand-purple/30 bg-purple-50/30 transition-all flex items-center justify-between gap-3 shadow-2xs ${
+                    isEditionLocked ? '' : 'group hover:bg-purple-50/60 hover:border-brand-purple cursor-pointer'
+                  }`}
                 >
                   <div className="flex items-start gap-3.5 min-w-0">
                     <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-purple to-purple-800 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
@@ -565,10 +579,16 @@ export function BoothVisitClient({
                     </div>
                   </div>
 
-                  <div className="px-3 py-1.5 rounded-xl border border-brand-purple/20 bg-white text-xs font-bold text-brand-purple flex items-center gap-1 shrink-0 group-hover:bg-brand-purple group-hover:text-white transition-all shadow-2xs">
-                    <span>Change</span>
-                    <ChevronDown size={13} />
-                  </div>
+                  {isEditionLocked ? (
+                    <span className="px-3 py-1.5 rounded-xl bg-white border border-brand-purple/20 text-xs font-bold text-brand-purple shrink-0 shadow-2xs">
+                      {selectedEvent.city} Edition
+                    </span>
+                  ) : (
+                    <div className="px-3 py-1.5 rounded-xl border border-brand-purple/20 bg-white text-xs font-bold text-brand-purple flex items-center gap-1 shrink-0 group-hover:bg-brand-purple group-hover:text-white transition-all shadow-2xs">
+                      <span>Change</span>
+                      <ChevronDown size={13} />
+                    </div>
+                  )}
                 </div>
               ) : (
                 /* Search Input & Dropdown */
