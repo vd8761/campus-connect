@@ -77,11 +77,12 @@ export default async function Home() {
   // Dynamically find all events that are currently accepting registrations
   const openEvents = rawEvents.filter(e => {
     const s = getEventStatus(
-      new Date(e.startDate), 
-      new Date(e.endDate || e.startDate), 
+      e.startDate ? new Date(e.startDate) : null, 
+      e.endDate ? new Date(e.endDate) : (e.startDate ? new Date(e.startDate) : null), 
       e.registrationOpen ? new Date(e.registrationOpen) : null, 
       e.registrationClose ? new Date(e.registrationClose) : null, 
-      e.status === 'DRAFT'
+      e.status === 'DRAFT',
+      e.isDateTba
     );
     return ['OPEN', 'LIMITED_SEATS'].includes(s);
   });
@@ -92,26 +93,32 @@ export default async function Home() {
   // Featured Event: The first open event, or default to theniEvent
   const featuredEvent = openEvents[0] || theniEvent;
   const featuredEventStatus = getEventStatus(
-    new Date(featuredEvent.startDate),
-    new Date(featuredEvent.endDate || featuredEvent.startDate),
+    featuredEvent.startDate ? new Date(featuredEvent.startDate) : null,
+    featuredEvent.endDate ? new Date(featuredEvent.endDate) : (featuredEvent.startDate ? new Date(featuredEvent.startDate) : null),
     featuredEvent.registrationOpen ? new Date(featuredEvent.registrationOpen) : null,
     featuredEvent.registrationClose ? new Date(featuredEvent.registrationClose) : null,
-    featuredEvent.status === 'DRAFT'
+    featuredEvent.status === 'DRAFT',
+    featuredEvent.isDateTba
   );
   const isFeaturedOpen = ['OPEN', 'LIMITED_SEATS'].includes(featuredEventStatus);
 
-  const featuredDateFormatted = new Date(featuredEvent.startDate).toLocaleDateString('en-US', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  const isFeaturedDateTba = featuredEvent.isDateTba || !featuredEvent.startDate;
+  const featuredDateFormatted = isFeaturedDateTba
+    ? 'Date To Be Announced'
+    : new Date(featuredEvent.startDate).toLocaleDateString('en-US', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
 
-  const featuredTimeFormatted = featuredEvent.startTime && featuredEvent.endTime
-    ? `${to12HourTime(featuredEvent.startTime)} - ${to12HourTime(featuredEvent.endTime)}`
-    : '1:00 PM - 4:00 PM';
+  const featuredTimeFormatted = isFeaturedDateTba || (!featuredEvent.startTime && !featuredEvent.endTime)
+    ? 'Timings To Be Announced'
+    : `${to12HourTime(featuredEvent.startTime) || '1:00 PM'} - ${to12HourTime(featuredEvent.endTime) || '4:00 PM'}`;
 
-  const featuredVenue = featuredEvent.venue || `${featuredEvent.city} Host School Partner`;
+  const featuredVenue = featuredEvent.isVenueTba || !featuredEvent.venue 
+    ? `${featuredEvent.city} Host School Partner (Venue TBA)` 
+    : featuredEvent.venue;
 
   // Other database events (excluding the current featured one)
   const otherDbEvents = rawEvents.filter(e => e.id !== featuredEvent.id);
@@ -420,19 +427,23 @@ export default async function Home() {
               {/* Other Database Editions */}
               {otherDbEvents.map((dbEvent) => {
                 const s = getEventStatus(
-                  new Date(dbEvent.startDate),
-                  new Date(dbEvent.endDate || dbEvent.startDate),
+                  dbEvent.startDate ? new Date(dbEvent.startDate) : null,
+                  dbEvent.endDate ? new Date(dbEvent.endDate) : (dbEvent.startDate ? new Date(dbEvent.startDate) : null),
                   dbEvent.registrationOpen ? new Date(dbEvent.registrationOpen) : null,
                   dbEvent.registrationClose ? new Date(dbEvent.registrationClose) : null,
-                  dbEvent.status === 'DRAFT'
+                  dbEvent.status === 'DRAFT',
+                  dbEvent.isDateTba
                 );
                 const isOpen = ['OPEN', 'LIMITED_SEATS'].includes(s);
                 const isOpeningSoon = s === 'OPENING_SOON';
-                const formattedDate = new Date(dbEvent.startDate).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric'
-                });
+                const isDateTba = dbEvent.isDateTba || !dbEvent.startDate;
+                const formattedDate = isDateTba
+                  ? 'Date TBA'
+                  : new Date(dbEvent.startDate).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    });
 
                 return (
                   <div key={dbEvent.id} className="bg-white rounded-2xl p-5 border border-brand-border/80 shadow-xs flex flex-col justify-between hover:border-brand-purple/40 hover:shadow-md transition-all">
@@ -450,7 +461,7 @@ export default async function Home() {
                         {dbEvent.city} Edition
                       </h5>
                       <p className="text-xs text-brand-muted mb-3 truncate">
-                        {dbEvent.venue || 'Host School Partner'}
+                        {dbEvent.isVenueTba || !dbEvent.venue ? 'Venue To Be Announced' : dbEvent.venue}
                       </p>
                     </div>
                     <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-brand-purple font-medium">

@@ -24,13 +24,20 @@ export async function createEventAction(formData: FormData) {
   const whatToExpect = formData.get('whatToExpect') as string;
   const bannerUrl = formData.get('bannerUrl') as string;
 
+  const isDateTba = formData.get('isDateTba') === 'on' || formData.get('isDateTba') === 'true';
+  const isVenueTba = formData.get('isVenueTba') === 'on' || formData.get('isVenueTba') === 'true';
+
   const universityIds = formData.getAll('universityIds') as string[];
 
   const parsedStartDate = parseInputDateToUtcNoon(startDateStr);
   const parsedEndDate = parseInputDateToUtcNoon(endDateStr) || parsedStartDate;
 
-  if (!title || !slug || !type || !city || !parsedStartDate || !parsedEndDate) {
+  if (!title || !slug || !type || !city) {
     throw new Error('Missing required fields');
+  }
+
+  if (!isDateTba && (!parsedStartDate || !parsedEndDate)) {
+    throw new Error('Event dates are required unless marked as TBA');
   }
 
   // The dynamic status calculation treats "DRAFT" explicitly as DRAFT.
@@ -42,9 +49,11 @@ export async function createEventAction(formData: FormData) {
       slug,
       type,
       city,
-      venue: venue || null,
-      startDate: parsedStartDate,
-      endDate: parsedEndDate,
+      venue: isVenueTba ? (venue || 'To Be Announced') : (venue || null),
+      isDateTba,
+      isVenueTba,
+      startDate: parsedStartDate || null,
+      endDate: parsedEndDate || null,
       startTime: startTime ? to12HourTime(startTime) : null,
       endTime: endTime ? to12HourTime(endTime) : null,
       shortDescription: shortDescription || null,

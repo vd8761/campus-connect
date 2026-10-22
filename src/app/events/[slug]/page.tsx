@@ -101,7 +101,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     event.endDate,
     event.registrationOpen,
     event.registrationClose,
-    event.status === 'DRAFT'
+    event.status === 'DRAFT',
+    event.isDateTba
   );
   const displayStatus = event.status === 'LIMITED_SEATS' ? 'LIMITED_SEATS' : dynamicStatus;
   const isRegistrationOpen = ['OPEN', 'LIMITED_SEATS'].includes(displayStatus);
@@ -226,7 +227,11 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   <Calendar className="text-brand-turquoise mt-1 shrink-0" size={20} />
                   <div>
                     <div className="text-sm text-white/70">Date</div>
-                    <div className="font-medium">{new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                    <div className="font-medium">
+                      {event.isDateTba || !event.startDate
+                        ? 'Date To Be Announced (TBA)'
+                        : new Date(event.startDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                    </div>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -234,7 +239,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   <div>
                     <div className="text-sm text-white/70">Time</div>
                     <div className="font-medium">
-                      {(to12HourTime(event.startTime) || '10:00 AM')?.replace(/[—–]/g, '-')} - {(to12HourTime(event.endTime) || '5:00 PM')?.replace(/[—–]/g, '-')}
+                      {event.isDateTba || (!event.startTime && !event.endTime)
+                        ? 'Timings To Be Announced'
+                        : `${(to12HourTime(event.startTime) || '10:00 AM')?.replace(/[—–]/g, '-')} - ${(to12HourTime(event.endTime) || '5:00 PM')?.replace(/[—–]/g, '-')}`}
                     </div>
                   </div>
                 </li>
@@ -242,8 +249,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   <MapPin className="text-brand-turquoise mt-1 shrink-0" size={20} />
                   <div>
                     <div className="text-sm text-white/70">Venue</div>
-                    <div className="font-medium">{event.venue}</div>
-                    {event.city && !event.venue?.toLowerCase().includes(event.city.toLowerCase()) && (
+                    <div className="font-medium">
+                      {event.isVenueTba || !event.venue ? 'Venue To Be Announced (TBA)' : event.venue}
+                    </div>
+                    {event.city && (!event.venue || !event.venue?.toLowerCase().includes(event.city.toLowerCase())) && (
                       <div className="text-sm text-white/80">{event.city}</div>
                     )}
                   </div>

@@ -39,11 +39,12 @@ export default async function UniversalRegisterPage() {
       displayStatus = 'OPEN';
     } else {
       displayStatus = getEventStatus(
-        new Date(e.startDate),
-        new Date(e.endDate || e.startDate),
+        e.startDate ? new Date(e.startDate) : null,
+        e.endDate ? new Date(e.endDate) : (e.startDate ? new Date(e.startDate) : null),
         e.registrationOpen ? new Date(e.registrationOpen) : null,
         e.registrationClose ? new Date(e.registrationClose) : null,
-        e.status === 'DRAFT'
+        e.status === 'DRAFT',
+        e.isDateTba
       );
     }
     return ['OPEN', 'LIMITED_SEATS'].includes(displayStatus);
@@ -107,13 +108,15 @@ export default async function UniversalRegisterPage() {
         {/* Grid of Open Editions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {openEvents.map((event) => {
-            const dateObj = new Date(event.startDate);
-            const dateFormatted = dateObj.toLocaleDateString('en-US', {
-              weekday: 'short',
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric'
-            });
+            const isDateTba = event.isDateTba || !event.startDate;
+            const dateFormatted = isDateTba
+              ? 'Date To Be Announced (TBA)'
+              : new Date(event.startDate).toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                });
 
             return (
               <div
@@ -142,15 +145,17 @@ export default async function UniversalRegisterPage() {
                     {(event.startTime || event.endTime) && (
                       <div className="flex items-center gap-2">
                         <Clock size={15} className="text-brand-purple shrink-0" />
-                        <span>{to12HourTime(event.startTime)} - {to12HourTime(event.endTime)}</span>
+                        <span>
+                          {isDateTba 
+                            ? 'Timings To Be Announced' 
+                            : `${to12HourTime(event.startTime)} - ${to12HourTime(event.endTime)}`}
+                        </span>
                       </div>
                     )}
-                    {event.venue && (
-                      <div className="flex items-start gap-2">
-                        <MapPin size={15} className="text-brand-purple shrink-0 mt-0.5" />
-                        <span>{event.venue}</span>
-                      </div>
-                    )}
+                    <div className="flex items-start gap-2">
+                      <MapPin size={15} className="text-brand-purple shrink-0 mt-0.5" />
+                      <span>{event.isVenueTba || !event.venue ? 'Venue To Be Announced (TBA)' : event.venue}</span>
+                    </div>
                   </div>
                 </div>
 

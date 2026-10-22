@@ -30,10 +30,13 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
     event.endDate,
     event.registrationOpen,
     event.registrationClose,
-    event.status === 'DRAFT'
+    event.status === 'DRAFT',
+    event.isDateTba
   );
 
   if (!['OPEN', 'LIMITED_SEATS'].includes(status)) {
+    const isOpeningSoon = status === 'OPENING_SOON';
+
     return (
       <div className="bg-brand-light min-h-screen pb-20">
         <div className="bg-white border-b border-brand-border py-4">
@@ -55,24 +58,28 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
             </div>
 
             <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider mb-3">
-              Registration Concluded
+              {isOpeningSoon ? 'Registration Opening Soon' : 'Registration Concluded'}
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-brand-navy mb-3">
-              Registration is Closed for this Edition
+              {isOpeningSoon 
+                ? 'Registrations Will Open Soon' 
+                : 'Registration is Closed for this Edition'}
             </h1>
 
             <p className="text-sm sm:text-base text-brand-muted leading-relaxed mb-6 max-w-lg mx-auto">
-              Online registrations for <strong className="text-brand-navy">{event.title}</strong> have concluded. Seating capacity has been reached or the event registration deadline has passed.
+              {isOpeningSoon 
+                ? <>Online registration for <strong className="text-brand-navy">{event.title}</strong> is opening soon. Event schedule and venue details are currently being finalized.</>
+                : <>Online registrations for <strong className="text-brand-navy">{event.title}</strong> have concluded. Seating capacity has been reached or the event registration deadline has passed.</>}
             </p>
 
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left mb-8 space-y-2 text-xs sm:text-sm text-slate-700">
               <div className="flex items-center gap-2 text-brand-navy font-semibold">
                 <MapPin size={16} className="text-brand-purple shrink-0" />
-                <span>{event.venue || event.city}</span>
+                <span>{event.isVenueTba || !event.venue ? `${event.city} • Venue To Be Announced` : event.venue}</span>
               </div>
               <p className="text-slate-500 text-xs pl-6">
-                You can still browse the participating university booths, explore other upcoming editions across Tamil Nadu, or pre-register for upcoming city events.
+                You can still browse the participating university booths, explore other upcoming editions across Tamil Nadu, or check back once dates are confirmed.
               </p>
             </div>
 

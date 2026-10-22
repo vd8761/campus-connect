@@ -26,8 +26,10 @@ export interface EventItem {
   city: string;
   state: string;
   venue?: string | null;
-  startDate: string | Date;
-  endDate: string | Date;
+  isDateTba?: boolean;
+  isVenueTba?: boolean;
+  startDate?: string | Date | null;
+  endDate?: string | Date | null;
   startTime?: string | null;
   endTime?: string | null;
   status: string;
@@ -222,10 +224,11 @@ function EventItemCard({ event, index = 0 }: { event: EventItem; index?: number 
   const isOpeningSoon = event.displayStatus === 'OPENING_SOON';
   const isCompleted = event.displayStatus === 'COMPLETED';
 
-  const dateObj = new Date(event.startDate);
-  const monthName = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
-  const dayNum = dateObj.toLocaleDateString('en-US', { day: '2-digit' });
-  const yearNum = dateObj.getFullYear();
+  const isDateTba = event.isDateTba || !event.startDate;
+  const dateObj = event.startDate ? new Date(event.startDate) : null;
+  const monthName = dateObj ? dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : '';
+  const dayNum = dateObj ? dateObj.toLocaleDateString('en-US', { day: '2-digit' }) : '';
+  const yearNum = dateObj ? dateObj.getFullYear() : '';
 
   return (
     <div className={`bg-white rounded-3xl border border-brand-border/80 overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:border-brand-purple/40 hover:-translate-y-1 transition-all duration-300 group ${isCompleted ? 'opacity-85' : ''}`}>
@@ -241,17 +244,31 @@ function EventItemCard({ event, index = 0 }: { event: EventItem; index?: number 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
         {/* Date Badge (Top-Left) */}
-        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur rounded-2xl p-2.5 shadow-lg text-center min-w-[54px] border border-white/40">
-          <span className="block text-[10px] font-extrabold uppercase tracking-wider text-brand-purple leading-tight">
-            {monthName}
-          </span>
-          <span className="block text-2xl font-heading font-black text-brand-navy leading-none my-0.5">
-            {dayNum}
-          </span>
-          <span className="block text-[9px] font-semibold text-brand-muted">
-            {yearNum}
-          </span>
-        </div>
+        {isDateTba ? (
+          <div className="absolute top-4 left-4 bg-white/95 backdrop-blur rounded-2xl px-2.5 py-2 shadow-lg text-center min-w-[54px] border border-white/40 flex flex-col items-center justify-center">
+            <span className="block text-[9px] font-extrabold uppercase tracking-wider text-brand-purple leading-tight">
+              DATE
+            </span>
+            <span className="block text-base font-heading font-black text-brand-navy leading-none my-1">
+              TBA
+            </span>
+            <span className="block text-[8px] font-semibold text-brand-muted leading-tight">
+              Announcing
+            </span>
+          </div>
+        ) : (
+          <div className="absolute top-4 left-4 bg-white/95 backdrop-blur rounded-2xl p-2.5 shadow-lg text-center min-w-[54px] border border-white/40">
+            <span className="block text-[10px] font-extrabold uppercase tracking-wider text-brand-purple leading-tight">
+              {monthName}
+            </span>
+            <span className="block text-2xl font-heading font-black text-brand-navy leading-none my-0.5">
+              {dayNum}
+            </span>
+            <span className="block text-[9px] font-semibold text-brand-muted">
+              {yearNum}
+            </span>
+          </div>
+        )}
 
         {/* Status Pill (Top-Right) */}
         <div className="absolute top-4 right-4 z-10">
@@ -300,11 +317,17 @@ function EventItemCard({ event, index = 0 }: { event: EventItem; index?: number 
           <div className="space-y-2 py-3 border-y border-brand-border/60 text-xs text-brand-muted mb-5">
             <div className="flex items-center gap-2">
               <Clock size={14} className="text-brand-purple shrink-0" />
-              <span>{to12HourTime(event.startTime) || '09:00 AM'} - {to12HourTime(event.endTime) || '05:00 PM'}</span>
+              <span>
+                {isDateTba || (!event.startTime && !event.endTime)
+                  ? 'Timing: To be announced'
+                  : `${to12HourTime(event.startTime) || '09:00 AM'} - ${to12HourTime(event.endTime) || '05:00 PM'}`}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin size={14} className="text-brand-purple shrink-0" />
-              <span className="line-clamp-1">{event.venue || event.city}</span>
+              <span className="line-clamp-1">
+                {event.isVenueTba || !event.venue ? `${event.city} • Venue To Be Announced` : event.venue}
+              </span>
             </div>
           </div>
         </div>

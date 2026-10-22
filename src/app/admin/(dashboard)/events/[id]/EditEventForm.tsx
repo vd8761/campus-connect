@@ -17,6 +17,8 @@ import { to24HourTime, formatDateToInput, parseInitialDate } from '@/lib/dateUti
 
 export function EditEventForm({ event }: { event: any }) {
   const [slug, setSlug] = useState(event.slug);
+  const [isDateTba, setIsDateTba] = useState<boolean>(!!event.isDateTba);
+  const [isVenueTba, setIsVenueTba] = useState<boolean>(!!event.isVenueTba);
   const [startDate, setStartDate] = useState<Date | null>(parseInitialDate(event.startDate));
   const [endDate, setEndDate] = useState<Date | null>(parseInitialDate(event.endDate));
   const [regOpenDate, setRegOpenDate] = useState<Date | null>(parseInitialDate(event.registrationOpen));
@@ -121,13 +123,26 @@ export function EditEventForm({ event }: { event: any }) {
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-brand-navy mb-2">Venue</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-bold text-brand-navy">Venue</label>
+                <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-purple cursor-pointer select-none">
+                  <input 
+                    type="checkbox" 
+                    name="isVenueTba" 
+                    checked={isVenueTba} 
+                    onChange={(e) => setIsVenueTba(e.target.checked)} 
+                    className="rounded border-gray-300 text-brand-purple focus:ring-brand-purple/20 h-4 w-4"
+                  />
+                  <span>Venue to be announced (TBA)</span>
+                </label>
+              </div>
               <input 
                 type="text" 
                 name="venue" 
                 defaultValue={event.venue || ''}
-                placeholder="e.g. SRM Hotel, Trichy"
-                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400"
+                disabled={isVenueTba}
+                placeholder={isVenueTba ? "To Be Announced (TBA)" : "e.g. SRM Hotel, Trichy"}
+                className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all placeholder:text-gray-400 disabled:bg-gray-100 disabled:text-gray-500"
               />
             </div>
           </div>
@@ -135,14 +150,29 @@ export function EditEventForm({ event }: { event: any }) {
 
         {/* Schedule & Capacity Section */}
         <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-1.5 h-6 bg-[#3b82f6] rounded-full"></div>
-            <h2 className="text-xl font-bold text-brand-navy">Schedule & Capacity</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-6 bg-[#3b82f6] rounded-full"></div>
+              <h2 className="text-xl font-bold text-brand-navy">Schedule & Capacity</h2>
+            </div>
+            <label className="inline-flex items-center gap-2 text-xs font-semibold text-brand-purple bg-brand-light px-3 py-1.5 rounded-lg cursor-pointer border border-brand-border/60 select-none">
+              <input 
+                type="checkbox" 
+                name="isDateTba" 
+                checked={isDateTba} 
+                onChange={(e) => setIsDateTba(e.target.checked)} 
+                className="rounded border-gray-300 text-brand-purple focus:ring-brand-purple/20 h-4 w-4"
+              />
+              <span>Date to be announced (TBA)</span>
+            </label>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="form-field">
-              <label className="block text-sm font-bold text-brand-navy mb-2">Event Start Date <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-bold text-brand-navy mb-2">
+                Event Start Date {!isDateTba && <span className="text-red-500">*</span>}
+                {isDateTba && <span className="text-xs text-brand-muted font-normal ml-2">(Optional / Tentative)</span>}
+              </label>
               <div className="flex gap-2">
                 <div className="flex-1">
                   <input type="hidden" name="startDate" value={formatDateToInput(startDate)} />
@@ -150,8 +180,8 @@ export function EditEventForm({ event }: { event: any }) {
                     selected={startDate}
                     onChange={(date: Date | null) => setStartDate(date)}
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Select date"
-                    required
+                    placeholderText={isDateTba ? "TBA (Select tentative date or leave empty)" : "Select date"}
+                    required={!isDateTba}
                     className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                     wrapperClassName="w-full"
                   />
@@ -160,14 +190,18 @@ export function EditEventForm({ event }: { event: any }) {
                   type="time" 
                   name="startTime" 
                   defaultValue={to24HourTime(event.startTime)}
-                  className="w-full sm:w-auto flex-1 h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all" 
+                  disabled={isDateTba}
+                  className="w-full sm:w-auto flex-1 h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all disabled:bg-gray-100" 
                 />
               </div>
-              <InputError message="Start Date is required." />
+              {!isDateTba && <InputError message="Start Date is required." />}
             </div>
             
             <div className="form-field">
-              <label className="block text-sm font-bold text-brand-navy mb-2">Event End Date <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-bold text-brand-navy mb-2">
+                Event End Date {!isDateTba && <span className="text-red-500">*</span>}
+                {isDateTba && <span className="text-xs text-brand-muted font-normal ml-2">(Optional / Tentative)</span>}
+              </label>
               <div className="flex gap-2">
                 <div className="flex-1">
                   <input type="hidden" name="endDate" value={formatDateToInput(endDate)} />
@@ -175,8 +209,8 @@ export function EditEventForm({ event }: { event: any }) {
                     selected={endDate}
                     onChange={(date: Date | null) => setEndDate(date)}
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Select date"
-                    required
+                    placeholderText={isDateTba ? "TBA (Select tentative date or leave empty)" : "Select date"}
+                    required={!isDateTba}
                     className="w-full h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                     wrapperClassName="w-full"
                   />
@@ -185,10 +219,11 @@ export function EditEventForm({ event }: { event: any }) {
                   type="time" 
                   name="endTime" 
                   defaultValue={to24HourTime(event.endTime)}
-                  className="w-full sm:w-auto flex-1 h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all" 
+                  disabled={isDateTba}
+                  className="w-full sm:w-auto flex-1 h-11 px-4 rounded-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all disabled:bg-gray-100" 
                 />
               </div>
-              <InputError message="End Date is required." />
+              {!isDateTba && <InputError message="End Date is required." />}
             </div>
           </div>
 

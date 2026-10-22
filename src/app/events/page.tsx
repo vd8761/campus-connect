@@ -32,11 +32,12 @@ export default async function EventsPage() {
       displayStatus = 'OPEN';
     } else {
       const dynamicStatus = getEventStatus(
-        new Date(e.startDate),
-        new Date(e.endDate),
+        e.startDate ? new Date(e.startDate) : null,
+        e.endDate ? new Date(e.endDate) : null,
         e.registrationOpen ? new Date(e.registrationOpen) : null,
         e.registrationClose ? new Date(e.registrationClose) : null,
-        e.status === 'DRAFT'
+        e.status === 'DRAFT',
+        e.isDateTba
       );
       displayStatus = dynamicStatus as any;
     }
@@ -51,6 +52,8 @@ export default async function EventsPage() {
       city: e.city,
       state: e.state,
       venue: e.venue,
+      isDateTba: e.isDateTba,
+      isVenueTba: e.isVenueTba,
       startDate: e.startDate,
       endDate: e.endDate,
       startTime: e.startTime,

@@ -85,7 +85,8 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
               event.endDate, 
               event.registrationOpen, 
               event.registrationClose,
-              event.status === 'DRAFT'
+              event.status === 'DRAFT',
+              event.isDateTba
             );
 
             const isOpeningSoon = dynamicStatus === 'OPENING_SOON';
@@ -127,11 +128,11 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
                   <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 font-medium">
                     <div className="flex items-center gap-1.5">
                       <Calendar size={14} className="text-brand-purple shrink-0" />
-                      <span>{new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      <span>{event.isDateTba || !event.startDate ? 'Date TBA' : new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <MapPin size={14} className="text-brand-purple shrink-0" />
-                      <span>{event.city}</span>
+                      <span>{event.isVenueTba || !event.venue ? `${event.city} (Venue TBA)` : `${event.city} - ${event.venue}`}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Users size={14} className="text-brand-purple shrink-0" />

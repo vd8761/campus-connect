@@ -870,5 +870,347 @@ export const sendEnquiryAcknowledgementEmail = async (payload: EnquiryAcknowledg
   }
 };
 
+export const sendDailyRegistrationSummaryEmail = async (
+  summary: import('./daily-summary').DailySummaryData,
+  options?: {
+    to?: string;
+    cc?: string | string[];
+    bcc?: string | string[];
+  }
+) => {
+  const { baseUrl, colorLogoUrl, whiteLogoUrl, atomLogoUrl, originBiLogoUrl } = getEmailAssetUrls();
+  const currentYear = new Date().getFullYear();
 
+  const rawTo = options?.to || process.env.DAILY_SUMMARY_RECIPIENT_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ENQUIRY_NOTIFICATION_EMAIL || 'interact@atom-infinity.com';
+  
+  const parseList = (val?: string | string[]): string[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    return val.split(/[,;]+/).map(s => s.trim()).filter(Boolean);
+  };
 
+  const toList = parseList(rawTo);
+  const ccList = parseList(options?.cc || process.env.DAILY_SUMMARY_CC);
+  const bccList = parseList(options?.bcc || process.env.DAILY_SUMMARY_BCC);
+
+  // Subject line
+  const countTag = summary.totalYesterdayRegistrations > 0 
+    ? `+${summary.totalYesterdayRegistrations} New Registrations` 
+    : `0 Registrations Yesterday`;
+  const subject = `📊 Daily Summary: ${countTag} • Editions Digest (${summary.reportDateFormatted})`;
+
+  // Editions HTML rows
+  const editionsHtml = summary.editions.map(ed => {
+    const isTbaDate = ed.isDateTba || !ed.startDate;
+    const dateDisplay = isTbaDate 
+      ? 'Date TBA' 
+      : new Date(ed.startDate!).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+    const venueDisplay = ed.isVenueTba || !ed.venue 
+      ? `${ed.city} (Venue TBA)` 
+      : ed.venue;
+
+    const isOpen = ['OPEN', 'LIMITED_SEATS'].includes(ed.displayStatus);
+    const isOpeningSoon = ed.displayStatus === 'OPENING_SOON';
+
+    const statusBadge = isOpen
+      ? `<span style="background-color: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">● Open for Registration</span>`
+      : isOpeningSoon
+      ? `<span style="background-color: #FAF5FF; color: #7E22CE; border: 1px solid #E9D5FF; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">★ Opening Soon</span>`
+      : `<span style="background-color: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">Closed</span>`;
+
+    const recentListHtml = ed.yesterdayParticipants.length > 0 ? `
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #E8DCF0;">
+        <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif;">
+          Yesterday's Registrations Log (${ed.yesterdayParticipants.length}):
+        </p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 12px; font-family: 'Inter', sans-serif; background-color: #FAF7FC; border-radius: 8px;">
+          ${ed.yesterdayParticipants.slice(0, 8).map(p => `
+            <tr>
+              <td style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #22052C; font-weight: 600;">
+                ${p.fullName}
+              </td>
+              <td style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #701A94; font-weight: 600;">
+                ${p.category}
+              </td>
+              <td style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #6B5677; font-size: 11px;">
+                ${p.board ? `${p.board}` : ''}${p.schoolLevel ? ` • ${p.schoolLevel}` : ''}
+              </td>
+              <td align="right" style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #8E6E9C; font-size: 11px;">
+                ${p.timeFormatted}
+              </td>
+            </tr>
+          `).join('')}
+          ${ed.yesterdayParticipants.length > 8 ? `
+            <tr>
+              <td colspan="4" align="center" style="padding: 6px 10px; font-size: 11px; color: #701A94; font-weight: 700;">
+                + ${ed.yesterdayParticipants.length - 8} more registered yesterday
+              </td>
+            </tr>
+          ` : ''}
+        </table>
+      </div>
+    ` : `
+      <div style="margin-top: 10px; font-size: 11px; color: #8E6E9C; font-style: italic;">
+        No new registrations recorded yesterday for this edition.
+      </div>
+    `;
+
+    return `
+      <div style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(34, 5, 44, 0.03);">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td valign="top" style="padding-bottom: 10px;">
+              <span style="display: inline-block; background-color: #F3E8FF; color: #701A94; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; font-family: 'Plus Jakarta Sans', sans-serif;">
+                ${ed.city} Edition
+              </span>
+              <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif;">
+                ${ed.title}
+              </h3>
+            </td>
+            <td align="right" valign="top" style="padding-bottom: 10px; white-space: nowrap;">
+              ${statusBadge}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="font-size: 12px; color: #6B5677; padding-bottom: 12px; font-family: 'Inter', sans-serif;">
+              <strong>📅 Date:</strong> ${dateDisplay} &nbsp;|&nbsp; <strong>📍 Venue:</strong> ${venueDisplay}
+            </td>
+          </tr>
+        </table>
+
+        <!-- Metric Grid for this Edition -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAF7FC; border-radius: 10px; padding: 12px 14px; border: 1px solid #F1E5F8;">
+          <tr>
+            <td width="33%" style="text-align: center; border-right: 1px solid #E8DCF0; padding: 6px 10px;">
+              <div style="font-size: 11px; color: #6B5677; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Plus Jakarta Sans', sans-serif;">Yesterday</div>
+              <div style="font-size: 22px; font-weight: 800; color: ${ed.yesterdayTotal > 0 ? '#16A66A' : '#6B5677'}; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 2px;">
+                ${ed.yesterdayTotal > 0 ? `+${ed.yesterdayTotal}` : '0'}
+              </div>
+            </td>
+            <td width="33%" style="text-align: center; border-right: 1px solid #E8DCF0; padding: 6px 10px;">
+              <div style="font-size: 11px; color: #6B5677; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Plus Jakarta Sans', sans-serif;">Total Signups</div>
+              <div style="font-size: 22px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 2px;">
+                ${ed.cumulativeTotal}
+              </div>
+              <div style="font-size: 10px; color: #8E6E9C;">
+                ${ed.maxCapacity > 0 ? `Cap: ${ed.maxCapacity}` : 'Unlimited'}
+              </div>
+            </td>
+            <td width="34%" style="text-align: center; padding: 6px 10px;">
+              <div style="font-size: 11px; color: #6B5677; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Plus Jakarta Sans', sans-serif;">Yesterday Mix</div>
+              <div style="font-size: 11px; font-weight: 600; color: #22052C; margin-top: 4px; line-height: 1.4;">
+                ${ed.yesterdayStudents} Students<br/>
+                ${ed.yesterdayParents} Parents • ${ed.yesterdayEducators} Educators
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        ${recentListHtml}
+      </div>
+    `;
+  }).join('');
+
+  const htmlTemplate = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body, p, td, div, span, a, li {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      letter-spacing: -0.015em;
+    }
+    .wrapper { max-width: 680px; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; border: 1px solid #E8DCF0; box-shadow: 0 12px 36px rgba(34, 5, 44, 0.08); }
+    .top-navbar { background-color: #ffffff; padding: 18px 28px; border-bottom: 1px solid #E8DCF0; }
+    .hero { background: linear-gradient(135deg, #180421 0%, #22052C 50%, #3B0D4E 100%); padding: 36px 32px; text-align: center; border-bottom: 3px solid #701A94; color: #ffffff; }
+    .content { padding: 32px 28px; }
+    .footer { background: #22052C; padding: 32px 24px; text-align: center; color: #B58BD7; font-size: 12px; line-height: 1.6; }
+  </style>
+</head>
+<body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAF7FC; margin: 0; padding: 24px 12px;">
+  <div class="wrapper">
+    
+    <!-- Top Brand Navbar -->
+    <div class="top-navbar">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td align="left" valign="middle">
+            <a href="${baseUrl}" target="_blank" style="text-decoration: none; display: inline-block;">
+              <img src="${colorLogoUrl}" alt="Campus Square™" style="max-height: 38px; max-width: 190px; height: auto; width: auto; display: block; border: 0;" />
+            </a>
+          </td>
+          <td align="right" valign="middle">
+            <div style="font-size: 11px; font-weight: 700; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.8px;">
+              Executive Daily Report
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Hero Header -->
+    <div class="hero">
+      <div style="display: inline-block; background: rgba(22, 166, 106, 0.2); border: 1px solid #16A66A; color: #A7F3D0; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 5px 14px; border-radius: 9999px; margin-bottom: 14px; font-family: 'Plus Jakarta Sans', sans-serif;">
+        ✓ PREVIOUS DAY ACTIVITY REPORT
+      </div>
+      <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 10px 0; font-family: 'Plus Jakarta Sans', sans-serif;">
+        Editions Registration Summary
+      </h1>
+      <p style="color: #D8C3E5; font-size: 14px; margin: 0; line-height: 1.5; font-family: 'Inter', sans-serif;">
+        Activity for <strong>${summary.reportDateFormatted}</strong><br/>
+        <span style="font-size: 12px; color: #B58BD7;">Reporting Period: ${summary.periodStartFormatted} – ${summary.periodEndFormatted}</span>
+      </p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+      <!-- Executive KPI 4-Card Grid -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 28px;">
+        <tr>
+          <!-- KPI 1: Yesterday's New Signups -->
+          <td width="50%" style="padding: 0 6px 12px 0;">
+            <div style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; border-radius: 14px; padding: 18px 16px; text-align: left;">
+              <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #166534; font-family: 'Plus Jakarta Sans', sans-serif;">
+                Yesterday's Registrations
+              </div>
+              <div style="font-size: 32px; font-weight: 800; color: #15803D; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+                ${summary.totalYesterdayRegistrations > 0 ? `+${summary.totalYesterdayRegistrations}` : '0'}
+              </div>
+              <div style="font-size: 11px; color: #166534; font-weight: 600;">
+                ${summary.totalYesterdayStudents} students, ${summary.totalYesterdayParents} parents
+              </div>
+            </div>
+          </td>
+
+          <!-- KPI 2: Cumulative All-Time -->
+          <td width="50%" style="padding: 0 0 12px 6px;">
+            <div style="background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%); border: 1px solid #E9D5FF; border-radius: 14px; padding: 18px 16px; text-align: left;">
+              <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6B21A8; font-family: 'Plus Jakarta Sans', sans-serif;">
+                Cumulative All-Time
+              </div>
+              <div style="font-size: 32px; font-weight: 800; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+                ${summary.totalCumulativeRegistrations}
+              </div>
+              <div style="font-size: 11px; color: #6B21A8; font-weight: 600;">
+                Across all fair editions
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <!-- KPI 3: Active Fair Editions -->
+          <td width="50%" style="padding: 0 6px 0 0;">
+            <div style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 16px; text-align: left;">
+              <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6B5677; font-family: 'Plus Jakarta Sans', sans-serif;">
+                Active Fair Editions
+              </div>
+              <div style="font-size: 26px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+                ${summary.totalActiveEditions} Cities
+              </div>
+              <div style="font-size: 11px; color: #8E6E9C;">
+                Open or opening soon
+              </div>
+            </div>
+          </td>
+
+          <!-- KPI 4: OriginBI Assessments Value -->
+          <td width="50%" style="padding: 0 0 0 6px;">
+            <div style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 16px; text-align: left;">
+              <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6B5677; font-family: 'Plus Jakarta Sans', sans-serif;">
+                OriginBI Assessments
+              </div>
+              <div style="font-size: 26px; font-weight: 800; color: #16A66A; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+                ₹${summary.totalAssessmentsValueYesterday.toLocaleString('en-IN')}
+              </div>
+              <div style="font-size: 11px; color: #8E6E9C;">
+                Complimentary value delivered yesterday
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Section Title: Edition Wise Breakdown -->
+      <div style="margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F1E5F8; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif;">
+          Editions Breakdown
+        </h2>
+      </div>
+
+      <!-- Edition Cards -->
+      ${editionsHtml}
+
+      <!-- Quick Action Buttons -->
+      <div style="text-align: center; margin: 32px 0 12px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td align="center">
+              <a href="${baseUrl}/admin/events" target="_blank" style="display: inline-block; background: linear-gradient(90deg, #701A94 0%, #8E23BA 100%); color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 12px; box-shadow: 0 4px 14px rgba(112, 26, 148, 0.35); font-family: 'Plus Jakarta Sans', sans-serif;">
+                Open Admin Events Dashboard →
+              </a>
+            </td>
+          </tr>
+        </table>
+        <p style="margin: 12px 0 0 0; font-size: 11px; color: #8E6E9C;">
+          Generated automatically at ${summary.generatedAtFormatted} for Campus Square Administrators.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Official Brand Footer -->
+    <div class="footer">
+      <div style="margin-bottom: 16px;">
+        <img src="${whiteLogoUrl}" alt="Campus Square™" style="max-height: 32px; max-width: 170px; display: block; margin: 0 auto 10px auto; border: 0;" />
+        <p style="font-size: 11px; color: #B58BD7; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 4px 0; font-family: 'Plus Jakarta Sans', sans-serif;">
+          Connect Campuses.
+        </p>
+        <p style="font-size: 11px; color: #FAF7FC; margin: 0; font-family: 'Inter', sans-serif;">
+          Schools. Universities. Students. Opportunities.
+        </p>
+      </div>
+      <div style="padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 11px; color: #8E6E9C; font-family: 'Inter', sans-serif;">
+        &copy; ${currentYear} Campus Square™. A joint collaboration by Atom Infinity & OriginBI Mindworks. All rights reserved.
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
+  `;
+
+  try {
+    const transporter = getEmailTransporter();
+    const fromAddress = getFromEmailAddress();
+
+    const info = await transporter.sendMail({
+      from: fromAddress,
+      to: toList,
+      cc: ccList.length > 0 ? ccList : undefined,
+      bcc: bccList.length > 0 ? bccList : undefined,
+      replyTo: process.env.SMTP_REPLY_TO || fromAddress,
+      subject,
+      html: htmlTemplate,
+    });
+
+    console.log(`[Email] Daily registration summary sent successfully to ${toList.join(', ')} (messageId: ${info.messageId})`);
+    return { success: true, messageId: info.messageId };
+  } catch (err) {
+    console.error('[Email] Failed to send daily registration summary:', err);
+    return { success: false, error: err };
+  }
+};

@@ -44,8 +44,10 @@ model Event {
   venue               String?
   venueAddress        String?
   googleMapsUrl       String?
-  startDate           DateTime
-  endDate             DateTime
+  isDateTba           Boolean   @default(false)
+  isVenueTba          Boolean   @default(false)
+  startDate           DateTime?
+  endDate             DateTime?
   startTime           String?
   endTime             String?
   registrationOpen    DateTime?

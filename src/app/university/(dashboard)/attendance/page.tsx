@@ -54,7 +54,7 @@ export default async function UniversityEventsPage() {
                 <div>
                   <h3 className="font-bold text-lg text-brand-navy group-hover:text-brand-purple transition-colors">{ue.event.title}</h3>
                   <div className="flex gap-3 text-sm text-brand-muted mt-1">
-                    <span>{new Date(ue.event.startDate).toLocaleDateString()}</span>
+                    <span>{ue.event.startDate ? new Date(ue.event.startDate).toLocaleDateString() : 'Date TBA'}</span>
                     <span>•</span>
                     <span>{ue.event.city}</span>
                     {ue.boothNumber && (

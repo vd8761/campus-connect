@@ -24,9 +24,12 @@ export async function updateEventAction(id: string, formData: FormData) {
   const whatToExpect = formData.get('whatToExpect') as string;
   const bannerUrl = formData.get('bannerUrl') as string;
 
+  const isDateTba = formData.get('isDateTba') === 'on' || formData.get('isDateTba') === 'true';
+  const isVenueTba = formData.get('isVenueTba') === 'on' || formData.get('isVenueTba') === 'true';
+
   const universityIds = formData.getAll('universityIds') as string[];
 
-  const parsedStartDate = parseInputDateToUtcNoon(startDate) || new Date();
+  const parsedStartDate = parseInputDateToUtcNoon(startDate);
   const parsedEndDate = parseInputDateToUtcNoon(endDate) || parsedStartDate;
 
   await prisma.$transaction([
@@ -40,9 +43,11 @@ export async function updateEventAction(id: string, formData: FormData) {
         slug,
         type,
         city,
-        venue: venue || null,
-        startDate: parsedStartDate,
-        endDate: parsedEndDate,
+        venue: isVenueTba ? (venue || 'To Be Announced') : (venue || null),
+        isDateTba,
+        isVenueTba,
+        startDate: isDateTba ? (parsedStartDate || null) : (parsedStartDate || new Date()),
+        endDate: isDateTba ? (parsedEndDate || null) : (parsedEndDate || parsedStartDate || new Date()),
         startTime: startTime ? to12HourTime(startTime) : null,
         endTime: endTime ? to12HourTime(endTime) : null,
         shortDescription: shortDescription || null,
