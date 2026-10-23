@@ -25,7 +25,7 @@ export async function generateMetadata({ params, searchParams }: PageProps) {
   }
 
   return {
-    title: `DISC University Fitment Report - ${report.fullName} (${report.archetypeName}) | Campus Square™`,
+    title: `University Fitment Report - ${report.fullName} (${report.archetypeName}) | Campus Square™`,
     description: `Official ${report.totalUniversitiesCount}-University behavioral fitment pathway report for ${report.fullName} based on OriginBI psychometric DISC assessment.`,
   };
 }
