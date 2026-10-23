@@ -882,7 +882,7 @@ export const sendDailyRegistrationSummaryEmail = async (
   const currentYear = new Date().getFullYear();
 
   const rawTo = options?.to || process.env.DAILY_SUMMARY_RECIPIENT_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ENQUIRY_NOTIFICATION_EMAIL || 'interact@atom-infinity.com';
-  
+
   const parseList = (val?: string | string[]): string[] => {
     if (!val) return [];
     if (Array.isArray(val)) return val;
@@ -894,20 +894,20 @@ export const sendDailyRegistrationSummaryEmail = async (
   const bccList = parseList(options?.bcc || process.env.DAILY_SUMMARY_BCC);
 
   // Subject line
-  const countTag = summary.totalYesterdayRegistrations > 0 
-    ? `+${summary.totalYesterdayRegistrations} New Registrations` 
+  const countTag = summary.totalYesterdayRegistrations > 0
+    ? `+${summary.totalYesterdayRegistrations} New Registrations`
     : `0 Registrations Yesterday`;
   const subject = `📊 Daily Summary: ${countTag} • Editions Digest (${summary.reportDateFormatted})`;
 
   // Editions HTML rows
   const editionsHtml = summary.editions.map(ed => {
     const isTbaDate = ed.isDateTba || !ed.startDate;
-    const dateDisplay = isTbaDate 
-      ? 'Date TBA' 
+    const dateDisplay = isTbaDate
+      ? 'Date TBA'
       : new Date(ed.startDate!).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 
-    const venueDisplay = ed.isVenueTba || !ed.venue 
-      ? `${ed.city} (Venue TBA)` 
+    const venueDisplay = ed.isVenueTba || !ed.venue
+      ? `${ed.city} (Venue TBA)`
       : ed.venue;
 
     const isOpen = ['OPEN', 'LIMITED_SEATS'].includes(ed.displayStatus);
@@ -916,8 +916,8 @@ export const sendDailyRegistrationSummaryEmail = async (
     const statusBadge = isOpen
       ? `<span style="background-color: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">● Open for Registration</span>`
       : isOpeningSoon
-      ? `<span style="background-color: #FAF5FF; color: #7E22CE; border: 1px solid #E9D5FF; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">★ Opening Soon</span>`
-      : `<span style="background-color: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">Closed</span>`;
+        ? `<span style="background-color: #FAF5FF; color: #7E22CE; border: 1px solid #E9D5FF; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">★ Opening Soon</span>`
+        : `<span style="background-color: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;">Closed</span>`;
 
     const recentListHtml = ed.yesterdayParticipants.length > 0 ? `
       <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #E8DCF0;">

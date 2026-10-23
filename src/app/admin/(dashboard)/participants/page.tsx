@@ -1,6 +1,9 @@
 import prisma from '@/lib/prisma';
 import { ParticipantsTable } from './ParticipantsTable';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AdminParticipants() {
   let registrations: any[] = [];
 
@@ -19,12 +22,20 @@ export default async function AdminParticipants() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-heading font-bold text-brand-navy">Participants</h1>
+    <div className="p-6 md:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-heading font-black text-brand-navy tracking-tight">
+            Registered Delegates
+          </h1>
+          <p className="text-sm text-brand-muted mt-1">
+            Complete registry of all registered students, delegates, and event attendees.
+          </p>
+        </div>
       </div>
 
       <ParticipantsTable registrations={registrations} />
     </div>
   );
 }
+

@@ -17,6 +17,9 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AdminDashboard() {
   let eventsCount = 0;
   let registrationsCount = 0;
