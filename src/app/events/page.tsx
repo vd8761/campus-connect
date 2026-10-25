@@ -62,6 +62,31 @@ export default async function EventsPage() {
     };
   });
 
+  // Sort: Active open editions first, then opening soon, then completed/past editions
+  displayEvents.sort((a, b) => {
+    const statusPriority: Record<string, number> = {
+      OPEN: 1,
+      LIMITED_SEATS: 1,
+      OPENING_SOON: 2,
+      CLOSED: 3,
+      COMPLETED: 4,
+    };
+    const priorityA = statusPriority[a.displayStatus] || 5;
+    const priorityB = statusPriority[b.displayStatus] || 5;
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+    // Secondary: sort by startDate if available
+    if (a.startDate && b.startDate) {
+      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    }
+    return 0;
+  });
+
+  // Calculate dynamic active edition cities for the hero banner
+  const openEditions = displayEvents.filter(e => ['OPEN', 'LIMITED_SEATS'].includes(e.displayStatus));
+  const activeCities = Array.from(new Set(openEditions.map(e => e.city).filter(Boolean)));
+
   return (
     <div className="bg-brand-light min-h-screen pb-24">
       {/* Premium Hero Banner */}
@@ -92,7 +117,10 @@ export default async function EventsPage() {
           <div className="flex flex-wrap items-center justify-center gap-6 pt-4 border-t border-white/10 max-w-2xl mx-auto">
             <div className="flex items-center gap-2 text-sm text-white/90">
               <MapPin size={16} className="text-brand-turquoise" />
-              <span className="font-bold text-white">Theni Edition:</span> Oct 24, 2026
+              <span className="font-bold text-white">
+                {activeCities.length > 0 ? 'Open Editions:' : 'Multi-City Tour:'}
+              </span>{' '}
+              {activeCities.length > 0 ? activeCities.join(' & ') : 'School Hosted Fairs'}
             </div>
             <div className="h-4 w-px bg-white/20 hidden sm:block" />
             <div className="flex items-center gap-2 text-sm text-white/90">

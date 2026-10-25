@@ -63,8 +63,8 @@ export function EventsExplorer({ events }: EventsExplorerProps) {
     return {
       ALL: events.length,
       OPEN: events.filter(e => ['OPEN', 'LIMITED_SEATS'].includes(e.displayStatus)).length,
-      UPCOMING: events.filter(e => ['OPENING_SOON', 'CLOSED'].includes(e.displayStatus)).length,
-      PAST: events.filter(e => e.displayStatus === 'COMPLETED').length,
+      UPCOMING: events.filter(e => e.displayStatus === 'OPENING_SOON').length,
+      PAST: events.filter(e => ['COMPLETED', 'CLOSED'].includes(e.displayStatus)).length,
     };
   }, [events]);
 
@@ -73,8 +73,8 @@ export function EventsExplorer({ events }: EventsExplorerProps) {
     return events.filter(e => {
       // Tab filter
       if (activeTab === 'OPEN' && !['OPEN', 'LIMITED_SEATS'].includes(e.displayStatus)) return false;
-      if (activeTab === 'UPCOMING' && !['OPENING_SOON', 'CLOSED'].includes(e.displayStatus)) return false;
-      if (activeTab === 'PAST' && e.displayStatus !== 'COMPLETED') return false;
+      if (activeTab === 'UPCOMING' && e.displayStatus !== 'OPENING_SOON') return false;
+      if (activeTab === 'PAST' && !['COMPLETED', 'CLOSED'].includes(e.displayStatus)) return false;
 
       // City filter
       if (selectedCity !== 'ALL' && e.city !== selectedCity) return false;

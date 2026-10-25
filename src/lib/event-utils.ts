@@ -12,17 +12,19 @@ export function getEventStatus(
 
   const now = new Date();
 
-  // If registration has an explicit close deadline that has passed
-  if (registrationClose && now > new Date(registrationClose)) {
-    return 'CLOSED';
-  }
-
-  // If the event date is fixed (not TBA), check if it has concluded
+  // 1. If the event date is fixed (not TBA), check if it has concluded (Past Edition)
   if (!isDateTba && startDate) {
-    const end = endDate ? new Date(endDate) : new Date(startDate);
-    if (now > end) {
+    const rawEnd = endDate ? new Date(endDate) : new Date(startDate);
+    const end = new Date(rawEnd);
+    end.setHours(23, 59, 59, 999);
+    if (now > end || now > rawEnd) {
       return 'COMPLETED';
     }
+  }
+
+  // 2. If registration has an explicit close deadline that has passed
+  if (registrationClose && now > new Date(registrationClose)) {
+    return 'CLOSED';
   }
 
   // If registration open date has not arrived yet
