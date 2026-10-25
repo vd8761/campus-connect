@@ -28,6 +28,10 @@ const securityHeaders = [
   {
     key: 'Permissions-Policy',
     value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()'
+  },
+  {
+    key: 'X-Permitted-Cross-Domain-Policies',
+    value: 'none'
   }
 ];
 

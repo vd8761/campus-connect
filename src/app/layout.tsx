@@ -16,10 +16,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL;
+const siteUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://campussquare.originbi.com').replace(/\/+$/, '');
 
 export const metadata: Metadata = {
-  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  metadataBase: new URL(siteUrl),
   title: {
     template: '%s | Campus Square™',
     default: 'Campus Square™ | Connect Campuses',

@@ -49,7 +49,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
 
     const title = (event.seoTitle || `${event.title} - ${event.city} ${event.edition || 'Edition'}`.trim()).replace(/[—–]/g, '-');
-    const cleanDesc = event.shortDescription?.replace(/<[^>]+>/g, '').trim() || '';
+    const cleanDesc = event.shortDescription
+      ?.replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&amp;/gi, '&')
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .replace(/\s+/g, ' ')
+      .trim() || '';
     const description = event.seoDescription || cleanDesc || `Register for ${event.title} in ${event.city}. Connect with premier universities, school leaders, and explore undergraduate & postgraduate opportunities.`;
     const imageUrl = event.bannerUrl || '/images/event-1.jpg';
 

@@ -21,12 +21,26 @@ export async function generateMetadata({ params, searchParams }: PageProps) {
   if (!report) {
     return {
       title: 'DISC Fitment Report | Campus Square™',
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   return {
     title: `University Fitment Report - ${report.fullName} (${report.archetypeName}) | Campus Square™`,
     description: `Official ${report.totalUniversitiesCount}-University behavioral fitment pathway report for ${report.fullName} based on OriginBI psychometric DISC assessment.`,
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+      },
+    },
   };
 }
 

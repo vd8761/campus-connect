@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { SmartRegistration } from './SmartRegistration';
@@ -9,6 +10,56 @@ import { getEventStatus } from '@/lib/event-utils';
 import { OriginBIHighlightBox } from '@/components/OriginBIHighlightBox';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await prisma.event.findUnique({
+      where: { slug },
+      select: {
+        title: true,
+        city: true,
+        edition: true,
+        bannerUrl: true,
+      }
+    });
+
+    if (!event) {
+      return {
+        title: 'Register for Event | Campus Square™',
+      };
+    }
+
+    const title = `Register: ${event.title} - ${event.city} ${event.edition || 'Edition'}`.trim();
+    const description = `Reserve your free entry pass for ${event.title} in ${event.city}. Connect directly with premier universities, school leadership, and unlock complimentary DISC career profiling.`;
+    const imageUrl = event.bannerUrl || '/campus-square-logo-main.jpg';
+
+    return {
+      title,
+      description,
+      alternates: {
+        canonical: `/events/${slug}/register`,
+      },
+      openGraph: {
+        title: `${title} | Campus Square™`,
+        description,
+        type: 'website',
+        url: `/events/${slug}/register`,
+        images: [{ url: imageUrl, alt: title }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${title} | Campus Square™`,
+        description,
+        images: [imageUrl],
+      },
+    };
+  } catch {
+    return {
+      title: 'Register for Event | Campus Square™',
+    };
+  }
+}
 
 export default async function RegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
