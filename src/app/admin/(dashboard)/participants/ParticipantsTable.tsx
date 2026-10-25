@@ -170,8 +170,8 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
       </div>
 
       {/* Search, Filter & Export Toolbar */}
-      <div className="flex flex-wrap gap-2.5 justify-between items-center bg-white p-3.5 rounded-2xl border border-brand-border/80 shadow-xs">
-        <div className="relative min-w-0 flex-1 max-w-sm">
+      <div className="flex flex-col sm:flex-row gap-2.5 justify-between items-stretch sm:items-center bg-white p-3.5 rounded-2xl border border-brand-border/80 shadow-xs">
+        <div className="relative min-w-0 flex-1 w-full sm:max-w-sm">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
             <Search size={16} />
           </div>
@@ -185,7 +185,7 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
         </div>
         
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
-          <div className="relative z-10 w-48 sm:w-56">
+          <div className="relative z-10 flex-1 sm:flex-initial w-full sm:w-56">
             <SearchableDropdown
               options={[
                 { id: 'all', name: 'All Fair Editions' },
@@ -203,7 +203,7 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
           <Button 
             variant="outline" 
             onClick={exportCSV} 
-            className="h-10 flex items-center gap-1.5 shrink-0 text-xs sm:text-sm px-3.5 rounded-xl border-brand-border/80 hover:bg-gray-50"
+            className="h-10 flex-1 sm:flex-initial flex items-center justify-center gap-1.5 shrink-0 text-xs sm:text-sm px-3.5 rounded-xl border-brand-border/80 hover:bg-gray-50"
           >
             <Download size={14} />
             <span>Export CSV</span>
@@ -219,7 +219,7 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
       {/* Main Table Card */}
       <div className="bg-white rounded-2xl border border-brand-border/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left whitespace-nowrap text-sm">
+          <table className="w-full text-left whitespace-nowrap text-sm min-w-[700px]">
             <thead className="bg-gray-50/80 text-brand-muted text-xs uppercase tracking-wider border-b border-brand-border/60">
               <tr>
                 <th className="px-4 py-3.5 font-bold w-12 text-center text-gray-400">#</th>
@@ -378,8 +378,8 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
                 <ChevronLeft size={14} />
               </button>
 
-              {/* Numbered Page Buttons */}
-              <div className="flex items-center gap-1 mx-1">
+              {/* Numbered Page Buttons for Tablet & Desktop */}
+              <div className="hidden sm:flex items-center gap-1 mx-1">
                 {pageNumbers.map((p, i) => {
                   if (typeof p === 'string') {
                     return (
@@ -404,6 +404,11 @@ export function ParticipantsTable({ registrations }: { registrations: any[] }) {
                   );
                 })}
               </div>
+
+              {/* Mobile Page indicator */}
+              <span className="sm:hidden text-xs font-bold text-brand-navy px-1.5 whitespace-nowrap">
+                {safeCurrentPage} / {totalPages}
+              </span>
 
               {/* Next Page */}
               <button

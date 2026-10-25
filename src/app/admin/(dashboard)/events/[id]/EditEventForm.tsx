@@ -38,24 +38,24 @@ export function EditEventForm({ event }: { event: any }) {
   const updateActionWithId = updateEventAction.bind(null, event.id);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-8 flex justify-between items-center">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-brand-navy">Edit Event</h1>
-          <p className="text-brand-muted mt-1">Update the details for this summit or fair.</p>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-brand-navy">Edit Event</h1>
+          <p className="text-xs sm:text-sm text-brand-muted mt-1">Update the details for this summit or fair.</p>
         </div>
       </div>
 
-      <ValidatedForm action={updateActionWithId} className="space-y-8">
+      <ValidatedForm action={updateActionWithId} className="space-y-6 sm:space-y-8">
         
         {/* Basic Details Section */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 md:p-8 shadow-sm">
+          <div className="flex items-center gap-3 mb-5 sm:mb-6">
             <div className="w-1.5 h-6 bg-[#3b82f6] rounded-full"></div>
-            <h2 className="text-xl font-bold text-brand-navy">Basic Details</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-brand-navy">Basic Details</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div className="form-field">
               <label className="block text-sm font-bold text-brand-navy mb-2">Event Title <span className="text-red-500">*</span></label>
               <input 
@@ -84,8 +84,8 @@ export function EditEventForm({ event }: { event: any }) {
             
             <div className="md:col-span-2 form-field">
               <label className="block text-sm font-bold text-brand-navy mb-2">URL Slug <span className="text-red-500">*</span></label>
-              <div className="flex">
-                <span className="inline-flex items-center h-11 px-4 rounded-l-xl border border-r-0 border-brand-border/80 bg-gray-50 text-gray-500 text-sm select-none">
+              <div className="flex flex-col sm:flex-row">
+                <span className="inline-flex items-center h-9 sm:h-11 px-3 sm:px-4 rounded-t-xl sm:rounded-t-none sm:rounded-l-xl border border-b-0 sm:border-b sm:border-r-0 border-brand-border/80 bg-gray-50 text-gray-500 text-xs sm:text-sm select-none truncate">
                   campussquare.originbi.com/events/
                 </span>
                 <input 
@@ -95,7 +95,7 @@ export function EditEventForm({ event }: { event: any }) {
                   onChange={(e) => setSlug(e.target.value)}
                   required 
                   placeholder="university-fair-2026"
-                  className="flex-1 h-11 px-4 rounded-r-xl border border-brand-border/80 text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
+                  className="flex-1 h-10 sm:h-11 px-3 sm:px-4 rounded-b-xl sm:rounded-b-none sm:rounded-r-xl border border-brand-border/80 text-xs sm:text-sm focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/15 outline-none transition-all"
                 />
               </div>
               <InputError message="URL Slug is required." />

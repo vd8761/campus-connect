@@ -57,18 +57,18 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
   });
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5 bg-white p-4 sm:p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
             Manage Fair Editions
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Create, schedule, and oversee your summits, education fairs, and booth venues.
           </p>
         </div>
-        <Link href="/admin/events/new">
-          <Button variant="gradient" className="rounded-xl font-bold gap-2 h-11 px-5 shadow-sm hover:shadow-md transition-all">
+        <Link href="/admin/events/new" className="shrink-0">
+          <Button variant="gradient" className="rounded-xl font-bold gap-2 h-10 sm:h-11 px-4 sm:px-5 text-xs sm:text-sm shadow-sm hover:shadow-md transition-all">
             <Plus size={16} />
             <span>Create New Edition</span>
           </Button>
@@ -107,11 +107,11 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
             return (
               <div 
                 key={event.id} 
-                className="bg-white rounded-2xl border border-brand-border/80 p-5 md:p-6 shadow-2xs hover:shadow-md hover:border-brand-purple/30 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-5 group"
+                className="bg-white rounded-2xl border border-brand-border/80 p-4 sm:p-5 md:p-6 shadow-2xs hover:shadow-md hover:border-brand-purple/30 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-5 group"
               >
                 {/* Event Details */}
-                <div className="space-y-3 flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2.5">
+                <div className="space-y-2.5 sm:space-y-3 flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${statusConfig.bg}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot} ${isOpen ? 'animate-pulse' : ''}`} />
                       {statusConfig.label}
@@ -121,11 +121,11 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
                     </span>
                   </div>
                   
-                  <h2 className="text-lg md:text-xl font-heading font-bold text-brand-navy group-hover:text-brand-purple transition-colors truncate">
+                  <h2 className="text-base sm:text-lg md:text-xl font-heading font-bold text-brand-navy group-hover:text-brand-purple transition-colors truncate">
                     {event.title}
                   </h2>
                   
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 font-medium">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500 font-medium">
                     <div className="flex items-center gap-1.5">
                       <Calendar size={14} className="text-brand-purple shrink-0" />
                       <span>{event.isDateTba || !event.startDate ? 'Date TBA' : new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
@@ -142,7 +142,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: { [k
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
+                <div className="flex flex-wrap items-center gap-2 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
                   <Link href={`/events/${event.slug}`} target="_blank">
                     <Button 
                       variant="outline" 

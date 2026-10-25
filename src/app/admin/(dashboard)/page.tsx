@@ -108,27 +108,27 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto">
       {/* Welcome & Quick Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5 bg-white p-4 sm:p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
             Dashboard Overview
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Real-time edition metrics, delegate registrations, and verified university partners.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
           <Link href="/admin/events/new">
-            <Button variant="gradient" className="rounded-xl font-bold gap-2 h-11 px-5 shadow-sm hover:shadow-md transition-all">
+            <Button variant="gradient" className="rounded-xl font-bold gap-2 h-10 sm:h-11 px-4 sm:px-5 text-xs sm:text-sm shadow-sm hover:shadow-md transition-all">
               <Plus size={16} />
               <span>Create Edition</span>
             </Button>
           </Link>
           <Link href="/admin/participants">
-            <Button variant="outline" className="rounded-xl font-semibold border-brand-border/80 text-brand-navy hover:bg-brand-light h-11 px-4">
+            <Button variant="outline" className="rounded-xl font-semibold border-brand-border/80 text-brand-navy hover:bg-brand-light h-10 sm:h-11 px-3 sm:px-4 text-xs sm:text-sm">
               All Participants
             </Button>
           </Link>
@@ -136,7 +136,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* 4 Stat Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 md:gap-5">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
           return (
@@ -194,8 +194,8 @@ export default async function AdminDashboard() {
               </Link>
             </div>
 
-            <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full text-left text-xs sm:text-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs sm:text-sm min-w-[540px]">
                 <thead className="bg-brand-light/50 text-[11px] font-bold text-brand-muted uppercase tracking-wider border-b border-brand-border/60">
                   <tr>
                     <th className="pl-6 pr-3 py-3.5">Delegate</th>

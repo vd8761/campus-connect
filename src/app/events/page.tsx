@@ -24,21 +24,19 @@ export default async function EventsPage() {
 
   // Consistent status calculation
   const displayEvents: EventItem[] = events.map(e => {
-    let displayStatus: 'OPEN' | 'LIMITED_SEATS' | 'OPENING_SOON' | 'CLOSED' | 'COMPLETED';
+    const dynamicStatus = getEventStatus(
+      e.startDate ? new Date(e.startDate) : null,
+      e.endDate ? new Date(e.endDate) : (e.startDate ? new Date(e.startDate) : null),
+      e.registrationOpen ? new Date(e.registrationOpen) : null,
+      e.registrationClose ? new Date(e.registrationClose) : null,
+      e.status === 'DRAFT',
+      e.isDateTba
+    );
 
-    if (e.status === 'LIMITED_SEATS') {
+    let displayStatus: 'OPEN' | 'LIMITED_SEATS' | 'OPENING_SOON' | 'CLOSED' | 'COMPLETED';
+    if (e.status === 'LIMITED_SEATS' && dynamicStatus === 'OPEN') {
       displayStatus = 'LIMITED_SEATS';
-    } else if (e.status === 'OPEN') {
-      displayStatus = 'OPEN';
     } else {
-      const dynamicStatus = getEventStatus(
-        e.startDate ? new Date(e.startDate) : null,
-        e.endDate ? new Date(e.endDate) : null,
-        e.registrationOpen ? new Date(e.registrationOpen) : null,
-        e.registrationClose ? new Date(e.registrationClose) : null,
-        e.status === 'DRAFT',
-        e.isDateTba
-      );
       displayStatus = dynamicStatus as any;
     }
 

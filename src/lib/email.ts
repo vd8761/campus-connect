@@ -924,31 +924,33 @@ export const sendDailyRegistrationSummaryEmail = async (
         <p style="margin: 0 0 8px 0; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif;">
           Yesterday's Registrations Log (${ed.yesterdayParticipants.length}):
         </p>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 12px; font-family: 'Inter', sans-serif; background-color: #FAF7FC; border-radius: 8px;">
-          ${ed.yesterdayParticipants.slice(0, 8).map(p => `
-            <tr>
-              <td style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #22052C; font-weight: 600;">
-                ${p.fullName}
-              </td>
-              <td style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #701A94; font-weight: 600;">
-                ${p.category}
-              </td>
-              <td style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #6B5677; font-size: 11px;">
-                ${p.board ? `${p.board}` : ''}${p.schoolLevel ? ` • ${p.schoolLevel}` : ''}
-              </td>
-              <td align="right" style="padding: 6px 10px; border-bottom: 1px solid #F1E5F8; color: #8E6E9C; font-size: 11px;">
-                ${p.timeFormatted}
-              </td>
-            </tr>
-          `).join('')}
-          ${ed.yesterdayParticipants.length > 8 ? `
-            <tr>
-              <td colspan="4" align="center" style="padding: 6px 10px; font-size: 11px; color: #701A94; font-weight: 700;">
-                + ${ed.yesterdayParticipants.length - 8} more registered yesterday
-              </td>
-            </tr>
-          ` : ''}
-        </table>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" class="log-table" style="font-size: 12px; font-family: 'Inter', sans-serif; background-color: #FAF7FC; border-radius: 8px;">
+            ${ed.yesterdayParticipants.slice(0, 8).map(p => `
+              <tr>
+                <td style="padding: 7px 10px; border-bottom: 1px solid #F1E5F8; color: #22052C; font-weight: 600;">
+                  ${p.fullName}
+                </td>
+                <td style="padding: 7px 10px; border-bottom: 1px solid #F1E5F8; color: #701A94; font-weight: 600; white-space: nowrap;">
+                  ${p.category}
+                </td>
+                <td class="log-meta" style="padding: 7px 10px; border-bottom: 1px solid #F1E5F8; color: #6B5677; font-size: 11px;">
+                  ${p.board ? `${p.board}` : ''}${p.schoolLevel ? ` • ${p.schoolLevel}` : ''}
+                </td>
+                <td align="right" style="padding: 7px 10px; border-bottom: 1px solid #F1E5F8; color: #8E6E9C; font-size: 11px; white-space: nowrap;">
+                  ${p.timeFormatted}
+                </td>
+              </tr>
+            `).join('')}
+            ${ed.yesterdayParticipants.length > 8 ? `
+              <tr>
+                <td colspan="4" align="center" style="padding: 8px 10px; font-size: 11px; color: #701A94; font-weight: 700;">
+                  + ${ed.yesterdayParticipants.length - 8} more registered yesterday
+                </td>
+              </tr>
+            ` : ''}
+          </table>
+        </div>
       </div>
     ` : `
       <div style="margin-top: 10px; font-size: 11px; color: #8E6E9C; font-style: italic;">
@@ -957,10 +959,10 @@ export const sendDailyRegistrationSummaryEmail = async (
     `;
 
     return `
-      <div style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(34, 5, 44, 0.03);">
+      <div class="edition-card" style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(34, 5, 44, 0.03);">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td valign="top" style="padding-bottom: 10px;">
+            <td valign="top" class="edition-header-left" style="padding-bottom: 10px;">
               <span style="display: inline-block; background-color: #F3E8FF; color: #701A94; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; font-family: 'Plus Jakarta Sans', sans-serif;">
                 ${ed.city} Edition
               </span>
@@ -968,7 +970,7 @@ export const sendDailyRegistrationSummaryEmail = async (
                 ${ed.title}
               </h3>
             </td>
-            <td align="right" valign="top" style="padding-bottom: 10px; white-space: nowrap;">
+            <td align="right" valign="top" class="edition-header-right" style="padding-bottom: 10px;">
               ${statusBadge}
             </td>
           </tr>
@@ -980,15 +982,15 @@ export const sendDailyRegistrationSummaryEmail = async (
         </table>
 
         <!-- Metric Grid for this Edition -->
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAF7FC; border-radius: 10px; padding: 12px 14px; border: 1px solid #F1E5F8;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="edition-metric-table" style="background-color: #FAF7FC; border-radius: 10px; padding: 12px 14px; border: 1px solid #F1E5F8;">
           <tr>
-            <td width="33%" style="text-align: center; border-right: 1px solid #E8DCF0; padding: 6px 10px;">
+            <td width="33%" class="edition-metric-col" style="text-align: center; border-right: 1px solid #E8DCF0; padding: 6px 10px;">
               <div style="font-size: 11px; color: #6B5677; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Plus Jakarta Sans', sans-serif;">Yesterday</div>
               <div style="font-size: 22px; font-weight: 800; color: ${ed.yesterdayTotal > 0 ? '#16A66A' : '#6B5677'}; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 2px;">
                 ${ed.yesterdayTotal > 0 ? `+${ed.yesterdayTotal}` : '0'}
               </div>
             </td>
-            <td width="33%" style="text-align: center; border-right: 1px solid #E8DCF0; padding: 6px 10px;">
+            <td width="33%" class="edition-metric-col" style="text-align: center; border-right: 1px solid #E8DCF0; padding: 6px 10px;">
               <div style="font-size: 11px; color: #6B5677; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Plus Jakarta Sans', sans-serif;">Total Signups</div>
               <div style="font-size: 22px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 2px;">
                 ${ed.cumulativeTotal}
@@ -997,7 +999,7 @@ export const sendDailyRegistrationSummaryEmail = async (
                 ${ed.maxCapacity > 0 ? `Cap: ${ed.maxCapacity}` : 'Unlimited'}
               </div>
             </td>
-            <td width="34%" style="text-align: center; padding: 6px 10px;">
+            <td width="34%" class="edition-metric-col" style="text-align: center; padding: 6px 10px;">
               <div style="font-size: 11px; color: #6B5677; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Plus Jakarta Sans', sans-serif;">Yesterday Mix</div>
               <div style="font-size: 11px; font-weight: 600; color: #22052C; margin-top: 4px; line-height: 1.4;">
                 ${ed.yesterdayStudents} Students<br/>
@@ -1014,10 +1016,13 @@ export const sendDailyRegistrationSummaryEmail = async (
 
   const htmlTemplate = `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+  <meta name="x-apple-disable-message-reformatting">
   <title>${subject}</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1037,7 +1042,109 @@ export const sendDailyRegistrationSummaryEmail = async (
     .hero { background: linear-gradient(135deg, #180421 0%, #22052C 50%, #3B0D4E 100%); padding: 36px 32px; text-align: center; border-bottom: 3px solid #701A94; color: #ffffff; }
     .content { padding: 32px 28px; }
     .footer { background: #22052C; padding: 32px 24px; text-align: center; color: #B58BD7; font-size: 12px; line-height: 1.6; }
+
+    /* Device-Based Responsive Styles */
+    @media only screen and (max-width: 600px) {
+      body {
+        padding: 8px 4px !important;
+      }
+      .wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 12px !important;
+        border: 1px solid #E8DCF0 !important;
+      }
+      .top-navbar {
+        padding: 14px 16px !important;
+      }
+      .top-navbar-left {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        margin-bottom: 8px !important;
+      }
+      .top-navbar-left img {
+        margin: 0 auto !important;
+      }
+      .top-navbar-right {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+      }
+      .hero {
+        padding: 24px 16px !important;
+      }
+      .hero h1 {
+        font-size: 21px !important;
+        line-height: 1.25 !important;
+      }
+      .content {
+        padding: 18px 12px !important;
+      }
+      .kpi-col {
+        display: block !important;
+        width: 100% !important;
+        padding: 0 0 10px 0 !important;
+        box-sizing: border-box !important;
+      }
+      .kpi-card {
+        padding: 14px !important;
+      }
+      .kpi-value {
+        font-size: 28px !important;
+      }
+      .edition-card {
+        padding: 14px !important;
+        margin-bottom: 12px !important;
+        border-radius: 12px !important;
+      }
+      .edition-header-left {
+        display: block !important;
+        width: 100% !important;
+        padding-bottom: 6px !important;
+      }
+      .edition-header-right {
+        display: block !important;
+        width: 100% !important;
+        text-align: left !important;
+        padding-bottom: 8px !important;
+      }
+      .edition-metric-col {
+        display: block !important;
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid #E8DCF0 !important;
+        padding: 8px 4px !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
+      }
+      .edition-metric-col:last-child {
+        border-bottom: none !important;
+      }
+      .log-meta {
+        display: none !important;
+      }
+      .log-table td {
+        padding: 6px 4px !important;
+        font-size: 11px !important;
+      }
+      .btn-action {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        padding: 13px 16px !important;
+      }
+      .footer {
+        padding: 24px 16px !important;
+      }
+    }
   </style>
+  <!--[if mso]>
+  <style type="text/css">
+  body, table, td, p, a, span { font-family: Arial, Helvetica, sans-serif !important; }
+  </style>
+  <![endif]-->
 </head>
 <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAF7FC; margin: 0; padding: 24px 12px;">
   <div class="wrapper">
@@ -1046,12 +1153,12 @@ export const sendDailyRegistrationSummaryEmail = async (
     <div class="top-navbar">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td align="left" valign="middle">
+          <td align="left" valign="middle" class="top-navbar-left">
             <a href="${baseUrl}" target="_blank" style="text-decoration: none; display: inline-block;">
               <img src="${colorLogoUrl}" alt="Campus Square™" style="max-height: 38px; max-width: 190px; height: auto; width: auto; display: block; border: 0;" />
             </a>
           </td>
-          <td align="right" valign="middle">
+          <td align="right" valign="middle" class="top-navbar-right">
             <div style="font-size: 11px; font-weight: 700; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.8px;">
               Executive Daily Report
             </div>
@@ -1078,15 +1185,15 @@ export const sendDailyRegistrationSummaryEmail = async (
     <div class="content">
 
       <!-- Executive KPI 4-Card Grid -->
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 28px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 24px;">
         <tr>
           <!-- KPI 1: Yesterday's New Signups -->
-          <td width="50%" style="padding: 0 6px 12px 0;">
-            <div style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; border-radius: 14px; padding: 18px 16px; text-align: left;">
+          <td width="50%" class="kpi-col" style="padding: 0 6px 12px 0;">
+            <div class="kpi-card" style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; border-radius: 14px; padding: 18px 16px; text-align: left;">
               <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #166534; font-family: 'Plus Jakarta Sans', sans-serif;">
                 Yesterday's Registrations
               </div>
-              <div style="font-size: 32px; font-weight: 800; color: #15803D; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+              <div class="kpi-value" style="font-size: 32px; font-weight: 800; color: #15803D; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
                 ${summary.totalYesterdayRegistrations > 0 ? `+${summary.totalYesterdayRegistrations}` : '0'}
               </div>
               <div style="font-size: 11px; color: #166534; font-weight: 600;">
@@ -1096,12 +1203,12 @@ export const sendDailyRegistrationSummaryEmail = async (
           </td>
 
           <!-- KPI 2: Cumulative All-Time -->
-          <td width="50%" style="padding: 0 0 12px 6px;">
-            <div style="background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%); border: 1px solid #E9D5FF; border-radius: 14px; padding: 18px 16px; text-align: left;">
+          <td width="50%" class="kpi-col" style="padding: 0 0 12px 6px;">
+            <div class="kpi-card" style="background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%); border: 1px solid #E9D5FF; border-radius: 14px; padding: 18px 16px; text-align: left;">
               <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6B21A8; font-family: 'Plus Jakarta Sans', sans-serif;">
                 Cumulative All-Time
               </div>
-              <div style="font-size: 32px; font-weight: 800; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+              <div class="kpi-value" style="font-size: 32px; font-weight: 800; color: #701A94; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
                 ${summary.totalCumulativeRegistrations}
               </div>
               <div style="font-size: 11px; color: #6B21A8; font-weight: 600;">
@@ -1113,12 +1220,12 @@ export const sendDailyRegistrationSummaryEmail = async (
 
         <tr>
           <!-- KPI 3: Active Fair Editions -->
-          <td width="50%" style="padding: 0 6px 0 0;">
-            <div style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 16px; text-align: left;">
+          <td width="50%" class="kpi-col" style="padding: 0 6px 0 0;">
+            <div class="kpi-card" style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 16px; text-align: left;">
               <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6B5677; font-family: 'Plus Jakarta Sans', sans-serif;">
                 Active Fair Editions
               </div>
-              <div style="font-size: 26px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+              <div class="kpi-value" style="font-size: 26px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
                 ${summary.totalActiveEditions} Cities
               </div>
               <div style="font-size: 11px; color: #8E6E9C;">
@@ -1128,12 +1235,12 @@ export const sendDailyRegistrationSummaryEmail = async (
           </td>
 
           <!-- KPI 4: OriginBI Assessments Value -->
-          <td width="50%" style="padding: 0 0 0 6px;">
-            <div style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 16px; text-align: left;">
+          <td width="50%" class="kpi-col" style="padding: 0 0 0 6px;">
+            <div class="kpi-card" style="background-color: #FFFFFF; border: 1px solid #E8DCF0; border-radius: 14px; padding: 16px; text-align: left;">
               <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6B5677; font-family: 'Plus Jakarta Sans', sans-serif;">
                 OriginBI Assessments
               </div>
-              <div style="font-size: 26px; font-weight: 800; color: #16A66A; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
+              <div class="kpi-value" style="font-size: 26px; font-weight: 800; color: #16A66A; font-family: 'Plus Jakarta Sans', sans-serif; margin: 4px 0;">
                 ₹${summary.totalAssessmentsValueYesterday.toLocaleString('en-IN')}
               </div>
               <div style="font-size: 11px; color: #8E6E9C;">
@@ -1145,7 +1252,7 @@ export const sendDailyRegistrationSummaryEmail = async (
       </table>
 
       <!-- Section Title: Edition Wise Breakdown -->
-      <div style="margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F1E5F8; display: flex; justify-content: space-between; align-items: center;">
+      <div style="margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #F1E5F8;">
         <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: #22052C; font-family: 'Plus Jakarta Sans', sans-serif;">
           Editions Breakdown
         </h2>
@@ -1159,7 +1266,7 @@ export const sendDailyRegistrationSummaryEmail = async (
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td align="center">
-              <a href="${baseUrl}/admin/events" target="_blank" style="display: inline-block; background: linear-gradient(90deg, #701A94 0%, #8E23BA 100%); color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 12px; box-shadow: 0 4px 14px rgba(112, 26, 148, 0.35); font-family: 'Plus Jakarta Sans', sans-serif;">
+              <a href="${baseUrl}/admin/events" target="_blank" class="btn-action" style="display: inline-block; background: linear-gradient(90deg, #701A94 0%, #8E23BA 100%); color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 12px; box-shadow: 0 4px 14px rgba(112, 26, 148, 0.35); font-family: 'Plus Jakarta Sans', sans-serif;">
                 Open Admin Events Dashboard →
               </a>
             </td>

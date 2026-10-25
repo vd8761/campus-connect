@@ -42,7 +42,7 @@ export default async function AdminLogin(props: { searchParams: Promise<{ error?
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       
       {/* Main Login Card */}
-      <div className="w-full max-w-md bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden border border-gray-100 p-8 sm:p-10">
+      <div className="w-full max-w-md bg-white rounded-2xl sm:rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden border border-gray-100 p-5 sm:p-8 md:p-10">
         <div className="flex justify-center mb-6">
           <Logo />
         </div>

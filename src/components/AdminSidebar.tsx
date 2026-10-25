@@ -13,10 +13,17 @@ import {
   Sparkles,
   ExternalLink,
   ShieldCheck,
-  BrainCircuit
+  BrainCircuit,
+  X
 } from 'lucide-react';
 
-export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
+export function AdminSidebar({ 
+  onLogout,
+  onCloseMobile 
+}: { 
+  onLogout: () => void;
+  onCloseMobile?: () => void;
+}) {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -63,10 +70,10 @@ export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-brand-border/80 flex flex-col h-screen sticky top-0 overflow-hidden shrink-0 z-40 select-none">
+    <aside className="w-64 bg-white border-r border-brand-border/80 flex flex-col h-full overflow-hidden shrink-0 select-none">
       {/* Brand Header - Exactly h-16 to seamlessly align with AdminTopBar */}
-      <div className="h-16 px-6 border-b border-brand-border/80 flex items-center shrink-0">
-        <Link href="/admin" className="flex items-center">
+      <div className="h-16 px-5 border-b border-brand-border/80 flex items-center justify-between shrink-0">
+        <Link href="/admin" className="flex items-center" onClick={onCloseMobile}>
           <Image 
             src="/campus-square-logo-transparent.png" 
             alt="Campus Square™" 
@@ -76,6 +83,16 @@ export function AdminSidebar({ onLogout }: { onLogout: () => void }) {
             priority
           />
         </Link>
+        {onCloseMobile && (
+          <button 
+            type="button"
+            onClick={onCloseMobile}
+            className="lg:hidden p-1.5 text-slate-400 hover:text-brand-navy hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+            aria-label="Close navigation"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
 
       {/* Navigation Sections */}

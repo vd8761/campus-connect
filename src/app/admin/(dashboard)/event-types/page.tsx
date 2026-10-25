@@ -13,34 +13,35 @@ export default async function EventTypesPage() {
   }
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
+    <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5 bg-white p-4 sm:p-6 md:p-8 rounded-2xl border border-brand-border/80 shadow-2xs">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-heading font-extrabold text-brand-navy tracking-tight">
             Event Types
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Manage the categories and classification of educational summits and university fairs.
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-brand-purple border border-purple-100 text-xs font-bold">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-brand-purple border border-purple-100 text-xs font-bold self-start sm:self-auto">
           <span>{eventTypes.length} Types Configured</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-        <div className="md:col-span-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-4">
           <AddEventTypeForm />
         </div>
 
-        <div className="md:col-span-8">
+        <div className="lg:col-span-8">
           <div className="bg-white rounded-2xl border border-brand-border/80 overflow-hidden shadow-2xs">
             <div className="p-4 md:p-5 border-b border-brand-border/60 bg-brand-light/30 flex items-center justify-between">
               <h2 className="text-xs font-bold text-brand-navy uppercase tracking-wider">
                 Configured Classifications ({eventTypes.length})
               </h2>
             </div>
-            <table className="w-full text-left text-xs sm:text-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs sm:text-sm min-w-[460px]">
               <thead className="bg-brand-light/50 text-[10px] font-bold text-brand-muted uppercase tracking-wider border-b border-brand-border/40">
                 <tr>
                   <th className="px-5 py-3">Classification Name</th>
@@ -78,6 +79,7 @@ export default async function EventTypesPage() {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </div>

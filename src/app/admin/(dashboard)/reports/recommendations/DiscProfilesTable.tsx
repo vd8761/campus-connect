@@ -336,10 +336,10 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
       {/* Main Data Table Card */}
       <div className="bg-white rounded-2xl border border-brand-border/80 shadow-2xs overflow-hidden">
         {/* Toolbar: Search, Filters & Export */}
-        <div className="p-4 sm:p-5 border-b border-brand-border/60 flex flex-col md:flex-row gap-3.5 md:items-center justify-between bg-slate-50/40">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-1">
+        <div className="p-3.5 sm:p-5 border-b border-brand-border/60 flex flex-col md:flex-row gap-3.5 md:items-center justify-between bg-slate-50/40">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 flex-1">
             {/* Search Input */}
-            <div className="relative flex-1 max-w-sm">
+            <div className="relative flex-1 w-full sm:max-w-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                 <Search size={15} />
               </div>
@@ -353,11 +353,11 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
             </div>
 
             {/* Status Filter Tabs */}
-            <div className="flex rounded-xl bg-slate-200/70 p-1 text-xs font-semibold shrink-0">
+            <div className="flex overflow-x-auto rounded-xl bg-slate-200/70 p-1 text-xs font-semibold shrink-0">
               <button
                 type="button"
                 onClick={() => setStatusFilter('all')}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${statusFilter === 'all'
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${statusFilter === 'all'
                     ? 'bg-white text-brand-navy shadow-xs font-bold'
                     : 'text-slate-600 hover:text-brand-navy'
                   }`}
@@ -367,7 +367,7 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
               <button
                 type="button"
                 onClick={() => setStatusFilter('completed')}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${statusFilter === 'completed'
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${statusFilter === 'completed'
                     ? 'bg-white text-brand-navy shadow-xs font-bold'
                     : 'text-slate-600 hover:text-brand-navy'
                   }`}
@@ -377,7 +377,7 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
               <button
                 type="button"
                 onClick={() => setStatusFilter('pending')}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${statusFilter === 'pending'
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${statusFilter === 'pending'
                     ? 'bg-white text-brand-navy shadow-xs font-bold'
                     : 'text-slate-600 hover:text-brand-navy'
                   }`}
@@ -387,9 +387,9 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
             </div>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 shrink-0">
             {/* Searchable Dropdown for all 16 Origin BI Traits */}
-            <div className="w-64 sm:w-72">
+            <div className="flex-1 sm:flex-initial w-full sm:w-64 md:w-72">
               <SearchableDropdown
                 options={DISC_DROPDOWN_OPTIONS}
                 value={traitFilter}
@@ -406,7 +406,7 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
             <button
               type="button"
               onClick={exportCSV}
-              className="h-10 px-3.5 rounded-xl border border-brand-border/80 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs inline-flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer shrink-0"
+              className="h-10 flex-1 sm:flex-initial justify-center px-3.5 rounded-xl border border-brand-border/80 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs inline-flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer shrink-0"
             >
               <Download size={14} className="text-slate-500" />
               <span>Export</span>
@@ -416,7 +416,7 @@ export function DiscProfilesTable({ participants }: { participants: Participant[
 
         {/* Data Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm">
+          <table className="w-full text-left text-xs sm:text-sm min-w-[760px]">
             <thead>
               <tr className="bg-slate-50 text-slate-600 font-bold border-b border-brand-border/60 text-xs uppercase tracking-wider">
                 <th className="py-3.5 px-4 min-w-[280px]">Candidate & Contact</th>

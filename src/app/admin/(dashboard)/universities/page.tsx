@@ -25,17 +25,17 @@ export default async function UniversitiesPage() {
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-extrabold text-brand-navy">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-heading font-extrabold text-brand-navy">
             Universities & Academic Partners
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Manage enrolled institutions, their approved degree courses, and margin configurations.
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-brand-purple border border-purple-100 text-xs font-bold">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-brand-purple border border-purple-100 text-xs font-bold self-start sm:self-auto shrink-0">
           <GraduationCap size={16} />
           <span>{universities.length} Universities Active</span>
         </div>
@@ -61,11 +61,11 @@ export default async function UniversitiesPage() {
                 universities.map((uni: any) => (
                   <div 
                     key={uni.id} 
-                    className="p-4 md:p-5 hover:bg-purple-50/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+                    className="p-3.5 sm:p-4 md:p-5 hover:bg-purple-50/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group"
                   >
-                    <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
                       {/* Logo thumbnail or fallback building icon */}
-                      <div className="w-24 h-12 md:w-28 md:h-14 rounded-xl bg-white border border-brand-border/80 flex items-center justify-center p-2 shrink-0 shadow-2xs overflow-hidden">
+                      <div className="w-20 h-10 sm:w-24 sm:h-12 md:w-28 md:h-14 rounded-xl bg-white border border-brand-border/80 flex items-center justify-center p-2 shrink-0 shadow-2xs overflow-hidden">
                         {uni.logoUrl ? (
                           <img 
                             src={uni.logoUrl} 
@@ -73,7 +73,7 @@ export default async function UniversitiesPage() {
                             className="w-full h-full object-contain"
                           />
                         ) : (
-                          <Building2 className="w-6 h-6 text-brand-purple/60" />
+                          <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-brand-purple/60" />
                         )}
                       </div>
 
@@ -81,7 +81,7 @@ export default async function UniversitiesPage() {
                         <h3 className="font-heading font-bold text-brand-navy text-sm md:text-base group-hover:text-brand-purple transition-colors truncate">
                           {uni.name}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-0.5">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-500 mt-0.5">
                           <span className="flex items-center gap-1 font-medium">
                             <MapPin className="w-3.5 h-3.5 text-brand-purple shrink-0" />
                             {uni.city ? `${uni.city}, ${uni.country}` : uni.country}
@@ -95,7 +95,7 @@ export default async function UniversitiesPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                    <div className="flex flex-wrap items-center gap-2 shrink-0 self-stretch sm:self-center justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                       <Link
                         href={`/admin/universities/${uni.id}/courses`}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-purple text-white shadow-2xs hover:bg-brand-purple/90 transition-all"

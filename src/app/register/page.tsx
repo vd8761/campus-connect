@@ -32,20 +32,20 @@ export default async function UniversalRegisterPage() {
 
   // Calculate dynamic open status for all events
   const openEvents = events.filter(e => {
+    const dynamicStatus = getEventStatus(
+      e.startDate ? new Date(e.startDate) : null,
+      e.endDate ? new Date(e.endDate) : (e.startDate ? new Date(e.startDate) : null),
+      e.registrationOpen ? new Date(e.registrationOpen) : null,
+      e.registrationClose ? new Date(e.registrationClose) : null,
+      e.status === 'DRAFT',
+      e.isDateTba
+    );
+
     let displayStatus: string;
-    if (e.status === 'LIMITED_SEATS') {
+    if (e.status === 'LIMITED_SEATS' && dynamicStatus === 'OPEN') {
       displayStatus = 'LIMITED_SEATS';
-    } else if (e.status === 'OPEN') {
-      displayStatus = 'OPEN';
     } else {
-      displayStatus = getEventStatus(
-        e.startDate ? new Date(e.startDate) : null,
-        e.endDate ? new Date(e.endDate) : (e.startDate ? new Date(e.startDate) : null),
-        e.registrationOpen ? new Date(e.registrationOpen) : null,
-        e.registrationClose ? new Date(e.registrationClose) : null,
-        e.status === 'DRAFT',
-        e.isDateTba
-      );
+      displayStatus = dynamicStatus;
     }
     return ['OPEN', 'LIMITED_SEATS'].includes(displayStatus);
   });
