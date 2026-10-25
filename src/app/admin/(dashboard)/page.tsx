@@ -53,6 +53,7 @@ export default async function AdminDashboard() {
         title: true,
         city: true,
         startDate: true,
+        isDateTba: true,
         status: true,
         slug: true,
         _count: {
@@ -308,11 +309,13 @@ export default async function AdminDashboard() {
             <div className="space-y-3.5">
               {upcomingEvents.length > 0 ? (
                 upcomingEvents.map((event) => {
-                  const eventDate = new Date(event.startDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                  });
+                  const eventDate = event.isDateTba || !event.startDate
+                    ? 'Date TBA'
+                    : new Date(event.startDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      });
 
                   return (
                     <div 
