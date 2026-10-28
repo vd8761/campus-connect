@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { RegistrationForm } from './RegistrationForm';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 import { ArrowRight, Lock, UserCircle, Mail } from 'lucide-react';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { getCountries, getCountryCallingCode } from 'react-phone-number-input';
@@ -36,6 +36,7 @@ export function SmartRegistration({
   const [prefillData, setPrefillData] = useState<any>(null);
   const [error, setError] = useState('');
   const [country, setCountry] = useState<any>('IN');
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   const isEmail = identifier.length > 0 && /[a-zA-Z@]/.test(identifier);
 
@@ -68,6 +69,13 @@ export function SmartRegistration({
       
       const res = await fetch(`/api/participant?${field}=${encodeURIComponent(finalIdentifier)}&token=${turnstileToken}&eventId=${eventId}`);
       const data = await res.json();
+      
+      if (!res.ok && res.status === 403) {
+        setError(data.error || 'Security check failed. Please complete the captcha again.');
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
+        return;
+      }
       
       if (data.success && data.isRegistered) {
         setError('You are already registered for this event. No need to register again!');
@@ -165,11 +173,13 @@ export function SmartRegistration({
 
         <div className="flex justify-center my-6">
           <Turnstile 
+            ref={turnstileRef}
             siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAFWnYtjSIMm6bFZC'}
             onSuccess={(token) => setTurnstileToken(token)}
             onError={() => setError('Security check failed. Please refresh and try again.')}
             onExpire={() => setTurnstileToken(null)}
             options={{
+              action: 'participant_lookup',
               theme: 'light',
               size: 'normal',
             }}

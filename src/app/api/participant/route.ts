@@ -27,7 +27,11 @@ export async function GET(request: NextRequest) {
 
   try {
     // Verify Turnstile Token
-    const turnstileCheck = await verifyTurnstileToken(token);
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+    const turnstileCheck = await verifyTurnstileToken(token, {
+      action: 'participant_lookup',
+      remoteIp: clientIp,
+    });
     if (!turnstileCheck.success) {
       return NextResponse.json(
         { error: turnstileCheck.error || 'Security check failed' },

@@ -542,6 +542,7 @@ export function SchoolHostingForm() {
                 setErrorMessage('Human security verification encountered an issue. Please try refreshing.');
               }}
               options={{
+                action: 'host_school',
                 theme: 'light',
                 size: 'normal',
               }}

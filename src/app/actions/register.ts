@@ -32,7 +32,9 @@ export async function registerForEvent(formData: z.infer<typeof registrationSche
     const validatedData = registrationSchema.parse(formData);
 
     // Verify Turnstile Token
-    const turnstileCheck = await verifyTurnstileToken(validatedData.turnstileToken);
+    const turnstileCheck = await verifyTurnstileToken(validatedData.turnstileToken, {
+      action: "event_registration",
+    });
     if (!turnstileCheck.success) {
       return { success: false, error: turnstileCheck.error || "Security check failed. Please try again." };
     }

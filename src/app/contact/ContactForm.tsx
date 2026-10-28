@@ -163,6 +163,7 @@ export function ContactForm() {
                 setServerError("Human security verification encountered an issue. Please try refreshing.");
               }}
               options={{
+                action: 'contact',
                 theme: 'light',
                 size: 'normal',
               }}

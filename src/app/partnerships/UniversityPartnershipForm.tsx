@@ -519,6 +519,7 @@ export function UniversityPartnershipForm() {
                 setErrorMessage('Human security verification encountered an issue. Please try refreshing.');
               }}
               options={{
+                action: 'university_partnership',
                 theme: 'light',
                 size: 'normal',
               }}

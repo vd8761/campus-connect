@@ -13,7 +13,7 @@ import PhoneInput, { isValidPhoneNumber, getCountryCallingCode } from 'react-pho
 import 'react-phone-number-input/style.css'; 
 import { getExampleNumber } from 'libphonenumber-js';
 import examples from 'libphonenumber-js/examples.mobile.json';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { OriginBIHighlightBox } from '@/components/OriginBIHighlightBox';
 
@@ -164,6 +164,7 @@ export function RegistrationForm({
   const [copied, setCopied] = useState(false);
   const [phoneCountry, setPhoneCountry] = useState<any>('IN');
   const countryChangeFlag = useRef(false);
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   useEffect(() => {
     if (successData) {
@@ -295,6 +296,8 @@ export function RegistrationForm({
       });
     } else {
       setError(result.error || 'Something went wrong.');
+      turnstileRef.current?.reset();
+      setValue('turnstileToken', '');
     }
     
     setIsSubmitting(false);
@@ -701,10 +704,13 @@ export function RegistrationForm({
       <div className="pt-8">
         <div className="mb-6 flex flex-col items-center justify-center">
           <Turnstile 
+            ref={turnstileRef}
             siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAFWnYtjSIMm6bFZC'}
-            onSuccess={(token) => setValue('turnstileToken', token)}
+            onSuccess={(token) => setValue('turnstileToken', token, { shouldValidate: true })}
+            onExpire={() => setValue('turnstileToken', '', { shouldValidate: true })}
             onError={() => setError("Security check failed. Please refresh and try again.")}
             options={{
+              action: 'event_registration',
               theme: 'light',
               size: 'normal'
             }}

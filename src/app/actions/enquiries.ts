@@ -47,7 +47,9 @@ export async function submitUniversityPartnershipEnquiry(rawData: unknown) {
     const data = universityEnquirySchema.parse(rawData);
 
     // Verify Cloudflare Turnstile human verification
-    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken);
+    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken, {
+      action: "university_partnership",
+    });
     if (!turnstileCheck.success) {
       return { 
         success: false, 
@@ -153,7 +155,9 @@ export async function submitSchoolHostingEnquiry(rawData: unknown) {
     const data = schoolHostingSchema.parse(rawData);
 
     // Verify Cloudflare Turnstile human verification
-    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken);
+    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken, {
+      action: "host_school",
+    });
     if (!turnstileCheck.success) {
       return { 
         success: false, 
@@ -259,7 +263,9 @@ export async function submitContactUsMessage(rawData: unknown) {
     const data = contactUsSchema.parse(rawData);
 
     // Verify Cloudflare Turnstile human verification
-    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken);
+    const turnstileCheck = await verifyTurnstileToken(data.turnstileToken, {
+      action: "contact",
+    });
     if (!turnstileCheck.success) {
       return { 
         success: false, 
